@@ -6,7 +6,7 @@
  */
 
 
-import {Transform} from 'stream'
+import {Transform, Writable} from 'stream'
 import {getLiveStation} from '../sources/velibparisAPI'
 
 
@@ -25,20 +25,16 @@ class GetLiveInfo extends Transform {
             .then( x => callback(null, x ) )
             .catch( callback )
     }
-
-    _flush( callback ){
-        callback()
-    }
 }
 
-class pushToDB extends Transform {
+class pushToDB extends Writable {
 
     constructor( db ){
         super({objectMode:true, highWaterMark:1})
         this.db = db
     }
 
-    _transform( station, encoding, callback ) {
+    _write( station, encoding, callback ) {
         this.db.pushAvailability( station )
             .then( x => callback(null, x ) )
             .catch( callback )
