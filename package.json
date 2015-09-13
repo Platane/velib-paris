@@ -25,7 +25,7 @@
         "build": "node ./node_modules/webpack/bin/webpack.js --production",
         "start": "node ./back/_run.js",
 
-        "dev": "node ./node_modules/webpack/bin/webpack.js --progress --watch -d"
+        "dev": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8082 --content-base ./ -d"
     }
 
 }
