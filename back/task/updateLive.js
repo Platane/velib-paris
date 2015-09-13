@@ -9,41 +9,6 @@
 import {Transform} from 'stream'
 import {getLiveStation} from '../sources/velibparisAPI'
 
-// class Transform extends Stream {
-//
-//     constructor(){
-//         super()
-//         this.writable = this.readable = true
-//         this.processing = 0
-//         this.ended = false
-//     }
-//
-//     write( station ){
-//         this.processing ++
-//
-//         this._transform( station )
-//
-//             .then( x => this.emit('data', x)  )
-//
-//             .catch( err => this.emit('error', err)  )
-//
-//             .then( () => {
-//                 this.processing --
-//                 this._checkEnd()
-//             })
-//     }
-//
-//     end(){
-//         this.ended = true
-//         this._checkEnd()
-//     }
-//
-//     _checkEnd(){
-//         !this.processing && this.ended && this.emit('end')
-//     }
-// }
-
-
 
 class GetLiveInfo extends Transform {
 
