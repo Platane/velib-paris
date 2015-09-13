@@ -12,6 +12,9 @@ export const get = options =>
 
             ( url.format(options), res => {
 
+                if ( res.statusCode != 200 )
+                    return reject( 'request fails with '+res.statusCode+' status code' )
+
                 let s=''
 
                 res.setEncoding('utf8')

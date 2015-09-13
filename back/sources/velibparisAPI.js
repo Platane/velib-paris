@@ -65,15 +65,15 @@ const parseLiveStation = res =>
             const station = object.station
 
             resolve({
-                updated: station.updated,
-                free: station.free,
-                total: station.total,
+                updated: +station.updated[0],
+                free: +station.free[0],
+                total: +station.total[0],
             })
         })
     )
 
-export const getLiveStation = () =>
+export const getLiveStation = stationId =>
 
-    get( liveStationUri() )
+    get( liveStationUri( stationId ) )
 
         .then( parseLiveStation )

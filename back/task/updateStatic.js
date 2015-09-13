@@ -11,14 +11,11 @@ import {getStaticStations} from '../sources/velibparisAPI'
 export class UpdateStatic {
 
     constructor( db ){
-
-        this.processing = false
-        this.progress = 0
         this.db = db
     }
 
     update(){
-        
+
         return getStaticStations()
 
             .then( stations => {

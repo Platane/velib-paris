@@ -31,7 +31,7 @@ export class DB {
 
             .then( count => {
 
-                // does the city already exist in db
+                // does the station already exist in db
                 if ( count )
 
                     // yes, update
@@ -44,7 +44,29 @@ export class DB {
             })
     }
 
-    pushNvelib( station, nVelib ){
+    pushAvailability( stationInfo ){
 
+        const delay = 10 * 60
+
+        const availability = this._db.collection('availability')
+
+        return availability.find( { id: stationInfo.id, updated: { $gt: stationInfo.updated - delay } } )
+
+            .count()
+
+            .then( count => {
+
+
+                // does the station already have been tracked in the last 10 min
+                if ( count )
+
+                    // yes, ignore
+                    return
+
+                else
+
+                    // no, insert
+                    return availability.insertOne( stationInfo )
+            })
     }
 }
