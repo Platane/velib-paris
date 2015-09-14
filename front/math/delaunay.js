@@ -38,26 +38,15 @@ const computeCircle = triangle => {
     return c
 }
 
-
-// assuming the convexHull and the triangle share an edge
-const expandConvexHull = (convexHull, triangle) => {
-
-    let shared = []
-
-    for( let i=convexHull.length; i--;)
-        for( let j=triangle.length; j--;)
-            if (convexHull[i] == triangle[j])
-                shared.push({i:i, j:j})
-
-    if ( shared.length != 2)
-        throw 'no edge shared'
-
-    let newVertice = ( shared[0].j + 1 ) % 3
-    newVertice == shared[1].j && ( newVertice = ( shared[0].j + 2 ) % 3 )
-
-
-    convexHull.splice( shared[0].i, 0, triangle[ newVertice ] )
-}
+// let hull = [ ...hullEdges.shift() ]
+// while( hullEdges.length ){
+//     const A = hull[ 0 ]
+//     let index
+//     const isOk = hullEdges.some( (edge, i) =>
+//         (index =i, ( edge[0] == A && hull.unshift( edge[1] ) ) || ( edge[1] == A && hull.unshift( edge[0] ) ) )    )
+//
+//     hullEdges.splice( index, 1 )
+// }
 export const delaunay = points => {
 
     let rootTriangle = boundingTriangle( points )
@@ -66,10 +55,10 @@ export const delaunay = points => {
     let circles = [ computeCircle( rootTriangle ) ]
 
 
-    points.forEach( (point, i)  => {
+    let history = []
+    history.push({ triangles: triangles.slice(),  circles: circles.slice() })
 
-        if ( i>4 )
-            return
+    points.forEach( (point, i)  => {
 
         // grab all the triangles for which p is contained in the circonscrit circle
         let concerned = circles.reduce( (arr, c, i) =>
@@ -77,20 +66,48 @@ export const delaunay = points => {
 
 
         // build the convex hull with this
-        let convexHull = concerned.reduce( (hull, i) =>
-            (hull.length ? expandConvexHull( hull, triangles[i] ) : hull.push( ...triangles[i] ), hull ) , [] )
+        let hullEdges = concerned.reduce( (arr, i) => {
+
+                arr.push([ triangles[i][0], triangles[i][1] ])
+                arr.push([ triangles[i][1], triangles[i][2] ])
+                arr.push([ triangles[i][2], triangles[i][0] ])
+
+                return arr
+            }, [])
+
+            .filter( (edge, i, arr) =>
+                edge.length && !arr
+                    .some( (e, j) => i != j && ( ( e[0]==edge[0] && e[1]==edge[1] ) || ( e[0]==edge[1] && e[1]==edge[0] ) )  )
+
+            )
+
+        // for( let i = hullEdges.length; i--; ){
+        //
+        //     for( let i = j-1; i--; )
+        //
+        //         if( ( hullEdges[i][0] == hullEdges[j][0] && hullEdges[i][1] == hullEdges[j][1] ) || ( hullEdges[i][1] == hullEdges[j][0] && hullEdges[i][0] == hullEdges[j][1] ) ){
+        //
+        //             hullEdges.splice(i--, 1)
+        //             hullEdges.splice(j, 1)
+        //
+        //             break
+        //         }
+        // }
+
+
+
+
 
 
         // determine if the point is on the edge of the hull
-        const onEdge = convexHull.some( (x, a, arr) =>
-            pointOnSegment( convexHull[a], convexHull[ (a+1)%arr.length ], point )  )
+        const onEdge = hullEdges.some( edge =>
+            pointOnSegment( edge[0], edge[1], point )  )
 
 
         if (!onEdge){
             // the point is not on an edge, the resulting triangle will be acceptable ( not flat )
             // delete the triangles,
             // build new one formed by joiningeach edge of the hull with the point
-
 
             concerned
                 .reverse()
@@ -99,10 +116,9 @@ export const delaunay = points => {
                     circles.splice(i,1)
                 })
 
-            convexHull.forEach( (x, a, arr) => {
-                let b = (a+1)%arr.length
+            hullEdges.forEach( edge => {
 
-                const triangle = [ convexHull[a], convexHull[b], point ]
+                const triangle = [ edge[0], edge[1], point ]
                 const circle = computeCircle( triangle )
 
                 triangles.push( triangle )
@@ -143,13 +159,16 @@ export const delaunay = points => {
                     }
                 })
         }
+
+        history.push({ triangles: triangles.slice(),  circles: circles.slice() })
+
     })
 
 
     // remove the triangles formed with the rootTriangle
     // TODO
 
-    return triangles
+    return history
 }
 
 

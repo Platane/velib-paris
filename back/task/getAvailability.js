@@ -96,7 +96,7 @@ export class GetAvailability {
 
         const db = this.db._db
 
-        stations = [901, 902, 903, 904, 905, 906, 907, 908, 909, 910]
+        stations = Array.apply(null, Array(10)).map( (_, n) => 15000+n )
 
         if( !range.start )
             // range.start = Date.now() / 1000 - 24 * 60 * 60
