@@ -6,9 +6,42 @@
  */
 
 
-import {Transform, Writable} from 'stream'
+import {Transform, Writable, Duplex} from 'stream'
 import {getLiveStation} from '../sources/velibparisAPI'
 
+
+class Temporize extends Duplex {
+
+    constructor(delay){
+        super({objectMode:true})
+
+        this.delay=delay || 100
+        this._q = []
+        this._ready = false
+    }
+
+    _write( x , _, callback) {
+        this._q.push( x )
+        this._tryToPush()
+        callback()
+    }
+
+    _read() {
+        this._ready = true
+        this._tryToPush()
+    }
+
+    _tryToPush(){
+        if ( this._timeout || !this._q.length || !this._ready )
+            return
+
+        this._ready = this.push( this._q.shift() )
+        this._timeout = setTimeout( () => {
+            this._timeout=false
+            this._tryToPush()
+        })
+    }
+}
 
 class GetLiveInfo extends Transform {
 
@@ -52,6 +85,8 @@ export class UpdateLive {
 
         const db = this.db._db
 
+        let n=1
+
         return new Promise( (resolve, reject) => {
 
             db.collection('stations')
@@ -59,11 +94,20 @@ export class UpdateLive {
                 // find all
                 .find()
 
+                .sort({updated: 1})
+
                 .stream()
                 .on('error', reject )
 
+
+                .pipe( new Temporize(1000))
+                .on('error', reject )
+
+
                 .pipe( new GetLiveInfo() )
                 .on('error', reject )
+
+                .on('data', x => console.log( n++, x.id ) )
 
                 .pipe( new pushToDB( this.db ) )
                 .on('error', reject )

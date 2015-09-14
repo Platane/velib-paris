@@ -13,7 +13,7 @@ export const get = options =>
             ( url.format(options), res => {
 
                 if ( res.statusCode != 200 )
-                    return reject( 'request fails with '+res.statusCode+' status code' )
+                    return reject( 'request fails with '+res.statusCode+' status code ('+url.format(options)+' ) ' )
 
                 let s=''
 
