@@ -56,9 +56,7 @@ const expandConvexHull = (convexHull, triangle) => {
     newVertice == shared[1].j && ( newVertice = ( shared[0].j + 2 ) % 3 )
 
 
-    let index = Math.max( shared[0].i, shared[1].i ) + ( Math.min( shared[0].i, shared[1].i ) == 0 ? 1 : -1 )
-
-    convexHull.splice( index, 0, triangle[ newVertice ] )
+    convexHull.splice( shared[0].i, 0, triangle[ newVertice ] )
 }
 export const delaunay = points => {
 
@@ -68,71 +66,85 @@ export const delaunay = points => {
     let circles = [ computeCircle( rootTriangle ) ]
 
 
-    points.forEach( point  => {
+    points.forEach( (point, i)  => {
 
-        // grab all the triangles for which p in contained in the circonscrit circle
-        let concerned = []
-        for( let i = circles.length; i--; )
-            squareDistance( circles[ i ], point ) < circles[ i ].r && concerned.push( i )
+        if ( i>4 )
+            return
+
+        // grab all the triangles for which p is contained in the circonscrit circle
+        let concerned = circles.reduce( (arr, c, i) =>
+            (squareDistance( c, point ) < c.r && arr.push(i), arr)  ,[] )
 
 
         // build the convex hull with this
-        let convexHull = []
+        let convexHull = concerned.reduce( (hull, i) =>
+            (hull.length ? expandConvexHull( hull, triangles[i] ) : hull.push( ...triangles[i] ), hull ) , [] )
 
 
-
-        // in find all the circonscrit circle that point is on
-        for( let i = circles.length; i--; )
-            if ( squareDistance( circles[ i ], point ) < circles[ i ].r ) {
-
-                // remove triangles
-                circles.splice(i,1)
-                const triangle = triangles.splice(i,1)[0]
+        // determine if the point is on the edge of the hull
+        const onEdge = convexHull.some( (x, a, arr) =>
+            pointOnSegment( convexHull[a], convexHull[ (a+1)%arr.length ], point )  )
 
 
-                // check if the point is on a edge
-                let a = 0,
-                    b = 2
+        if (!onEdge){
+            // the point is not on an edge, the resulting triangle will be acceptable ( not flat )
+            // delete the triangles,
+            // build new one formed by joiningeach edge of the hull with the point
 
-                // for each edge
-                do {
 
-                    if ( pointOnSegment( triangle[a], triangle[a], point ) ){
-                        // the point is on the edge
+            concerned
+                .reverse()
+                .forEach( i => {
+                    triangles.splice(i,1)
+                    circles.splice(i,1)
+                })
 
-                        // find all the triangles relative to this edge ( 1 or 2 )
+            convexHull.forEach( (x, a, arr) => {
+                let b = (a+1)%arr.length
 
-                        return
+                const triangle = [ convexHull[a], convexHull[b], point ]
+                const circle = computeCircle( triangle )
+
+                triangles.push( triangle )
+                circles.push( circle )
+            })
+
+        } else {
+            // the point is not on an edge
+            // find all the triangles relative to this edge ( 1 or 2 )
+            // split along the edge
+
+            concerned
+                .reverse()
+                .forEach( i => {
+                    const triangle = triangles[i]
+
+                    let a,b
+                    const onEdge = triangle.some( (_, _a) =>
+                        pointOnSegment( triangle[ a = _a ], triangle[ b = (_a+1)%3 ], point )   )
+
+                    if (onEdge){
+                        const c = ( b + 1 ) % 3
+
+                        // delete the triangle
+                        triangles.splice(i,1)
+                        circles.splice(i,1)
+
+                        // build some news
+                        let tr
+
+                        tr = [ triangle[a], triangle[c], point ]
+                        circles.push( computeCircle( tr ) )
+                        triangles.push( tr )
+
+                        tr = [ triangle[c], triangle[b], point ]
+                        circles.push( computeCircle( tr ) )
+                        triangles.push( tr )
                     }
-
-                    a = b
-                }
-                while ( b-- )
-
-
-
-                // expand the convex hull
-                convexHull.length ? expandConvexHull( convexHull, triangle ) : convexHull.push( ...triangle )
-            }
-
-        // we have the empty convex hull
-        let a = 0,
-            b = convexHull.length -1
-
-        // build the resulting triangles
-        do {
-
-            const triangle = [ convexHull[a], convexHull[b], point ]
-            const circle = computeCircle( triangle )
-
-            triangles.push( triangle )
-            circles.push( circle )
-
-            a = b
+                })
         }
-        while ( b-- )
-
     })
+
 
     // remove the triangles formed with the rootTriangle
     // TODO

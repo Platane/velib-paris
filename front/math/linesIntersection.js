@@ -2,7 +2,7 @@ const epsylon = 0.00001
 export const linesIntersection = ( A ,vA, B, vB ) => {
 
     if ( Math.abs( vA.x * vB.y - vA.y * vB.x ) < epsylon )
-        return null
+        return Math.abs( vA.x * (A.y-B.y) - vA.y * (A.y-B.y) ) < epsylon && A
 
     let k
     if ( Math.abs(vB.x)<epsylon )
