@@ -1,5 +1,7 @@
 import {linesIntersection}  from './linesIntersection'
+import {pointOnSegment}  from './pointOnSegment'
 import {boundingTriangle}  from './bounding'
+import {squareDistance}  from './point'
 
 
 
@@ -30,14 +32,34 @@ const computeCircle = triangle => {
     )
 
     // square radius of the cicle
-    let x = c.x - triangle[0].x
-    let y = c.y - triangle[0].y
-    c.r = x*x + y*y
+    c.r = squareDistance( triangle[0], c )
 
 
     return c
 }
 
+
+// assuming the convexHull and the triangle share an edge
+const expandConvexHull = (convexHull, triangle) => {
+
+    let shared = []
+
+    for( let i=convexHull.length; i--;)
+        for( let j=triangle.length; j--;)
+            if (convexHull[i] == triangle[j])
+                shared.push({i:i, j:j})
+
+    if ( shared.length != 2)
+        throw 'no edge shared'
+
+    let newVertice = ( shared[0].j + 1 ) % 3
+    newVertice == shared[1].j && ( newVertice = ( shared[0].j + 2 ) % 3 )
+
+
+    let index = Math.max( shared[0].i, shared[1].i ) + ( Math.min( shared[0].i, shared[1].i ) == 0 ? 1 : -1 )
+
+    convexHull.splice( index, 0, triangle[ newVertice ] )
+}
 export const delaunay = points => {
 
     let rootTriangle = boundingTriangle( points )
@@ -47,8 +69,75 @@ export const delaunay = points => {
 
 
     points.forEach( point  => {
-        
+
+        // grab all the triangles for which p in contained in the circonscrit circle
+        let concerned = []
+        for( let i = circles.length; i--; )
+            squareDistance( circles[ i ], point ) < circles[ i ].r && concerned.push( i )
+
+
+        // build the convex hull with this
+        let convexHull = []
+
+
+
+        // in find all the circonscrit circle that point is on
+        for( let i = circles.length; i--; )
+            if ( squareDistance( circles[ i ], point ) < circles[ i ].r ) {
+
+                // remove triangles
+                circles.splice(i,1)
+                const triangle = triangles.splice(i,1)[0]
+
+
+                // check if the point is on a edge
+                let a = 0,
+                    b = 2
+
+                // for each edge
+                do {
+
+                    if ( pointOnSegment( triangle[a], triangle[a], point ) ){
+                        // the point is on the edge
+
+                        // find all the triangles relative to this edge ( 1 or 2 )
+
+                        return
+                    }
+
+                    a = b
+                }
+                while ( b-- )
+
+
+
+                // expand the convex hull
+                convexHull.length ? expandConvexHull( convexHull, triangle ) : convexHull.push( ...triangle )
+            }
+
+        // we have the empty convex hull
+        let a = 0,
+            b = convexHull.length -1
+
+        // build the resulting triangles
+        do {
+
+            const triangle = [ convexHull[a], convexHull[b], point ]
+            const circle = computeCircle( triangle )
+
+            triangles.push( triangle )
+            circles.push( circle )
+
+            a = b
+        }
+        while ( b-- )
+
     })
+
+    // remove the triangles formed with the rootTriangle
+    // TODO
+
+    return triangles
 }
 
 
