@@ -94,7 +94,7 @@ export class UpdateLive {
                 // find all
                 .find()
 
-                .sort({updated: 1})
+                // .sort({updated: -1})
 
                 .stream()
                 .on('error', reject )

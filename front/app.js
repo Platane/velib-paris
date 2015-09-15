@@ -1,4 +1,4 @@
-import {delaunay} from './math/delaunay'
+import {delaunay, getHistory} from './math/delaunay'
 import {boundingBox} from './math/bounding'
 import {get} from './service/request'
 
@@ -9,7 +9,7 @@ canvas.height = 800
 document.body.appendChild( canvas )
 const ctx = canvas.getContext('2d')
 
-const colors=Array.apply(null, Array(100))
+const colors=Array.apply(null, Array(1000))
     .map( () => `hsla( ${ Math.random()*360 }, ${ 70 }%, ${ 40 }%, 0.8 )` )
 
 window.drawH = ( h ) => {
@@ -47,20 +47,23 @@ window.drawH = ( h ) => {
         ctx.fill()
     }
 
-    // h.circles
-    //     .forEach( (c, i) => {
-    //         ctx.beginPath()
-    //         ctx.arc( c.x, c.y, Math.sqrt(c.r), 0, Math.PI*2 )
-    //         ctx.strokeStyle = colors[ i ]
-    //         ctx.stroke()
-    //     })
+    h.circles && h.circles
+        .forEach( (c, i) => {
+            ctx.beginPath()
+            ctx.arc( c.x, c.y, Math.sqrt(c.r), 0, Math.PI*2 )
+            ctx.strokeStyle = colors[ i ]
+            ctx.stroke()
+        })
 }
 
-window.points = Array.apply(null, Array(100)).map( () => ({x: Math.random()* 500 +50, y: Math.random()* 500 +50}) )
+window.points = Array.apply(null, Array(120)).map( () => ({x: Math.random()* 500 +150, y: Math.random()* 500 +150}) )
 
 
 
-window.hh = delaunay( window.points )
+delaunay( window.points )
+window.hh = getHistory()
+window.drawH( window.hh[ window.hh.length-1 ] )
+window.pointToString = () => window.points.map( p => `{x:${ Math.round(p.x*100000)/100000 }, y:${ Math.round(p.x*100000)/100000 } }` ).join(',')
 
 get( 'http://localhost:8080/availability' )
 
@@ -88,9 +91,9 @@ get( 'http://localhost:8080/availability' )
 
     .then( h => {
 
-        window.hh = h
+        // window.hh = h
 
-        window.drawH( h[16] )
+        // window.drawH( h[16] )
 
     })
 

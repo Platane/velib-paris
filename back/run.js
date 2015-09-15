@@ -30,7 +30,7 @@ db.connect()
 
     .then( () => console.log('starting to update live stations') )
 
-    // .then( () => updateLive.update() )
+    .then( () => updateLive.update() )
 
     .then( () => console.log('finished to update live stations') )
 

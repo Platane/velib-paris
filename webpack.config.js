@@ -18,9 +18,8 @@ if ( production )
 module.exports = {
 
     entry: {
-        app: [
-            './front/app.js',
-        ],
+        app: [ './front/app.js' ],
+        // test: [ './tests/run.js' ],
     },
 
     output: {

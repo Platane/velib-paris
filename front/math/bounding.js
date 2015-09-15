@@ -23,9 +23,16 @@ export const boundingBox = points => {
     return box
 }
 
-export const boundingTriangle = points => {
+export const expandBoundingBox = (box, m) => {
+    box.max.x += m
+    box.max.y += m
+    box.min.y -= m
+    box.min.x -= m
 
-    const box = boundingBox(points)
+    return box
+}
+
+export const boundingTriangle = box => {
 
     return [
         box.min,
