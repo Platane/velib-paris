@@ -1,5 +1,4 @@
 import {linesIntersection}  from './linesIntersection'
-import {pointOnSegment}  from './pointOnSegment'
 import {boundingTriangle, expandBoundingBox, boundingBox}  from './bounding'
 import {squareDistance}  from './point'
 
@@ -36,17 +35,7 @@ export const computeCircle = triangle => {
     return c
 }
 
-// let hull = [ ...hullEdges.shift() ]
-// while( hullEdges.length ){
-//     const A = hull[ 0 ]
-//     let index
-//     const isOk = hullEdges.some( (edge, i) =>
-//         (index =i, ( edge[0] == A && hull.unshift( edge[1] ) ) || ( edge[1] == A && hull.unshift( edge[0] ) ) )    )
-//
-//     hullEdges.splice( index, 1 )
-// }
-let history
-export const getHistory = () => history
+
 export const delaunay = points => {
 
     let box = boundingBox( points )
@@ -57,9 +46,6 @@ export const delaunay = points => {
     let triangles = [ rootTriangle ]
     let circles = [ computeCircle( rootTriangle ) ]
 
-
-    history = []
-    history.push({ triangles: triangles.slice(),  circles: circles.slice() })
 
     points.forEach( (point, i)  => {
 
@@ -100,20 +86,13 @@ export const delaunay = points => {
             circles.push( circle )
         })
 
-
-        history.push({ triangles: triangles.slice(),  circles: circles.slice() })
-
     })
 
 
     // remove the triangles formed with the rootTriangle
-    triangles = triangles
+    return triangles
         .filter( triangle =>   !triangle.some( x => rootTriangle.some( y => x == y ) )  )
 
-
-    history.push({ triangles: triangles.slice() })
-
-    return triangles
 }
 
 
