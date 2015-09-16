@@ -69,8 +69,7 @@ class Format extends Stream {
 
                 id: x.id,
 
-                lat: x.lat,
-                lng: x.lng,
+                coordinates: x.loc.coordinates,
 
                 total: x.av && x.av.length ? x.av[ 0 ].total : null,
                 av: x.av || []

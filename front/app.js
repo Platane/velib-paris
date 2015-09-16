@@ -15,8 +15,8 @@ get( 'http://localhost:8080/availability' )
 
         let points = res
             .map( x => ({
-                x: +x.lat,
-                y: +x.lng,
+                x: +x.coordinates[0],
+                y: +x.coordinates[1],
             }) )
 
         const box = boundingBox( points )
