@@ -16,6 +16,7 @@ context.stack('primitive')
 
 require('./primitive/linesIntersection')
 require('./primitive/pointOnSegment')
+require('./primitive/contains.trianglePonderation')
 
 context.pop().stack('advanced')
 
