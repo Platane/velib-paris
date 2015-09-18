@@ -19,7 +19,7 @@ module.exports = {
 
     entry: {
         app: [ './front/app.js' ],
-        // test: [ './tests/run.js' ],
+        test: [ './tests/run.js' ],
     },
 
     output: {

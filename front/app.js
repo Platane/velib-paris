@@ -1,4 +1,5 @@
-import {delaunay, getHistory} from './math/delaunay'
+import {delaunay} from './math/delaunay'
+import {map} from './math/map'
 import {boundingBox} from './math/bounding'
 import {get} from './service/request'
 
@@ -19,6 +20,9 @@ get( 'http://localhost:8080/availability' )
                 y: +x.coordinates[1],
             }) )
 
+        let values = res
+            .map( x => x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total )
+
         const box = boundingBox( points )
 
         points = points
@@ -28,8 +32,9 @@ get( 'http://localhost:8080/availability' )
             }) )
 
 
-        delaunay( points )
-            .forEach( (tr, i) => {
+        const triangles = delaunay( points )
+
+        triangles.forEach( (tr, i) => {
                 ctx.beginPath()
                 ctx.moveTo( tr[0].x, tr[0].y )
                 ctx.lineTo( tr[1].x, tr[1].y )
@@ -40,6 +45,9 @@ get( 'http://localhost:8080/availability' )
                 ctx.fillStyle= `hsla( ${ Math.random()*360 }, ${ 70 }%, ${ 40 }%, 0.8 )`
                 ctx.fill()
             })
+
+
+        map( triangles, values, boundingBox( points ) )
 
     })
 
