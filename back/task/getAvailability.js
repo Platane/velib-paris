@@ -72,7 +72,7 @@ class Format extends Stream {
                 coordinates: x.loc.coordinates,
 
                 total: x.av && x.av.length ? x.av[ 0 ].total : null,
-                av: x.av || []
+                av: x.av && x.av
                     .map( x => x.updated+','+x.free )
                     .join(';')
             })
@@ -95,7 +95,7 @@ export class GetAvailability {
 
         const db = this.db._db
 
-        stations = Array.apply(null, Array(5000)).map( (_, n) => n )
+        stations = Array.apply(null, Array(2000)).map( (_, n) => n )
 
         if( !range.start )
             // range.start = Date.now() / 1000 - 24 * 60 * 60
@@ -117,11 +117,11 @@ export class GetAvailability {
                 .stream()
                 .on('error', reject )
 
-                // .pipe( new FilterStation( stations ) )
-                // .on('error', reject )
-                //
-                // .pipe( new GetLastAvailability( this.db, range ) )
-                // .on('error', reject )
+                .pipe( new FilterStation( stations ) )
+                .on('error', reject )
+
+                .pipe( new GetLastAvailability( this.db, range ) )
+                .on('error', reject )
 
                 .pipe( new Format( this.db ) )
                 .on('error', reject )

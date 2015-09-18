@@ -27,7 +27,7 @@ const parseStaticStations = res =>
                     bonus: !!(+x.$.bonus),
 
                     loc: {
-                        type: "Point",
+                        type: 'Point',
                         coordinates: [x.$.lat, x.$.lng],
                     },
                 }) )
