@@ -6,7 +6,8 @@
 
     "dependencies": {
         "mongodb" : "*",
-        "xml2js" : "*"
+        "xml2js" : "*",
+        "babel" : "*"
     },
 
     "devDependencies": {
