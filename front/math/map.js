@@ -1,8 +1,10 @@
 // import {boundingBox} from './bounding'
-// import {quadTree} from './quadTree'
+import {reccursivePartition, explore} from './quadTree'
 import {inTriangle, trianglePonderation} from './contains'
 
 export const map = ( triangles, points, rect, n ) => {
+
+    const partiton = quadTree( triangles, rect, 16 )
 
     let w = rect.max.x - rect.min.x,
         h = rect.max.y - rect.min.y
