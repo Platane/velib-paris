@@ -18,21 +18,36 @@ get( 'http://localhost:8080/availability' )
             .map( x => ({
                 x: +x.coordinates[0],
                 y: +x.coordinates[1],
+                value: 0.1+ 0.9 * x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total
             }) )
 
-        let values = res
-            .map( x => x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total )
 
         const box = boundingBox( points )
 
-        points = points
-            .map( p => ({
-                x: ( p.x - box.min.x )/( box.max.x - box.min.x ) * 900 +10,
-                y: ( p.y - box.min.y )/( box.max.y - box.min.y ) * 900 +10
-            }) )
+        points
+            .forEach( p => {
+                p.x = ( p.x - box.min.x )/( box.max.x - box.min.x ) * 900 +10
+                p.y = ( p.y - box.min.y )/( box.max.y - box.min.y ) * 900 +10
+            })
 
 
         const triangles = delaunay( points )
+
+        const {m,w} = map( triangles, points, boundingBox( points ), 200 )
+
+        m.forEach( (value, n) => {
+
+            let x = (n% w)
+            let y = (0|(n/w))
+
+            const l = 4
+
+            ctx.beginPath()
+            ctx.rect(x*l,y*l,l,l)
+            ctx.fillStyle= `hsl( ${ 360 - value*300 }, ${ 70 }%, ${ 40 }% )`
+            ctx.fill()
+
+        })
 
         triangles.forEach( (tr, i) => {
                 ctx.beginPath()
@@ -42,13 +57,63 @@ get( 'http://localhost:8080/availability' )
                 ctx.lineTo( tr[0].x, tr[0].y )
                 ctx.strokeStyle = '#333'
                 ctx.stroke()
-                ctx.fillStyle= `hsla( ${ Math.random()*360 }, ${ 70 }%, ${ 40 }%, 0.8 )`
-                ctx.fill()
             })
 
+        points.forEach( p => {
 
-        map( triangles, values, boundingBox( points ) )
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, 10, 0, Math.PI*2)
+            ctx.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
+            ctx.fill()
+            ctx.strokeStyle = '#333'
+            ctx.stroke()
 
+        })
     })
 
     .catch( err => console.error( err ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
