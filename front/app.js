@@ -11,6 +11,7 @@ document.body.appendChild( canvas )
 const ctx = canvas.getContext('2d')
 
 get( 'http://localhost:8080/availability' )
+// Promise.resolve( [])
 
     .then( res => {
 
@@ -21,6 +22,12 @@ get( 'http://localhost:8080/availability' )
                 value: 0.1+ 0.9 * x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total
             }) )
 
+
+        // points = [
+        //     {x:100, y:110, value:1},
+        //     {x:200, y:300, value:0.1},
+        //     {x:400, y:100, value:1},
+        // ]
 
         const box = boundingBox( points )
 

@@ -32,7 +32,15 @@ export const map = ( triangles, points, rect, n ) => {
                 if ( !triangle )
                     return 0
 
-                return trianglePonderation( triangle, p )
+                let pond = trianglePonderation( triangle, p )
+
+                pond = pond.map( x => x*x )
+
+                let sum = pond.reduce( (s, x) => s+x )
+
+                pond = pond.map( x => x/sum )
+
+                return pond
                     .reduce( (sum, pond, i) =>
                         sum + pond * triangle[i].value, 0 )
             }),
