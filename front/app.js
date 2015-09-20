@@ -10,6 +10,12 @@ canvas.height = 1000
 document.body.appendChild( canvas )
 const ctx = canvas.getContext('2d')
 
+const canvas2 = document.createElement('canvas')
+canvas2.width = 1000
+canvas2.height = 1000
+document.body.appendChild( canvas2 )
+const ctx2 = canvas2.getContext('2d')
+
 
 
 get( 'http://localhost:8080/availability' )
@@ -58,27 +64,27 @@ get( 'http://localhost:8080/availability' )
 
         })
 
-        // triangles.forEach( (tr, i) => {
-        //         ctx.beginPath()
-        //         ctx.moveTo( tr[0].x, tr[0].y )
-        //         ctx.lineTo( tr[1].x, tr[1].y )
-        //         ctx.lineTo( tr[2].x, tr[2].y )
-        //         ctx.lineTo( tr[0].x, tr[0].y )
-        //         ctx.strokeStyle = '#333'
-        //         ctx.stroke()
-        //     })
-        //
-        // points.forEach( p => {
-        //
-        //     ctx.beginPath()
-        //     ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
-        //     ctx.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
-        //     ctx.fill()
-        //     ctx.strokeStyle = '#333'
-        //     ctx.lineWidth = 0.5
-        //     ctx.stroke()
-        //
-        // })
+        triangles.forEach( (tr, i) => {
+                ctx2.beginPath()
+                ctx2.moveTo( tr[0].x, tr[0].y )
+                ctx2.lineTo( tr[1].x, tr[1].y )
+                ctx2.lineTo( tr[2].x, tr[2].y )
+                ctx2.lineTo( tr[0].x, tr[0].y )
+                ctx2.strokeStyle = '#333'
+                ctx2.stroke()
+            })
+
+        points.forEach( p => {
+
+            ctx2.beginPath()
+            ctx2.arc(p.x, p.y, 5, 0, Math.PI*2)
+            ctx2.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
+            ctx2.fill()
+            ctx2.strokeStyle = '#333'
+            ctx2.lineWidth = 0.5
+            ctx2.stroke()
+
+        })
     })
 
     .catch( err => console.error( err ))
