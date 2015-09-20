@@ -1,72 +1,99 @@
 
-export const rectFormPath = ( path, rect ) => {
-    let r
-    if( rect )
-        r = {
-            max:{x: 1, y: 1 },
-            min:{x: 0, y: 0 },
-        }
-    else
-        r = {
-            max:{x: rect.max.x, y: rect.max.y },
-            min:{x: rect.min.x, y: rect.min.y },
-        }
+// export const rectFormPath = ( path, rect ) => {
+//     let r
+//     if( rect )
+//         r = {
+//             max:{x: 1, y: 1 },
+//             min:{x: 0, y: 0 },
+//         }
+//     else
+//         r = {
+//             max:{x: rect.max.x, y: rect.max.y },
+//             min:{x: rect.min.x, y: rect.min.y },
+//         }
+//
+//     while( path.length ){
+//
+//         const axe = path.length%2 == 0 ? 'x' : 'y'
+//
+//         r[ +path.pop() ? 'min' : 'max' ][ axe ] = ( r.max[ axe ] + r.min[ axe ] )/2
+//     }
+//
+//     return r
+// }
 
-    while( path.length ){
+/**
+ *
+ *  partition
+ *      if leaf : { leaf: true, triangles:triangle[] }
+ *      if node : [
+ *              partition of the space for X is in the lower value ( < than the half )
+ *              partition of the space for X is in the greater value ( > than the half )
+ *      ]
+ *
+ */
 
-        const axe = path.length%2 == 0 ? 'x' : 'y'
-
-        r[ +path.pop() ? 'min' : 'max' ][ axe ] = ( r.max[ axe ] + r.min[ axe ] )/2
-    }
-
-    return r
-}
-
-
-
-export const expore = ( partition, p ) => {
+export const explore = ( partition, rect, p, axe='x' ) => {
     if( partition.leaf )
-        return partition.contains
+        return partition.triangles
 
+    const half = ( rect.max[ axe ] + rect.min[ axe ] )/2
 
-}
+    let re
 
-export const reccursivePartition = ( triangles, rect, k ) => {
+    if ( p[ axe ] < half ) {
+        const tmp = rect.max[ axe ]
+        rect.max[ axe ] = half
 
-    const oneSide = ( triangles, rect, path, k, x ) => {
+        re = explore( partition[0], rect, p, axe == 'x' ? 'y' : 'x' )
 
-        const axe = path.length%2 == 0 ? 'x' : 'y'
+        rect.max[ axe ] = tmp
+    } else {
+        const tmp = rect.min[ axe ]
+        rect.min[ axe ] = half
 
-        const half = ( rect.max[ axe ] + rect.min[ axe ] )/2
+        re = explore( partition[1], rect, p, axe == 'x' ? 'y' : 'x' )
 
-        let t = triangles.filter( triangle => triangle.some( p => p[ axe ] >= half == x ) )
-
-        if (t.length > 1 && k>0){
-
-
-            let tmp
-            let o = []
-
-            tmp = rect.min[ axe ]
-            rect.min[ axe ] = half
-
-            o[ 0 ] = oneSide( t, rect, path+'1', k-1, true )
-
-            rect.min[ axe ] = tmp
-            tmp = rect.max[ axe ]
-            rect.max[ axe ] = half
-
-            o[ 1 ] = oneSide( t, rect, path+'0', k-1, false )
-
-            rect.max[ axe ] = tmp
-
-            return o
-        } else
-            return {leaf: 1, triangles: t}
+        rect.min[ axe ] = tmp
     }
 
-    return [
-        oneSide( triangles, rect, '1', k, true  ),
-        oneSide( triangles, rect, '0', k, false )
-    ]
+    return re
+}
+
+const min_triangle = 2
+export const reccursivePartition = ( triangles, rect, k, axe = 'x' ) => {
+
+    if ( k<=0 || triangles.length <= min_triangle )
+        return {leaf: 1, triangles: triangles}
+
+
+    const half = ( rect.max[ axe ] + rect.min[ axe ] )/2
+
+    let tmp
+    let o = []
+
+    tmp = rect.max[ axe ]
+    rect.max[ axe ] = half
+
+    o[ 0 ] = reccursivePartition(
+        triangles.filter( triangle => triangle.some( p => p[ axe ] <= half ) ),
+        rect,
+        k-1,
+        axe == 'x' ? 'y' : 'x'
+    )
+
+    rect.max[ axe ] = tmp
+    tmp = rect.min[ axe ]
+    rect.min[ axe ] = half
+
+    o[ 1 ] = reccursivePartition(
+        triangles.filter( triangle => triangle.some( p => p[ axe ] >= half ) ),
+        rect,
+        k-1,
+        axe == 'x' ? 'y' : 'x'
+    )
+
+    rect.min[ axe ] = tmp
+
+    return o
 }

@@ -10,6 +10,8 @@ canvas.height = 1000
 document.body.appendChild( canvas )
 const ctx = canvas.getContext('2d')
 
+
+
 get( 'http://localhost:8080/availability' )
 // Promise.resolve( [])
 
@@ -40,14 +42,14 @@ get( 'http://localhost:8080/availability' )
 
         const triangles = delaunay( points )
 
-        const {m,w} = map( triangles, points, boundingBox( points ), 200 )
+        const {m,w} = map( triangles, points, boundingBox( points ), 300 )
 
         m.forEach( (value, n) => {
 
             let x = (n% w)
             let y = (0|(n/w))
 
-            const l = 4
+            const l = 3
 
             ctx.beginPath()
             ctx.rect(x*l,y*l,l,l)
@@ -56,26 +58,27 @@ get( 'http://localhost:8080/availability' )
 
         })
 
-        triangles.forEach( (tr, i) => {
-                ctx.beginPath()
-                ctx.moveTo( tr[0].x, tr[0].y )
-                ctx.lineTo( tr[1].x, tr[1].y )
-                ctx.lineTo( tr[2].x, tr[2].y )
-                ctx.lineTo( tr[0].x, tr[0].y )
-                ctx.strokeStyle = '#333'
-                ctx.stroke()
-            })
-
-        points.forEach( p => {
-
-            ctx.beginPath()
-            ctx.arc(p.x, p.y, 10, 0, Math.PI*2)
-            ctx.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
-            ctx.fill()
-            ctx.strokeStyle = '#333'
-            ctx.stroke()
-
-        })
+        // triangles.forEach( (tr, i) => {
+        //         ctx.beginPath()
+        //         ctx.moveTo( tr[0].x, tr[0].y )
+        //         ctx.lineTo( tr[1].x, tr[1].y )
+        //         ctx.lineTo( tr[2].x, tr[2].y )
+        //         ctx.lineTo( tr[0].x, tr[0].y )
+        //         ctx.strokeStyle = '#333'
+        //         ctx.stroke()
+        //     })
+        //
+        // points.forEach( p => {
+        //
+        //     ctx.beginPath()
+        //     ctx.arc(p.x, p.y, 5, 0, Math.PI*2)
+        //     ctx.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
+        //     ctx.fill()
+        //     ctx.strokeStyle = '#333'
+        //     ctx.lineWidth = 0.5
+        //     ctx.stroke()
+        //
+        // })
     })
 
     .catch( err => console.error( err ))

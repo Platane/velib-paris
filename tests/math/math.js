@@ -17,12 +17,13 @@ context.stack('primitive')
 require('./primitive/linesIntersection')
 require('./primitive/pointOnSegment')
 require('./primitive/contains.trianglePonderation')
+require('./primitive/contains.inTriangle')
 
 context.pop().stack('advanced')
 
 require('./advanced/delaunay')
 require('./advanced/delaunay.circonscritCircle')
-// require('./advanced/quadTree')
+require('./advanced/quadTree')
 
 
 

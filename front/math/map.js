@@ -4,7 +4,7 @@ import {inTriangle, trianglePonderation} from './contains'
 
 export const map = ( triangles, points, rect, n ) => {
 
-    const partiton = quadTree( triangles, rect, 16 )
+    const partition = reccursivePartition( triangles, rect, 16 )
 
     let w = rect.max.x - rect.min.x,
         h = rect.max.y - rect.min.y
@@ -28,7 +28,7 @@ export const map = ( triangles, points, rect, n ) => {
             }) )
             .map( (p, i) => {
 
-                const triangle = triangles
+                const triangle = explore(partition, rect, p)
                     .filter( triangle => inTriangle( triangle, p ))[ 0 ]
 
                 if ( !triangle )
