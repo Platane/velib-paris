@@ -22,6 +22,7 @@ context.pop().stack('advanced')
 
 require('./advanced/delaunay')
 require('./advanced/delaunay.circonscritCircle')
+// require('./advanced/quadTree')
 
 
 

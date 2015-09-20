@@ -22,12 +22,7 @@ export const rectFormPath = ( path, rect ) => {
     return r
 }
 
-export const inBox = ( box, p ) =>
-    box.min.x <= p.x && p.x <= box.max.x &&
-    box.min.y <= p.y && p.y <= box.max.y
 
-export const trianglePonderation = ( triangle, p ) =>
-    triangle.some( p => p[ axe ] >= half == x )
 
 export const expore = ( partition, p ) => {
     if( partition.leaf )
