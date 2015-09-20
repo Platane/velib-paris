@@ -48,14 +48,16 @@ get( 'http://localhost:8080/availability' )
 
         const triangles = delaunay( points )
 
-        const {m,w} = map( triangles, points, boundingBox( points ), 300 )
+        const start = Date.now()
+        const {m,w} = map( triangles, points, boundingBox( points ), 400 )
+        console.log('map function '+(Date.now()-start)+'ms')
 
         m.forEach( (value, n) => {
 
             let x = (n% w)
             let y = (0|(n/w))
 
-            const l = 3
+            const l = 2
 
             ctx.beginPath()
             ctx.rect(x*l,y*l,l,l)

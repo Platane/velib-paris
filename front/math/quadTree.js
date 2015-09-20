@@ -60,7 +60,7 @@ export const explore = ( partition, rect, p, axe='x' ) => {
     return re
 }
 
-const min_triangle = 2
+const min_triangle = 0
 export const reccursivePartition = ( triangles, rect, k, axe = 'x' ) => {
 
     if ( k<=0 || triangles.length <= min_triangle )

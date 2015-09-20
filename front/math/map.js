@@ -4,7 +4,7 @@ import {inTriangle, trianglePonderation} from './contains'
 
 export const map = ( triangles, points, rect, n ) => {
 
-    const partition = reccursivePartition( triangles, rect, 16 )
+    const partition = reccursivePartition( triangles, rect, 12 )
 
     let w = rect.max.x - rect.min.x,
         h = rect.max.y - rect.min.y
