@@ -7,7 +7,7 @@
 
 
 import {Transform, Writable, Duplex} from 'stream'
-import {getLiveStation} from '../sources/JCDecauxAPI'
+import {getLiveStation} from '../sources/velibparisAPI'
 
 
 class Temporize extends Duplex {

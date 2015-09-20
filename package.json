@@ -5,6 +5,7 @@
     "license": "MIT",
 
     "dependencies": {
+        "three": "*",
         "mongodb" : "*",
         "xml2js" : "*",
         "babel" : "*"
@@ -24,7 +25,9 @@
 
     "scripts": {
         "build": "node ./node_modules/webpack/bin/webpack.js --production",
-        "start": "node ./back/_run.js",
+
+        "start": "node -e \"require('babel/register');require('./back/run')\"",
+        "updateData": "node -e \"require('babel/register');require('./back/job/update')\"",
 
         "dev": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8082 --content-base ./ -d",
 

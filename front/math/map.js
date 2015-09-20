@@ -9,10 +9,11 @@ export const map = ( triangles, points, rect, n ) => {
     let w = rect.max.x - rect.min.x,
         h = rect.max.y - rect.min.y
 
-    const r = n / Math.max( w, h )
+    const larger = Math.max( w, h )
 
-    w *= r
-    h *= r
+    w = 0|(w*n/larger)
+    h = 0|(h*n/larger)
+
 
 
     let m=[]
@@ -23,8 +24,8 @@ export const map = ( triangles, points, rect, n ) => {
         m : m
             .map( (_, n) =>
                 ({
-                    x: rect.min.x + ( rect.max.x - rect.min.x ) * (n%w)/w,
-                    y: rect.min.y + ( rect.max.y - rect.min.y ) * (0|(n/w))/w,
+                    x: rect.min.x + larger * (n%w)/w,
+                    y: rect.min.y + larger * (0|(n/w))/w,
             }) )
             .map( (p, i) => {
 
