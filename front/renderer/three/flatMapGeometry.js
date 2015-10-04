@@ -7,7 +7,7 @@ export const flatMapGeometry = ( vertices, faces ) => {
     let geometry = new THREE.Geometry()
 
 	geometry.vertices = vertices
-        .map( p => new Vector3( ...p ) )
+        .map( p => new Vector3( p[0], p[2], -p[1] ) )
 
 	geometry.faces = faces
         .map( tri => new Face3( ...tri ) )

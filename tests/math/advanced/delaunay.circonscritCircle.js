@@ -1,5 +1,6 @@
 import {computeCircle}  from '../../../front/math/delaunay'
 import {assert}  from '../../assert'
+import {vec2} from 'gl-matrix'
 
 
 
@@ -8,50 +9,50 @@ const epsylon = 0.00001
 
 const success = [
     [
-        {x:0, y:10},
-        {x:0, y:0},
-        {x:10, y:0},
+        [0,10],
+        [0,0],
+        [10,0],
     ],
     [
-        {x:100, y:10},
-        {x:100, y:0},
-        {x:110, y:0},
+        [100,10],
+        [100,0],
+        [110,0],
     ],
     [
-        {x:0, y:10},
-        {x:10, y:0},
-        {x:0, y:0},
+        [0,10],
+        [10,0],
+        [0,0],
     ],
     [
-        {x:-5, y:0},
-        {x:0, y:5},
-        {x:5, y:0},
+        [-5,0],
+        [0,5],
+        [5,0],
     ],
     [
-        {x:-15, y:0},
-        {x:0, y:5},
-        {x:5, y:0},
+        [-15,0],
+        [0,5],
+        [5,0],
     ],
     [
-        {x:100-15, y:0},
-        {x:100, y:5},
-        {x:105, y:0},
+        [100-15,0],
+        [100,5],
+        [105,0],
     ],
     [
-        {x:123, y:120},
-        {x:-230, y:1},
-        {x:38, y:-522},
+        [123,120],
+        [-230,1],
+        [38,-522],
     ],
     [
-        {x:-342, y:120},
-        {x:21, y:-213},
-        {x:438, y:400},
+        [-342,120],
+        [21,-213],
+        [438,400],
     ],
 ]
     .every( x => {
-        const c = computeCircle( x )
+        const {X,r} = computeCircle( x )
 
-        return x.every( p => Math.abs( (p.x-c.x)*(p.x-c.x) + (p.y-c.y)*(p.y-c.y)  -  c.r ) < epsylon )
+        return x.every( p => Math.abs( vec2.sqrDist(p, X) - r ) < epsylon )
     })
 
 assert( success , 'circonscrit circle' )

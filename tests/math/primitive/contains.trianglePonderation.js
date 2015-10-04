@@ -1,5 +1,6 @@
-import {trianglePonderation}  from '../../../front/math/contains'
+import {inTriangle, trianglePonderation}  from '../../../front/math/primitive/contains'
 import {assert}  from '../../assert'
+import {vec2} from 'gl-matrix'
 
 
 const epsylon = 0.0001
@@ -7,66 +8,72 @@ const epsylon = 0.0001
 let samples = [
 
     [
-        {x:0, y:10},
-        {x:0, y:30},
-        {x:2, y:20},
+        [0, 10],
+        [0, 30],
+        [2, 20],
 
-        {x:1, y:21},
+        [0, 10],
+    ],
+    [
+        [0, 10],
+        [0, 30],
+        [2, 20],
+
+        [1, 21],
     ],
 
     [
-        {x:0, y:10},
-        {x:0, y:30},
-        {x:2, y:20},
+        [0, 10],
+        [0, 30],
+        [2, 20],
 
-        {x:100, y:21},
+        [100, 21],
     ],
 
     [
-        {x:0, y:10},
-        {x:2, y:20},
-        {x:0, y:30},
+        [0, 10],
+        [2, 20],
+        [0, 30],
 
-        {x:0, y:30},
+        [0, 30],
     ],
     [
-        {x:170.42721, y:170.42721 },
-        {x:250.83458, y:550.83458 },
-        {x:210.41682, y:210.41682 },
+        [170.42721, 170.42721 ],
+        [250.83458, 550.83458 ],
+        [210.41682, 210.41682 ],
 
-        {x:310.41682, y:310.41682 },
+        [310.41682, 310.41682 ],
     ],
     [
-        {x:31.5, y:13.3},
-        {x:32, y:15.7},
-        {x:38, y:13.3},
+        [31.5, 13.3],
+        [32, 15.7],
+        [38, 13.3],
 
-        { x: 37, y: 8.5 },
+        [37, 8.5],
     ],
     [
-        {x:21.5, y:23.3},
-        {x:22, y:22.7},
-        {x:23, y:23.3},
+        [21.5, 23.3],
+        [22, 22.7],
+        [23, 23.3],
 
-        { x: 22, y: 23 },
+        [22, 23],
     ],
 ]
 samples = [ ...samples, ...samples.map( x => [ x[1], x[2], x[0], x[3] ]  ), ...samples.map( x => [ x[2], x[0], x[1], x[3] ]  ) ]
 
 const success =
 samples
+    .filter( x => inTriangle( x.slice(0,3), [1,0,2], x[3] ) )
     .every( x => {
-        const pond = trianglePonderation( x.slice(0,3), x[3] )
+        const pond = trianglePonderation( x.slice(0,3), [1,0,2], x[3] )
 
-        const p = pond.reduce( (p, n, i) => {
-            p.x += n * x[ i ].x
-            p.y += n * x[ i ].y
+        const p = pond.reduce( (X, n, i) =>
 
-            return p
-        }, {x:0, y:0})
+            vec2.scaleAndAdd( X, X, x[i], n)
 
-        return     Math.abs( p.x - x[3].x ) < epsylon
-                && Math.abs( p.y - x[3].y ) < epsylon
+        , [0,0])
+
+        return     vec2.dist( p, x[3] ) < epsylon
                 && Math.abs( pond.reduce( (sum, n) => sum+n ) -1 ) < epsylon
     })
 
