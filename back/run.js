@@ -4,6 +4,7 @@ import {GetAvailability} from './task/getAvailability'
 
 import {createServer} from 'http'
 import {parse as parseURL} from 'url'
+import * as fs from 'fs'
 
 
 const db = new DB()
@@ -41,12 +42,23 @@ server.on('request' , (request, response) => {
         }, {} )
 
 
+    // read cache first
+    try {
+        const res = fs.readFileSync('./.tmp/cache')
+        response.writeHead(200, {'Access-Control-Allow-Origin': '*'})
+        response.end( res )
+        return
+    } catch( err ) {}
+
 
     getAvailability.get( query.stations )
 
         .then( res => {
             response.writeHead(200, {'Access-Control-Allow-Origin': '*'})
             response.end( res )
+
+            //cache
+            fs.writeFileSync('./.tmp/cache', res)
         })
         .catch( err => {
             response.writeHead(500)
