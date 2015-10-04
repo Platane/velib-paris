@@ -1,4 +1,4 @@
-import {linesIntersection}  from '../../../front/math/linesIntersection'
+import {linesIntersection}  from '../../../front/math/primitive/linesIntersection'
 import {assert}  from '../../assert'
 
 

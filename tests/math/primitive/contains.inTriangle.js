@@ -1,4 +1,4 @@
-import {inTriangle}  from '../../../front/math/contains'
+import {inTriangle}  from '../../../front/math/primitive/contains'
 import {assert}  from '../../assert'
 
 

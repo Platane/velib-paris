@@ -1,4 +1,4 @@
-import {pointOnSegment}  from '../../../front/math/pointOnSegment'
+import {pointOnSegment}  from '../../../front/math/primitive/pointOnSegment'
 import {assert}  from '../../assert'
 
 let samples = [

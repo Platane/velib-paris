@@ -1,6 +1,6 @@
 // import {boundingBox} from './bounding'
 import {reccursivePartition, explore} from './quadTree'
-import {inTriangle, trianglePonderation} from './contains'
+import {inTriangle, trianglePonderation} from './primitive/contains'
 
 export const map = ( triangles, points, rect, n ) => {
 

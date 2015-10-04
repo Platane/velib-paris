@@ -1,6 +1,5 @@
-import {vec3} from 'gl-matrix'
 import {delaunay} from '../delaunay'
-import {boundingBox} from '../bounding'
+import {boundingBox} from '../primitive/bounding'
 
 export const tesselate = ( points ) => {
 

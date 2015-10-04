@@ -1,5 +1,5 @@
 import {delaunay, computeCircle}  from '../../../front/math/delaunay'
-import {squareDistance}  from '../../../front/math/point'
+import {squareDistance}  from '../../../front/math/primitive/point'
 import {assert}  from '../../assert'
 
 const consistency = (triangles, points=null) => {

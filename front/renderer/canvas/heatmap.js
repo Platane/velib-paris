@@ -1,5 +1,5 @@
 import {delaunay} from '../../math/delaunay'
-import {boundingBox} from '../../math/bounding'
+import {boundingBox} from '../../math/primitive/bounding'
 import {map} from '../../math/map'
 
 

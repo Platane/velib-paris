@@ -1,4 +1,4 @@
-import {trianglePonderation}  from '../../../front/math/contains'
+import {trianglePonderation}  from '../../../front/math/primitive/contains'
 import {assert}  from '../../assert'
 
 

@@ -1,6 +1,6 @@
-import {linesIntersection}  from './linesIntersection'
-import {boundingTriangle, expandBoundingBox, boundingBox}  from './bounding'
-import {squareDistance}  from './point'
+import {linesIntersection}  from './primitive/linesIntersection'
+import {boundingTriangle, expandBoundingBox, boundingBox}  from './primitive/bounding'
+import {squareDistance}  from './primitive/point'
 
 
 
