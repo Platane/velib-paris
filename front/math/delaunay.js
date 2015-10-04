@@ -47,7 +47,7 @@ export const delaunay = points => {
 
     // calc the bounding box
     let box = boundingBox( points )
-    box = expandBoundingBox( box, Math.max( box.max.x - box.min.x, box.max.y - box.min.y ) * 0.2  )
+    box = expandBoundingBox( box, Math.max( box.max.x - box.min.x, box.max.y - box.min.y ) * 5  )
 
     // get the triangle that wrap this bounding triangle
     let rootTriangle = [
@@ -113,9 +113,8 @@ export const delaunay = points => {
     })
 
 
-
     // remove the root triangle
-    points.slice( -3, 3 )
+    points.splice( -3, 3 )
 
     // remove the triangles formed with the rootTriangle
     return triangles

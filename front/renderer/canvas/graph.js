@@ -1,5 +1,5 @@
 import {delaunay} from '../../math/delaunay'
-import {boundingBox} from '../../math/primitive/bounding'
+import {expandBoundingBox, boundingBox} from '../../math/primitive/bounding'
 
 
 
@@ -37,8 +37,8 @@ export function graph( points, size, canvas ){
 
     // compute triangulation
     const triangles = delaunay( points )
-        .map( i => points[ i ] )
-        
+        .map( tr => tr.map( i => points[ i ] ) )
+
     ctx.save()
     ctx.strokeStyle = '#333'
     triangles.forEach( (tr, i) => {
