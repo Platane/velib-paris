@@ -1,5 +1,5 @@
 import {linesIntersection}  from './primitive/linesIntersection'
-import {boundingTriangle, expandBoundingBox, boundingBox}  from './primitive/bounding'
+import {expandBoundingBox, boundingBox}  from './primitive/bounding'
 import {squareDistance}  from './primitive/point'
 
 
@@ -7,69 +7,92 @@ import {squareDistance}  from './primitive/point'
 
 export const computeCircle = triangle => {
 
+    const [A,B,C] = triangle
+
     // center of cisconscrit circle
     // = intersection of the three medians
     let c = linesIntersection(
         {
-            x: (triangle[0].x + triangle[1].x )/2,
-            y: (triangle[0].y + triangle[1].y )/2,
+            x: (A.x + B.x )/2,
+            y: (A.y + B.y )/2,
         },
         {
-            x: (triangle[0].y - triangle[1].y ),
-            y: -(triangle[0].x - triangle[1].x ),
+            x: (A.y - B.y ),
+            y: -(A.x - B.x ),
         },
         {
-            x: (triangle[2].x + triangle[1].x )/2,
-            y: (triangle[2].y + triangle[1].y )/2,
+            x: (C.x + B.x )/2,
+            y: (C.y + B.y )/2,
         },
         {
-            x: (triangle[2].y - triangle[1].y ),
-            y: -(triangle[2].x - triangle[1].x ),
+            x: (C.y - B.y ),
+            y: -(C.x - B.x ),
         }
     )
 
     // square radius of the cicle
-    c.r = squareDistance( triangle[0], c )
+    c.r = squareDistance( A, c )
 
 
     return c
 }
 
-
+/**
+ *  /!\ be sure that no points are equals
+ *
+ */
 export const delaunay = points => {
 
+    //// calc a wrapping triangle
+
+    // calc the bounding box
     let box = boundingBox( points )
     box = expandBoundingBox( box, Math.max( box.max.x - box.min.x, box.max.y - box.min.y ) * 0.2  )
 
-    let rootTriangle = boundingTriangle( box )
+    // get the triangle that wrap this bounding triangle
+    let rootTriangle = [
+        box.min,
+        { x: box.min.x,                              y: box.min.y + (box.max.y - box.min.y)*2 },
+        { x: box.min.x + (box.max.x - box.min.x)*2,  y: box.min.y },
+    ]
 
-    let triangles = [ rootTriangle ]
+    // prepare
+    points.push( ...rootTriangle )
+
+    let triangles = [ [points.length-1, points.length-2, points.length-3] ]
     let circles = [ computeCircle( rootTriangle ) ]
 
-
-    points.forEach( (point, i)  => {
+    points
+        .slice( 0, -3 )
+        .forEach( (A, i) => {
 
         // grab all the triangles for which p is contained in the circonscrit circle
-        let concerned = circles.reduce( (arr, c, i) =>
-            (squareDistance( c, point ) < c.r && arr.push(i), arr)  ,[] )
+        const concerned = circles.reduce( (arr, c, i) =>
+            (squareDistance( c, A ) < c.r && arr.push(i), arr)  ,[] )
 
 
         // build the convex hull with this
-        let hullEdges = concerned.reduce( (arr, i) => {
+        const hullEdges = concerned.reduce( (arr, i) => {
 
-                arr.push([ triangles[i][0], triangles[i][1] ])
-                arr.push([ triangles[i][1], triangles[i][2] ])
-                arr.push([ triangles[i][2], triangles[i][0] ])
+                // push the all 3 edges of the triangle
 
-                return arr
+                // grab the 3 edges
+                const edges = triangles[i]
+                    .map( (a, i, arr) => {
+                        let b = arr[ (i+1)%3 ]
+
+                        return a<b ? [ a, b ] : [ b, a ]
+                    })
+
+                return arr.concat( edges )
             }, [])
 
+            // only keep unique edge
             .filter( (edge, i, arr) =>
-                edge.length && !arr
-                    .some( (e, j) => i != j && ( ( e[0]==edge[0] && e[1]==edge[1] ) || ( e[0]==edge[1] && e[1]==edge[0] ) )  )
-
+                !arr.some( (edge_, j) => i != j && edge[0] == edge_[0] && edge[1] == edge_[1] )
             )
 
+        // remove the triangles
         concerned
             .reverse()
             .forEach( i => {
@@ -77,10 +100,11 @@ export const delaunay = points => {
                 circles.splice(i,1)
             })
 
+        // form new triangles from the opened hull
         hullEdges.forEach( edge => {
 
-            const triangle = [ edge[0], edge[1], point ]
-            const circle = computeCircle( triangle )
+            const triangle = [ edge[0], edge[1], i ]
+            const circle = computeCircle( triangle.map( i => points[ i ] ) )
 
             triangles.push( triangle )
             circles.push( circle )
@@ -89,10 +113,13 @@ export const delaunay = points => {
     })
 
 
+
+    // remove the root triangle
+    points.slice( -3, 3 )
+
     // remove the triangles formed with the rootTriangle
     return triangles
-        .filter( triangle =>   !triangle.some( x => rootTriangle.some( y => x == y ) )  )
-
+        .filter( triangle => triangle.every( i => i < points.length ) )
 }
 
 

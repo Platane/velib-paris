@@ -37,7 +37,8 @@ export function graph( points, size, canvas ){
 
     // compute triangulation
     const triangles = delaunay( points )
-
+        .map( i => points[ i ] )
+        
     ctx.save()
     ctx.strokeStyle = '#333'
     triangles.forEach( (tr, i) => {

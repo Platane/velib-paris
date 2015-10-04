@@ -2,23 +2,27 @@ import {delaunay, computeCircle}  from '../../../front/math/delaunay'
 import {squareDistance}  from '../../../front/math/primitive/point'
 import {assert}  from '../../assert'
 
-const consistency = (triangles, points=null) => {
+const consistency = (triangles, points) =>
 
-    points = points || triangles
-        .reduce( (arr, triangle) => (arr.push( ...triangle ), arr ) ,[] )
-        .filter( (x, i, arr) => !arr.slice(i+1).some( y => x == y )  )
 
-    return !triangles.some( triangle => {
+    // for all triangle, there is no point inside the circonscrit circle
+    !triangles.some( triangle => {
 
-        const c = computeCircle( triangle )
+        const c = computeCircle( triangle.map( i => points[i] ) )
 
         return points
+            .filter( (_, i) => !triangle.some( j => i == j ) )
             .filter( p => squareDistance( p, c ) <= c.r )
-            .filter( p => !triangle.some( x => x == p) )
             .length
     })
-}
 
+
+    &&
+
+    // each point is in at least one triangle
+    points.every( (_, i) =>
+        triangles.some( triangle => triangle.some( j => i == j ) )
+    )
 
 
 
@@ -43,7 +47,6 @@ let samples = [
     ],
     [
         {x:80, y:20},
-        {x:40, y:10},
         {x:0, y:10},
         {x:40, y:20},
         {x:0, y:30},
@@ -64,7 +67,6 @@ samples = [ ...samples, ...samples.map( sample => [ sample[1], sample[0], ...sam
 samples = [ ...samples, ...samples.map( sample => sample.slice().reverse() ) ]
 
 const success = samples
-    .map( points => delaunay( points ) )
-    .every( triangles => consistency( triangles ) )
+    .every( (points, i) => consistency( delaunay( points ), points ) || console.log( i ) )
 
 assert( success , 'trig' )
