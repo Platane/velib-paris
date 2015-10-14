@@ -7,3 +7,10 @@ export const project = ( lat, lng ) =>
 
         y: Math.log( Math.tan( Math.PI/ 4 + lat/ 2 ) )
     })
+
+export const project2 = ( lat, lng ) =>
+    ({
+        y: lng,
+
+        x: lat
+    })

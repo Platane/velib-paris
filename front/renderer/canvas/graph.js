@@ -1,10 +1,10 @@
 import {delaunay} from '../../math/delaunay'
-import {expandBoundingBox, boundingBox} from '../../math/primitive/bounding'
+import {boundingBox} from '../../math/primitive/bounding'
 
 
 
 
-export function graph( points, size, canvas ){
+export function graph( points, values, size, canvas ){
 
     const box = boundingBox( points )
 
@@ -15,6 +15,9 @@ export function graph( points, size, canvas ){
             ...p,
             x: ( p.x - box.min.x )/larger * 100,
             y: ( p.y - box.min.y )/larger * 100,
+
+            // x: ( p.x - box.min.x )/( box.max.x - box.min.x ) * 100,
+            // y: ( p.y - box.min.y )/( box.max.y - box.min.y ) * 100,
         })  )
 
     const ctx = canvas.getContext('2d')
@@ -52,11 +55,11 @@ export function graph( points, size, canvas ){
     ctx.save()
     ctx.strokeStyle = '#333'
     ctx.lineWidth = 0.5
-    points.forEach( p => {
+    points.forEach( (p, i) => {
 
         ctx.beginPath()
         arc(p, 5, 0, Math.PI*2)
-        ctx.fillStyle= `hsl( ${ 360 - p.value*300 }, ${ 70 }%, ${ 40 }% )`
+        ctx.fillStyle= `hsl( ${ 360 - values[i]*300 }, ${ 70 }%, ${ 40 }% )`
         ctx.fill()
         ctx.stroke()
 
