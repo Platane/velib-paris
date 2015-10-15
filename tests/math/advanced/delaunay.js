@@ -16,6 +16,19 @@ const consistency = (triangles, points) =>
             .length
     })
 
+    &&
+
+    // all triangle have same orientation
+    triangles.every( triangle => {
+
+        const [a, b, c] = triangle
+
+        const ab = {x: points[b].x - points[a].x, y: points[b].y - points[a].y }
+        const ac = {x: points[c].x - points[a].x, y: points[c].y - points[a].y }
+
+        return ab.x * ac.y - ab.y * ac.x >= 0
+    })
+
 
     &&
 

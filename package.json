@@ -10,7 +10,7 @@
         "gl-matrix": "2.x",
         "mongodb" : "*",
         "xml2js" : "*",
-        "babel" : "*"
+        "express" : "*"
     },
 
     "devDependencies": {

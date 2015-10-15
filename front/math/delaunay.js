@@ -37,6 +37,19 @@ export const computeCircle = triangle => {
     return c
 }
 
+
+const switchFaces = ( faces, vertices ) =>
+    faces.map( face => {
+
+        const [a, b, c] = face
+
+        if ( ( vertices[b].x - vertices[a].x ) * ( vertices[c].y - vertices[a].y ) - ( vertices[b].y - vertices[a].y ) * ( vertices[c].x - vertices[a].x ) >= 0 )
+            return face
+
+        else
+            return [a, c, b]
+    })
+
 /**
  *  /!\ be sure that no points are equals
  *
@@ -117,8 +130,13 @@ export const delaunay = points => {
     points.splice( -3, 3 )
 
     // remove the triangles formed with the rootTriangle
-    return triangles
+    triangles = triangles
         .filter( triangle => triangle.every( i => i < points.length ) )
+
+    // all face must be oriented positive
+    triangles = switchFaces( triangles, points )
+
+    return triangles
 }
 
 

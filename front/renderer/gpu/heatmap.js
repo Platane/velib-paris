@@ -50,8 +50,8 @@ export class HeatMapRenderer {
                 gl.enableVertexAttribArray(this._verticeAttribute)
 
                 // this one to pass the values of each vertex
-                // this._valueAttribute = gl.getAttribLocation(this._shaderProgram, 'aVertexValue')
-                // gl.enableVertexAttribArray(this._valueAttribute)
+                this._valueAttribute = gl.getAttribLocation(this._shaderProgram, 'aVertexValue')
+                gl.enableVertexAttribArray(this._valueAttribute)
             })
     }
 
@@ -81,14 +81,23 @@ export class HeatMapRenderer {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, faceBuffer)
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(facesArray), gl.STATIC_DRAW)
 
-
+        console.log( verticesBuffer, faceBuffer )
 
         return this
     }
 
     setValues( values ){
 
+        const gl = this._gl
+
         // pass the vertex values
+        const valueBuffer = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(values), gl.STATIC_DRAW)
+        gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
+        gl.vertexAttribPointer(this._valueAttribute, 1, gl.FLOAT, false, 0, 0);
+
+        return this
     }
 
     render( ){
