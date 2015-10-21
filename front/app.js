@@ -11,6 +11,9 @@ import {boundingBox} from './math/primitive/bounding'
 
 import {get} from './service/request'
 
+import {HeatMapRenderer} from './renderer/gpu/heatmap'
+
+
 // import THREE from './renderer/three/three'
 
 
@@ -43,6 +46,22 @@ get( 'http://localhost:8080/availability' )
         // canvas2.width = canvas2.height = 800
         // graph( latLngPoints.map( latLng => project( latLng.x, latLng.y ) ), values, 800, canvas2 )
 
+        const vertices = latLngPoints
+            .map( p => ({
+                x: ( p.x - box.min.x )/( box.max.x - box.min.x )*2 -1,
+                y: ( p.y - box.min.y )/( box.max.y - box.min.y )*2 -1,
+            }) )
+
+        const hmr = new HeatMapRenderer( canvas2, 800 )
+        hmr.initShader()
+            .then( () => {
+
+                hmr
+                    .setNodes( vertices )
+                    .setValues( values )
+                    .render()
+            })
+
     })
 
     // .then( points => {
@@ -62,27 +81,34 @@ get( 'http://localhost:8080/availability' )
     .catch( err => console.error( err ))
 
 
-import {HeatMapRenderer} from './renderer/gpu/heatmap'
-let hmr
-
-;( new Promise( r => setTimeout(r,200) ) )
-    .then( () => hmr = new HeatMapRenderer( canvas2, 800 ) )
-    .then( () => hmr.initShader() )
-    .then( () => {
-
-        hmr
-            .setNodes( [
-                {x:0.200,y:0.200},
-                {x:0.300,y:0.500},
-                {x:0.500,y:0.200},
-                {x:0.700,y:0.750},
-                {x:0,y:0},
-                {x:0.200,y:-0.120},
-                {x:-0.200,y:-0.120}
-            ] )
-            .setValues( [0.4, 0, 0.9, 0.3, 1, 0.1, 0.5] )
-            .render()
-    })
+// let hmr
+//
+// ;( new Promise( r => setTimeout(r,200) ) )
+//     .then( () => hmr = new HeatMapRenderer( canvas2, 800 ) )
+//     .then( () => hmr.initShader() )
+//     .then( () => {
+//
+//         hmr
+//             .setNodes( [
+//                 {x:0.200,y:0.200},
+//                 {x:0.300,y:0.500},
+//                 {x:0.500,y:0.200},
+//                 {x:0.700,y:0.750},
+//                 {x:0,y:0},
+//                 {x:0.200,y:-0.120},
+//                 {x:-0.200,y:-0.120}
+//             ] )
+//             .setValues( [
+//                 0.4,
+//                 0,
+//                 0.9,
+//                 0.3,
+//                 1,
+//                 0.1,
+//                 0.5
+//             ] )
+//             .render()
+//     })
 
 
 

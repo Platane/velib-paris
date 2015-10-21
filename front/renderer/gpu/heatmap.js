@@ -67,21 +67,19 @@ export class HeatMapRenderer {
             .reduce( (arr, face) => (arr.push( ...face ), arr) ,[] )
 
         const gl = this._gl
-        this._n = vertices.length
+        this._n = facesArray.length
 
         // push the vertices
-        const verticesBuffer = gl.createBuffer()
+        const verticesBuffer = this._verticesBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticeArray), gl.STATIC_DRAW)
         gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
         gl.vertexAttribPointer(this._verticeAttribute, 2, gl.FLOAT, false, 0, 0);
 
         // push the faces
-        const faceBuffer = gl.createBuffer()
+        const faceBuffer = this._faceBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, faceBuffer)
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(facesArray), gl.STATIC_DRAW)
-
-        console.log( verticesBuffer, faceBuffer )
 
         return this
     }
@@ -107,7 +105,9 @@ export class HeatMapRenderer {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._faceBuffer)
         gl.drawElements(gl.TRIANGLES, this._n, gl.UNSIGNED_SHORT, 0);
+        // gl.drawElements(gl.LINE_LOOP, this._n, gl.UNSIGNED_SHORT, 0);
 
         return this
     }
