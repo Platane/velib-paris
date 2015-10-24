@@ -2,7 +2,6 @@ import {get} from '../../service/request'
 import {initShader, initProgram} from './utils/utils'
 import {delaunay} from '../../math/delaunay'
 
-
 export class HeatMapRenderer {
 
     constructor( canvas, size ){
@@ -25,13 +24,13 @@ export class HeatMapRenderer {
         // load shaders
         return Promise.all([
 
-            get('/front/renderer/gpu/shaders/vertex.glsl')
+            get('/front/renderer/gpu/shaders/heatmap/vertex.glsl')
                 .then( source => initShader(gl, source, 'vertex') )
                 .then( shader => vertexShader = shader )
 
             ,
 
-            get('/front/renderer/gpu/shaders/fragment.glsl')
+            get('/front/renderer/gpu/shaders/heatmap/fragment.glsl')
                 .then( source => initShader(gl, source, 'fragment') )
                 .then( shader => fragmentShader = shader )
 
@@ -87,10 +86,6 @@ export class HeatMapRenderer {
         gl.bindBuffer(gl.ARRAY_BUFFER, signatureBuffer)
         gl.vertexAttribPointer(this._attribute.signature, 3, gl.UNSIGNED_SHORT, false, 0, 0)
 
-        this._indexBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer)
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._faceIndex.map( (_, i) => i ) ), gl.STATIC_DRAW)
-
         return this
     }
 
@@ -124,8 +119,7 @@ export class HeatMapRenderer {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer)
-        gl.drawElements(gl.TRIANGLES, this._faceIndex.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawArrays(gl.TRIANGLES, 0, this._faceIndex.length);
 
         return this
     }
