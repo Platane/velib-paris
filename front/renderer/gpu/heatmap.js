@@ -44,56 +44,75 @@ export class HeatMapRenderer {
                 // init shader program
                 this._shaderProgram = initProgram( gl, vertexShader, fragmentShader )
 
-                // init attributes
-                // this ones to pass the vertices positions
-                this._verticeAttribute = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition')
-                gl.enableVertexAttribArray(this._verticeAttribute)
+                this._attribute={}
 
-                // this one to pass the values of each vertex
-                this._valueAttribute = gl.getAttribLocation(this._shaderProgram, 'aVertexValue')
-                gl.enableVertexAttribArray(this._valueAttribute)
+                this._attribute.position = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition')
+                gl.enableVertexAttribArray(this._attribute.position)
+
+                this._attribute.value = gl.getAttribLocation(this._shaderProgram, 'aFaceValue')
+                gl.enableVertexAttribArray(this._attribute.value)
+
+                this._attribute.signature = gl.getAttribLocation(this._shaderProgram, 'aVertexSignature')
+                gl.enableVertexAttribArray(this._attribute.signature)
             })
     }
 
     setNodes( vertices, faces=null ){
 
-        faces = faces || delaunay( vertices )
+        this._face = faces || delaunay( vertices )
 
-        // array of vertices
-        const verticeArray = vertices
-            .reduce( (arr,vertex) => (arr.push(vertex.x, vertex.y), arr) ,[] )
-
-        const facesArray = faces
+        this._faceIndex = this._face
             .reduce( (arr, face) => (arr.push( ...face ), arr) ,[] )
 
+
+        const positionArray = this._faceIndex
+            .reduce( (arr, i) => (arr.push( vertices[ i ].x, vertices[ i ].y ), arr) ,[] )
+
+        const signatureArray = this._face
+            .reduce( arr => (arr.push( 1,0,0, 0,1,0, 0,0,1), arr) ,[] )
+
+
+
         const gl = this._gl
-        this._n = facesArray.length
 
-        // push the vertices
-        const verticesBuffer = this._verticesBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticeArray), gl.STATIC_DRAW)
-        gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
-        gl.vertexAttribPointer(this._verticeAttribute, 2, gl.FLOAT, false, 0, 0);
+        const positionBuffer = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positionArray), gl.STATIC_DRAW)
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+        gl.vertexAttribPointer(this._attribute.position, 2, gl.FLOAT, false, 0, 0);
 
-        // push the faces
-        const faceBuffer = this._faceBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, faceBuffer)
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(facesArray), gl.STATIC_DRAW)
+        const signatureBuffer = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, signatureBuffer)
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(signatureArray), gl.STATIC_DRAW)
+        gl.bindBuffer(gl.ARRAY_BUFFER, signatureBuffer)
+        gl.vertexAttribPointer(this._attribute.signature, 3, gl.UNSIGNED_SHORT, false, 0, 0)
+
+        this._indexBuffer = gl.createBuffer()
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer)
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._faceIndex.map( (_, i) => i ) ), gl.STATIC_DRAW)
 
         return this
     }
 
     setValues( values ){
 
+
+        const valueArray = this._face
+            .reduce( (arr, face) => {
+                const val = face.map( i => values[i] )
+
+                arr.push( ...val, ...val, ...val )
+
+                return arr
+            }, [])
+
         const gl = this._gl
 
-        // pass the vertex values
         const valueBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(values), gl.STATIC_DRAW)
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(valueArray), gl.STATIC_DRAW)
         gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
-        gl.vertexAttribPointer(this._valueAttribute, 1, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(this._attribute.value, 3, gl.FLOAT, false, 0, 0)
 
         return this
     }
@@ -105,9 +124,8 @@ export class HeatMapRenderer {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._faceBuffer)
-        gl.drawElements(gl.TRIANGLES, this._n, gl.UNSIGNED_SHORT, 0);
-        // gl.drawElements(gl.LINE_LOOP, this._n, gl.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indexBuffer)
+        gl.drawElements(gl.TRIANGLES, this._faceIndex.length, gl.UNSIGNED_SHORT, 0);
 
         return this
     }

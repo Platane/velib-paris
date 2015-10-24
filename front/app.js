@@ -60,7 +60,32 @@ get( 'http://localhost:8080/availability' )
                     .setNodes( vertices )
                     .setValues( values )
                     .render()
+
+
+                let t = 0
+
+                window.addEventListener('mousemove', event => t = event.pageX )
+
+                const phy = values
+                    .map( _ => Math.random() * Math.PI)
+                    .map( _ => 0)
+
+                const loop = () => {
+
+                    const v = values
+                        .map( (x, i) => Math.min( Math.max( x + 0.9*Math.sin( t * Math.PI / 1000 + phy[i] ) ,0), 1 ) )
+
+                    hmr
+                        .setValues( v )
+                        .render()
+
+                    requestAnimationFrame( loop )
+                }
+
+                // loop()
+
             })
+
 
     })
 
@@ -90,22 +115,16 @@ get( 'http://localhost:8080/availability' )
 //
 //         hmr
 //             .setNodes( [
-//                 {x:0.200,y:0.200},
-//                 {x:0.300,y:0.500},
-//                 {x:0.500,y:0.200},
-//                 {x:0.700,y:0.750},
-//                 {x:0,y:0},
-//                 {x:0.200,y:-0.120},
-//                 {x:-0.200,y:-0.120}
+//                 {x: -0.800,y:-0.800},
+//                 {x:  0.100,y:0.830},
+//                 {x:  0.800,y:-0.700},
+//
 //             ] )
 //             .setValues( [
 //                 0.4,
 //                 0,
 //                 0.9,
-//                 0.3,
-//                 1,
-//                 0.1,
-//                 0.5
+//
 //             ] )
 //             .render()
 //     })
