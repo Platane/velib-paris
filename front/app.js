@@ -12,6 +12,7 @@ import {boundingBox} from './math/primitive/bounding'
 import {get} from './service/request'
 
 import {HeatMapRenderer} from './renderer/gpu/heatmap'
+import {BlobRenderer} from './renderer/gpu/blob'
 
 
 // import THREE from './renderer/three/three'
@@ -22,6 +23,8 @@ import {HeatMapRenderer} from './renderer/gpu/heatmap'
 
 const canvas2 = document.createElement('canvas')
 document.body.appendChild( canvas2 )
+const canvas = document.createElement('canvas')
+document.body.appendChild( canvas )
 
 
 // const {scene} = initScene()
@@ -54,37 +57,23 @@ get( 'http://localhost:8080/availability' )
 
         const hmr = new HeatMapRenderer( canvas2, 800 )
         hmr.initShader()
-            .then( () => {
+            .then( () =>
 
                 hmr
                     .setNodes( vertices )
                     .setValues( values )
                     .render()
+            )
 
+        const br = new BlobRenderer( canvas, 800 )
+        br.initShader()
+            .then( () =>
 
-                let t = 0
-
-                window.addEventListener('mousemove', event => t = event.pageX )
-
-                const phy = values
-                    .map( _ => Math.random() * Math.PI)
-                    .map( _ => 0)
-
-                const loop = () => {
-
-                    const v = values
-                        .map( (x, i) => Math.min( Math.max( x + 0.9*Math.sin( t * Math.PI / 1000 + phy[i] ) ,0), 1 ) )
-
-                    hmr
-                        .setValues( v )
-                        .render()
-
-                    requestAnimationFrame( loop )
-                }
-
-                // loop()
-
-            })
+                br
+                    .setNodes( vertices )
+                    .setValues( values )
+                    .render()
+            )
 
 
     })
