@@ -1,6 +1,6 @@
-import {get} from '../../service/request'
-import {initShader, initProgram} from './utils/utils'
-import {delaunay} from '../../math/delaunay'
+import {get} from '../../../service/request'
+import {initShader, initProgram} from '../utils/utils'
+import {delaunay} from '../../../math/delaunay'
 
 export class HeatMapRenderer {
 
@@ -24,13 +24,13 @@ export class HeatMapRenderer {
         // load shaders
         return Promise.all([
 
-            get('/front/renderer/gpu/shaders/heatmap/vertex.glsl')
+            get('/front/renderer/gpu/heatmap/shaders/vertex.glsl')
                 .then( source => initShader(gl, source, 'vertex') )
                 .then( shader => vertexShader = shader )
 
             ,
 
-            get('/front/renderer/gpu/shaders/heatmap/fragment.glsl')
+            get('/front/renderer/gpu/heatmap/shaders/fragment.glsl')
                 .then( source => initShader(gl, source, 'fragment') )
                 .then( shader => fragmentShader = shader )
 
@@ -77,13 +77,11 @@ export class HeatMapRenderer {
         const positionBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positionArray), gl.STATIC_DRAW)
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
         gl.vertexAttribPointer(this._attribute.position, 2, gl.FLOAT, false, 0, 0);
 
         const signatureBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, signatureBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(signatureArray), gl.STATIC_DRAW)
-        gl.bindBuffer(gl.ARRAY_BUFFER, signatureBuffer)
         gl.vertexAttribPointer(this._attribute.signature, 3, gl.UNSIGNED_SHORT, false, 0, 0)
 
         return this
@@ -106,7 +104,6 @@ export class HeatMapRenderer {
         const valueBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(valueArray), gl.STATIC_DRAW)
-        gl.bindBuffer(gl.ARRAY_BUFFER, valueBuffer)
         gl.vertexAttribPointer(this._attribute.value, 3, gl.FLOAT, false, 0, 0)
 
         return this
