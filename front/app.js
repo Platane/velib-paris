@@ -37,7 +37,8 @@ get( 'http://localhost:8080/availability' )
 
         const latLngPoints = res.map( p => ({ x: +p.coordinates[1], y: +p.coordinates[0] }) )
 
-        const values = res.map( x => x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total )
+        const percentLoaded = res.map( x => x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] / x.total )
+        const values = res.map( x => +x.av.split(';').slice(-1)[0].split(',').slice(-1)[0] )
 
         let box = boundingBox( latLngPoints )
 
@@ -61,7 +62,7 @@ get( 'http://localhost:8080/availability' )
 
                 hmr
                     .setNodes( vertices )
-                    .setValues( values )
+                    .setValues( percentLoaded )
                     .render()
             )
 

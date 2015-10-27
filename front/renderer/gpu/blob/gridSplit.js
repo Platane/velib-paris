@@ -1,11 +1,16 @@
 import {squareDistance} from '../../../math/primitive/point'
 import {boundingBox}  from '../../../math/primitive/bounding'
 
-export const boxInCircle = ( box, c, squareRadius ) =>
+export const boxCircleIntersection = ( box, c, squareRadius ) =>
+
+    // one of the corner is in the circle
     squareDistance( box.max , c ) < squareRadius ||
     squareDistance( box.min , c ) < squareRadius ||
     squareDistance( {x:box.min.x, y:box.max.y} , c ) < squareRadius ||
-    squareDistance( {x:box.max.x, y:box.min.y} , c ) < squareRadius
+    squareDistance( {x:box.max.x, y:box.min.y} , c ) < squareRadius ||
+
+    // the center is in the square
+    ( box.min.x <= c.x && c.x <= box.max.x && box.min.y <= c.y && c.y <= box.max.y )
 
 
 export const gridSplit = ( n, points, radius, box ) => {
@@ -19,7 +24,7 @@ export const gridSplit = ( n, points, radius, box ) => {
         y: (box.max.y - box.min.y) / n,
     }
 
-    const grid = Array.apply(null, Array( points.length ))
+    const grid = Array.apply(null, Array( n*n ))
         .map( _ => [] )
 
     const square = {max:{x:0, y:0}, min:{x:0, y:0}}
@@ -48,7 +53,7 @@ export const gridSplit = ( n, points, radius, box ) => {
                 square.min.y = (y+0) * gridSize.y + box.min.y
 
                 // test the collision with the circle
-                if ( boxInCircle(square, point, r*r) )
+                if ( boxCircleIntersection(square, point, r*r) )
                     grid[ y*n + x ].push( i )
 
             }

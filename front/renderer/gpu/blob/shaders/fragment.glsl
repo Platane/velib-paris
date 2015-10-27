@@ -9,8 +9,8 @@ uniform float tauSquare;
 varying lowp vec2 pos;
 varying lowp float stationIndex;
 
-// varying vec3[100] stations;
-// varying lowp vec3 pos;
+uniform sampler2D uData;
+
 
 vec3 hsv2rgb(vec3 c) {
 
@@ -25,7 +25,23 @@ vec3 hsv2rgb(vec3 c) {
 
 void main(void) {
 
-    gl_FragColor = vec4( 1.0, 0.5, 0, 1);
+    vec4 color1 = texture2D(uData, vec2(0.0/128.0, 0.5));
+    vec4 color2 = texture2D(uData, vec2(0.75/128.0, 0.5));
+
+    vec2 position = vec2(
+        (color1.r * 4.0 + color1.g * 2.0 + color1.b ) / ( 7.0 ) * 2.0 - 1.0,
+        (color2.r * 4.0 + color2.g * 2.0 + color2.b ) / ( 7.0 ) * 2.0 - 1.0
+    );
+
+    float d = distance( position, pos );
+
+    float value = color1.a;
+
+    vec3 color = hsv2rgb( vec3( d*0.8, 1.0, 1.0 ) );
+
+    gl_FragColor = vec4( color, 1 );
+    // gl_FragColor = vec4( position, 0, 1 );
+    // gl_FragColor = color2;
 
 }
 // void main(void) {
