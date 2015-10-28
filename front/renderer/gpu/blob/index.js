@@ -93,12 +93,20 @@ export class BlobRenderer {
 
         const points = this._points
 
-        const grid = gridSplit( 1, points, 0.1 )
-            .map( x =>
-                x.map( i => ({ ...points[i], v:values[i] }) )
-            )
+        // const grid = gridSplit( 1, points, 0.1 )
+        //     .map( x =>
+        //         x.map( i => ({ ...points[i], v:values[i] }) )
+        //     )
 
-        // const grid = [[{x:-0.3, y:0.4, v:255}]]
+        const grid = [[
+            {x:-0.3, y:0.4, v:255},
+            {x:0.3, y:0.2, v:255},
+            {x:-0.93, y:0.243, v:255},
+            {x:-0.93, y:0.243, v:255},
+            {x:-0.13, y:-0.2133, v:255},
+            {x:-0.1333, y:0.542133, v:255},
+            {x:-0.4333, y:0.142133, v:255},
+        ]]
 
         const image = packGausses( grid )
 
@@ -119,7 +127,8 @@ export class BlobRenderer {
         const dataTexture = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, dataTexture)
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
         gl.bindTexture(gl.TEXTURE_2D, null)

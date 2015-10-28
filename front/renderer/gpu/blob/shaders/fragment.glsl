@@ -19,10 +19,33 @@ vec3 hsv2rgb(vec3 c) {
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
-// float gauss(float x) {
-//     return exp( - 0.5 * (x*x)/tauSquare );
-// }
+float gauss(float x) {
+    return exp( - 0.5 * (x*x)/tauSquare );
+}
 
+// void main(void) {
+//
+//     vec4 color1 = texture2D(uData, vec2(0.0/128.0, 0.5));
+//     vec4 color2 = texture2D(uData, vec2(0.75/128.0, 0.5));
+//
+//     vec2 position = vec2(
+//         (color1.r * 4.0 + color1.g * 2.0 + color1.b ) / ( 7.0 ) * 2.0 - 1.0,
+//         (color2.r * 4.0 + color2.g * 2.0 + color2.b ) / ( 7.0 ) * 2.0 - 1.0
+//     );
+//
+//     float k = floor( (pos.x + 1)/ 3 );
+//
+//     float d = distance( position, pos );
+//
+//     float value = color1.a;
+//
+//     vec3 color = hsv2rgb( vec3( d*0.8, 1.0, 1.0 ) );
+//
+//     gl_FragColor = vec4( color, 1 );
+//     // gl_FragColor = vec4( position, 0, 1 );
+//     // gl_FragColor = color2;
+//
+// }
 void main(void) {
 
     vec4 color1 = texture2D(uData, vec2(0.0/128.0, 0.5));
@@ -33,15 +56,19 @@ void main(void) {
         (color2.r * 4.0 + color2.g * 2.0 + color2.b ) / ( 7.0 ) * 2.0 - 1.0
     );
 
-    float d = distance( position, pos );
 
-    float value = color1.a;
+    if ( pos.y > 0.9 ){
 
-    vec3 color = hsv2rgb( vec3( d*0.8, 1.0, 1.0 ) );
+        float k = (pos.x + 1.0)* 4.0;
 
-    gl_FragColor = vec4( color, 1 );
-    // gl_FragColor = vec4( position, 0, 1 );
-    // gl_FragColor = color2;
+        gl_FragColor = texture2D(uData, vec2(k/128.0, 0.5));
+
+    } else {
+
+        float k = floor( (pos.x + 1.0)* 128.0 );
+
+        gl_FragColor = texture2D(uData, vec2((k)/256.0, 0.0));
+    }
 
 }
 // void main(void) {
