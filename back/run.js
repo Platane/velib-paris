@@ -10,11 +10,11 @@ import * as fs from 'fs'
 const db = new DB()
 const getAvailability = new GetAvailability( db )
 
-console.log('connecting to db ...')
-
-db.connect()
-
-    .then( () => console.log('connected') )
+// console.log('connecting to db ...')
+//
+// db.connect()
+//
+//     .then( () => console.log('connected') )
 
 
 

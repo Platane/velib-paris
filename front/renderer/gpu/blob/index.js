@@ -6,7 +6,7 @@ import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.02
+const tau = 0.08
 const maxZone = u => u == 0 ? 0 : gaussInv_( tau, 0.01/u )
 
 
@@ -52,7 +52,7 @@ export class BlobRenderer {
                 this._shaderProgram = initProgram( gl, vertexShader, fragmentShader )
 
                 // init uniform
-                gl.uniform1f( gl.getUniformLocation(this._shaderProgram, 'tauSquare'), tau * tau )
+                gl.uniform1f( gl.getUniformLocation(this._shaderProgram, 'tau'), tau )
 
 
                 // init attributes
@@ -77,10 +77,21 @@ export class BlobRenderer {
         return this
     }
 
+    setTau( tau ){
+
+        this._tau = tau
+
+        return this
+    }
+
     setValues( values ){
 
         const positionArray = [
             -1, 1,
+            -1,-1,
+             1, 1,
+
+             1,-1,
             -1,-1,
              1, 1
         ]
@@ -89,24 +100,28 @@ export class BlobRenderer {
             0,
             0,
             0,
+
+            0,
+            0,
+            0,
         ]
 
         const points = this._points
 
-        // const grid = gridSplit( 1, points, 0.1 )
-        //     .map( x =>
-        //         x.map( i => ({ ...points[i], v:values[i] }) )
-        //     )
+        const grid = gridSplit( 1, points, 0.1 )
+            .map( x =>
+                x.map( i => ({ ...points[i], v:values[i] }) )
+            )
 
-        const grid = [[
-            {x:-0.3, y:0.4, v:255},
-            {x:0.3, y:0.2, v:255},
-            {x:-0.93, y:0.243, v:255},
-            {x:-0.93, y:0.243, v:255},
-            {x:-0.13, y:-0.2133, v:255},
-            {x:-0.1333, y:0.542133, v:255},
-            {x:-0.4333, y:0.142133, v:255},
-        ]]
+        // const grid = [[
+        //     {x:-0.3, y:0.4, v:105},
+        //     {x:0.3, y:0.2, v:255},
+        //     {x:-0.93, y:0.243, v:25},
+        //     {x:-0.93, y:0.243, v:55},
+        //     {x:-0.13, y:-0.2133, v:155},
+        //     {x:-0.1333, y:0.542133, v:25},
+        //     {x:-0.4333, y:0.142133, v:200},
+        // ]]
 
         const image = packGausses( grid )
 
@@ -146,7 +161,7 @@ export class BlobRenderer {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        gl.drawArrays(gl.TRIANGLES, 0, 3);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
 
 
         return this

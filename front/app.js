@@ -22,7 +22,7 @@ import {BlobRenderer} from './renderer/gpu/blob'
 // document.body.appendChild( canvas )
 
 const canvas2 = document.createElement('canvas')
-document.body.appendChild( canvas2 )
+// document.body.appendChild( canvas2 )
 const canvas = document.createElement('canvas')
 document.body.appendChild( canvas )
 
