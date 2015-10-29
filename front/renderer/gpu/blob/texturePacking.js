@@ -4,18 +4,19 @@ export const packGausses = gausses => {
     //    r     g     b     a          r     g     b     a
     //     -----x-----      _           -----y-----    --v
 
-    const canvas = document.createElement('canvas')
-    canvas.setAttribute('style', 'width:2048px; height:50px; image-rendering:pixelated')
-    document.body.appendChild( canvas )
 
     const pow = Math.ceil( Math.log( gausses.length ) / Math.log( 2 ) )
     const n = 1 << pow
 
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('style', `width:2048px; height:${n*8}px; image-rendering:pixelated`)
+    document.body.appendChild( canvas )
+
     canvas.width = 256
-    canvas.height = 1
+    canvas.height = n
 
     const ctx = canvas.getContext('2d')
-    const imgData = ctx.getImageData(0, 0, 256, 1)
+    const imgData = ctx.getImageData(0, 0, 256, n)
     const data = imgData.data
 
 
@@ -26,24 +27,24 @@ export const packGausses = gausses => {
 
         for (j=0; j< Math.min(128, gausses[i].length); j++) {
 
-            const b = ( i * 256 + j * 2 ) * 4
+            const cell = ( i * 256 + j * 2 ) * 4
 
             let k
             k = ( ( gausses[i][j].x + 1 ) * max ) >> 0
 
-            data[ b + 0 ] = (k>>16) % 256
-            data[ b + 1 ] = (k>>8) % 256
-            data[ b + 2 ] = k % 256
+            data[ cell + 0 ] = (k>>16) % 256
+            data[ cell + 1 ] = (k>>8) % 256
+            data[ cell + 2 ] = k % 256
 
 
             k = ( ( gausses[i][j].y + 1 ) * max ) >> 0
 
-            data[ b + 4 ] = (k>>16) % 256
-            data[ b + 5 ] = (k>>8) % 256
-            data[ b + 6 ] = k % 256
+            data[ cell + 4 ] = (k>>16) % 256
+            data[ cell + 5 ] = (k>>8) % 256
+            data[ cell + 6 ] = k % 256
 
 
-            data[ b + 3 ] = data[ b + 7 ] = gausses[i][j].v >> 0
+            data[ cell + 3 ] = data[ cell + 7 ] = gausses[i][j].v >> 0
 
         }
 

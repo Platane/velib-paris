@@ -20,6 +20,8 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
+        this._n = 10
+
     }
 
     initShader(){
@@ -58,15 +60,51 @@ export class BlobRenderer {
                 // init attributes
                 this._attribute={}
 
-                // this._attribute.position = gl.getAttribLocation(this._shaderProgram, 'aTexCoord')
-                // gl.enableVertexAttribArray(this._attribute.texCoord)
-
                 this._attribute.position = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition')
                 gl.enableVertexAttribArray(this._attribute.position)
 
                 this._attribute.index = gl.getAttribLocation(this._shaderProgram, 'aStationIndex')
                 gl.enableVertexAttribArray(this._attribute.index)
 
+                // build maillage
+                const positionArray = []
+                const indexArray = []
+                const n = this._n
+
+                const p = (x,y) => [ x/n * 2 -1, y/n * 2 -1 ]
+
+                for ( let x=0; x<n; x++ )
+                for ( let y=0; y<n; y++ )
+                {
+                    positionArray.push(
+
+                        ...p( x   , y   ),
+                        ...p( x+1 , y   ),
+                        ...p( x+1 , y+1 ),
+
+                        ...p( x+1 , y+1 ),
+                        ...p( x   , y+1 ),
+                        ...p( x   , y   ),
+                    )
+
+                    // index face (x, y)  should be y * n + x
+                    // const k = y*n + x
+                    const k = 14
+                    indexArray.push(
+                        k,k,k,
+                        k,k,k,
+                    )
+                }
+
+                const positionBuffer = gl.createBuffer()
+                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positionArray), gl.STATIC_DRAW)
+                gl.vertexAttribPointer(this._attribute.position, 2, gl.FLOAT, false, 0, 0)
+
+                const indexBuffer = gl.createBuffer()
+                gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer)
+                gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(indexArray), gl.STATIC_DRAW)
+                gl.vertexAttribPointer(this._attribute.index, 1, gl.UNSIGNED_SHORT, false, 0, 0)
             })
     }
 
@@ -86,29 +124,9 @@ export class BlobRenderer {
 
     setValues( values ){
 
-        const positionArray = [
-            -1, 1,
-            -1,-1,
-             1, 1,
-
-             1,-1,
-            -1,-1,
-             1, 1
-        ]
-
-        const indexArray = [
-            0,
-            0,
-            0,
-
-            0,
-            0,
-            0,
-        ]
-
         const points = this._points
 
-        const grid = gridSplit( 1, points, 0.1 )
+        const grid = gridSplit( this._n, points, 0.051 )
             .map( x =>
                 x.map( i => ({ ...points[i], v:values[i] }) )
             )
@@ -127,16 +145,6 @@ export class BlobRenderer {
 
         // bind buffer
         const gl = this._gl
-
-        const positionBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positionArray), gl.STATIC_DRAW)
-        gl.vertexAttribPointer(this._attribute.position, 2, gl.FLOAT, false, 0, 0)
-
-        const indexBuffer = gl.createBuffer()
-        gl.bindBuffer(gl.ARRAY_BUFFER, indexBuffer)
-        gl.bufferData(gl.ARRAY_BUFFER, new Uint16Array(indexArray), gl.STATIC_DRAW)
-        gl.vertexAttribPointer(this._attribute.index, 1, gl.UNSIGNED_SHORT, false, 0, 0)
 
         // bind texture
         const dataTexture = gl.createTexture()
@@ -161,7 +169,7 @@ export class BlobRenderer {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawArrays(gl.TRIANGLES, 0, this._n * this._n * 6);
 
 
         return this

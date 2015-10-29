@@ -73,6 +73,10 @@ void main(void) {
     //     return;
     // }
 
+    // gl_FragColor = vec4( stationIndex/10.0 ,stationIndex/10.0 ,stationIndex/10.0  , 1);
+    // gl_FragColor = texture2D(uData, vec2( ( 0.0     )/256.0, stationIndex/128.0 )  );
+    //
+    // return;
 
     float sum = 0.0;
 
@@ -80,8 +84,8 @@ void main(void) {
 
         float k = floor( i / n * 128.0 ) * 2.0;
 
-        vec4 color1 = texture2D(uData, vec2( ( k     )/256.0, 0.0 ));
-        vec4 color2 = texture2D(uData, vec2( ( k+1.0 )/256.0, 0.0 ));
+        vec4 color1 = texture2D(uData, vec2( ( k     )/256.0, stationIndex/128.0 ));
+        vec4 color2 = texture2D(uData, vec2( ( k+1.0 )/256.0, stationIndex/128.0 ));
 
         // in [ -1, 1 ] x [ -1, 1 ]
         vec2 position = vec2(
@@ -100,7 +104,7 @@ void main(void) {
         }
     }
 
-    sum = min( sum / 50.0, 1.0 );
+    sum = min( sum / 100.0, 1.0 );
 
     vec3 color = hsv2rgb( vec3( sum*0.8, 1.0, 1.0 ) );
 
