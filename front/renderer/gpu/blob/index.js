@@ -6,7 +6,8 @@ import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.08
+const tau = 0.02
+const pointsByTiles = 128
 const maxZone = u => u == 0 ? 0 : gaussInv_( tau, 0.01/u )
 
 
@@ -20,7 +21,7 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 10
+        this._n = 25
 
     }
 
@@ -55,6 +56,7 @@ export class BlobRenderer {
 
                 // init uniform
                 gl.uniform1f( gl.getUniformLocation(this._shaderProgram, 'tau'), tau )
+                gl.uniform1f( gl.getUniformLocation(this._shaderProgram, 'n'), 1 << Math.ceil( Math.log( this._n*this._n ) / Math.log( 2 ) ) )
 
 
                 // init attributes
@@ -88,8 +90,7 @@ export class BlobRenderer {
                     )
 
                     // index face (x, y)  should be y * n + x
-                    // const k = y*n + x
-                    const k = 14
+                    const k = y*n + x
                     indexArray.push(
                         k,k,k,
                         k,k,k,
@@ -126,22 +127,17 @@ export class BlobRenderer {
 
         const points = this._points
 
-        const grid = gridSplit( this._n, points, 0.051 )
+        const grid = gridSplit( this._n, points.slice(0, pointsByTiles), 0.5 )
+
             .map( x =>
-                x.map( i => ({ ...points[i], v:values[i] }) )
+                x
+                    .map( i => ({ ...points[i], v:values[i] }) )
+                    .sort( (a, b) => a.value<b.value ? 1 : -1 )
             )
 
-        // const grid = [[
-        //     {x:-0.3, y:0.4, v:105},
-        //     {x:0.3, y:0.2, v:255},
-        //     {x:-0.93, y:0.243, v:25},
-        //     {x:-0.93, y:0.243, v:55},
-        //     {x:-0.13, y:-0.2133, v:155},
-        //     {x:-0.1333, y:0.542133, v:25},
-        //     {x:-0.4333, y:0.142133, v:200},
-        // ]]
 
-        const image = packGausses( grid )
+
+        const image = packGausses( grid, pointsByTiles )
 
         // bind buffer
         const gl = this._gl

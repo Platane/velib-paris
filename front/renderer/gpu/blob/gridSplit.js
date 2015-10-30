@@ -12,7 +12,18 @@ export const boxCircleIntersection = ( box, c, squareRadius ) =>
     // the center is in the square
     ( box.min.x <= c.x && c.x <= box.max.x && box.min.y <= c.y && c.y <= box.max.y )
 
-
+/**
+ * gridSplit -
+ *  divide the space in n*n square, push the points in the corresponging squares
+ *
+ * @param n        {number}          nombre of division on each side
+ * @param points   {point[]}         array of points
+ * @param radius   {number[]}        array of radius
+ * @param [box]    {BoundingBox[]}   optionnal, will be computed otherwise
+ *
+ * @return {array[]} grid, for each cells a list of index which point to the points array. cell are indexed as y*n + x
+ *
+ */
 export const gridSplit = ( n, points, radius, box ) => {
 
     radius = Array.isArray(radius) ? radius : Array.apply(null, Array( points.length )).map( _ => radius )

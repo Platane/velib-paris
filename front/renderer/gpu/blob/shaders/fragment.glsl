@@ -1,12 +1,10 @@
 
 precision highp float;
 
-const float maxValue = 500.0;
-const float n = 128.0;
+const float pointsByTiles = 128.0;
 
-uniform float gauss_a;
-uniform float gauss_b;
 uniform float tau;
+uniform float n;
 
 varying lowp vec2 pos;
 varying lowp float stationIndex;
@@ -24,30 +22,14 @@ vec3 hsv2rgb(vec3 c) {
 float gauss(float x) {
     return exp( -0.5 * (x*x) / (tau * tau) );
 }
+float extractRGBfloat( vec3 v ) {
+    return (
+          v.r * 256.0*256.0*256.0
+        + v.g * 256.0*256.0
+        + v.b * 256.0
+    ) / ( 256.0*256.0*256.0 ) * 2.0 - 1.0;
+}
 
-// void main(void) {
-//
-//     vec4 color1 = texture2D(uData, vec2(0.0/128.0, 0.5));
-//     vec4 color2 = texture2D(uData, vec2(0.75/128.0, 0.5));
-//
-//     vec2 position = vec2(
-//         (color1.r * 4.0 + color1.g * 2.0 + color1.b ) / ( 7.0 ) * 2.0 - 1.0,
-//         (color2.r * 4.0 + color2.g * 2.0 + color2.b ) / ( 7.0 ) * 2.0 - 1.0
-//     );
-//
-//     float k = floor( (pos.x + 1)/ 3 );
-//
-//     float d = distance( position, pos );
-//
-//     float value = color1.a;
-//
-//     vec3 color = hsv2rgb( vec3( d*0.8, 1.0, 1.0 ) );
-//
-//     gl_FragColor = vec4( color, 1 );
-//     // gl_FragColor = vec4( position, 0, 1 );
-//     // gl_FragColor = color2;
-//
-// }
 void main(void) {
 
 
@@ -73,35 +55,39 @@ void main(void) {
     //     return;
     // }
 
-    // gl_FragColor = vec4( stationIndex/10.0 ,stationIndex/10.0 ,stationIndex/10.0  , 1);
-    // gl_FragColor = texture2D(uData, vec2( ( 0.0     )/256.0, stationIndex/128.0 )  );
+    // gl_FragColor = vec4( stationIndex ,stationIndex ,stationIndex  , 1);
+    // gl_FragColor = vec4( texture2D(uData, vec2( ( 0.0     )/256.0, stationIndex/n )  ).xyz, 1.0 );
     //
     // return;
 
     float sum = 0.0;
 
-    for(float i = 0.0; i < n; i++) {
+    if ( stationIndex == 14.0 ) {
+        sum = 10.0;
+    }
 
-        float k = floor( i / n * 128.0 ) * 2.0;
+    for(float i = 0.0; i < pointsByTiles; i++) {
 
-        vec4 color1 = texture2D(uData, vec2( ( k     )/256.0, stationIndex/128.0 ));
-        vec4 color2 = texture2D(uData, vec2( ( k+1.0 )/256.0, stationIndex/128.0 ));
+        float k = floor( i ) * 2.0;
+
+        vec4 color1 = texture2D(uData, vec2( ( k     )/( pointsByTiles * 2.0), stationIndex/n ));
+        vec4 color2 = texture2D(uData, vec2( ( k+1.0 )/( pointsByTiles * 2.0), stationIndex/n ));
 
         // in [ -1, 1 ] x [ -1, 1 ]
         vec2 position = vec2(
-            (color1.r * 4.0 + color1.g * 2.0 + color1.b ) / ( 7.0 ) * 2.0 - 1.0,
-            (color2.r * 4.0 + color2.g * 2.0 + color2.b ) / ( 7.0 ) * 2.0 - 1.0
+            extractRGBfloat( color1.rgb ),
+            extractRGBfloat( color2.rgb )
         );
 
         float v = color1.a * 256.0;
 
         float u = gauss( distance( position, pos ) );
 
-        // sum += v * u;
+        sum += v * u;
 
-        if ( u > 0.8 ) {
-            sum += v * ( u-0.6 ) / 0.4 ;
-        }
+        // if ( u > 0.95 ) {
+        //     sum += v * ( u-0.6 ) / 0.4 ;
+        // }
     }
 
     sum = min( sum / 100.0, 1.0 );
@@ -109,24 +95,6 @@ void main(void) {
     vec3 color = hsv2rgb( vec3( sum*0.8, 1.0, 1.0 ) );
 
     gl_FragColor = vec4( color , 1);
-    gl_FragColor = vec4( sum,sum,sum , 1);
+    // gl_FragColor = vec4( sum,sum,sum , 1);
 
 }
-// void main(void) {
-//
-//     float sum = 0;
-//
-//     for(uint i = 0; i + 1 != n; i++) {
-//
-//         float d = distance( vec3( stations[i].x, stations[i].y, 0 ), pos )
-//
-//         sum = sum + stations[i].z;
-//     }
-//
-//     float v = sum / maxValue;
-//
-//     vec3 color = hsv2rgb( vec3( v*0.8, 1.0, 1.0 ) );
-//
-//     gl_FragColor = vec4( color , 1);
-//
-// }
