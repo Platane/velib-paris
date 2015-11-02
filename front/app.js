@@ -21,13 +21,44 @@ import {BlobRenderer} from './renderer/gpu/blob'
 // const canvas = document.createElement('canvas')
 // document.body.appendChild( canvas )
 
-const canvas2 = document.createElement('canvas')
-// document.body.appendChild( canvas2 )
 const canvas = document.createElement('canvas')
 document.body.appendChild( canvas )
+const canvas2 = document.createElement('canvas')
+document.body.appendChild( canvas2 )
 
 
 // const {scene} = initScene()
+
+const stats = new Stats()
+stats.domElement.style.position = 'absolute'
+stats.domElement.style.right = '0px'
+stats.domElement.style.bottom = '0px'
+document.body.appendChild( stats.domElement )
+
+
+let x=0, y=0
+window.addEventListener( 'mousemove', event => {
+    x = Math.min( event.pageX / 400 - 1 , 1 )
+    y = -Math.min( event.pageY / 400 - 1 , 1 )
+})
+
+const br = new BlobRenderer( canvas, 800 )
+const hmr = new HeatMapRenderer( canvas2, 800 )
+
+const loop = () => {
+
+    br
+        .setNodes( [{x,y}] )
+        .setValues( [200] )
+
+    stats.begin()
+    br.render()
+    stats.end()
+
+    requestAnimationFrame( loop )
+}
+loop()
+
 
 
 get( 'http://localhost:8080/availability' )
@@ -56,24 +87,20 @@ get( 'http://localhost:8080/availability' )
                 y: ( p.y - box.min.y )/( box.max.y - box.min.y )*2 -1,
             }) )
 
-        const hmr = new HeatMapRenderer( canvas2, 800 )
         hmr.initShader()
             .then( () =>
 
                 hmr
                     .setNodes( vertices )
                     .setValues( percentLoaded )
-                    .render()
             )
 
-        const br = new BlobRenderer( canvas, 800 )
         br.initShader()
             .then( () =>
 
                 br
                     .setNodes( vertices )
                     .setValues( values )
-                    .render()
             )
 
 

@@ -1,14 +1,12 @@
 import {get} from '../../../service/request'
 import {initShader, initProgram} from '../utils/utils'
-import {gauss as gauss_, gaussInv as gaussInv_} from '../../../math/primitive/gauss'
 import {boundingBox}  from '../../../math/primitive/bounding'
 import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
 const tau = 0.02
-const pointsByTiles = 128
-const maxZone = u => u == 0 ? 0 : gaussInv_( tau, 0.01/u )
+const pointsByTiles = 64
 
 
 export class BlobRenderer {
@@ -21,7 +19,7 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 25
+        this._n = 5
 
     }
 
@@ -116,25 +114,28 @@ export class BlobRenderer {
         return this
     }
 
-    setTau( tau ){
-
-        this._tau = tau
-
-        return this
-    }
-
     setValues( values ){
 
-        const points = this._points
+        let points = this._points
 
-        const grid = gridSplit( this._n, points.slice(0, pointsByTiles), 0.5 )
+        points = points
+            .slice( 0, pointsByTiles )
+
+        // points = [{x:0.32, y:0}]
+        // values = [10]
+
+        const minInfluence = 0.1
+        const influenceAreas = values
+            .map( k => k == 0 ? 0 : tau * Math.sqrt( -2 * Math.log( minInfluence / k ) ) )
+
+        const grid = gridSplit( {max:{x:1,y:1}, min:{x:-1,y:-1}}, this._n, points, influenceAreas )
 
             .map( x =>
                 x
                     .map( i => ({ ...points[i], v:values[i] }) )
-                    .sort( (a, b) => a.value<b.value ? 1 : -1 )
-            )
 
+                    .sort( (a, b) => a.value > b.value ? 1 : -1 )
+            )
 
 
         const image = packGausses( grid, pointsByTiles )
@@ -162,6 +163,8 @@ export class BlobRenderer {
 
         const gl = this._gl
 
+        if ( !gl )
+            return this
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 

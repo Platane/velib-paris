@@ -10,7 +10,7 @@ export const packGausses = (gausses, maxGaussesByTile = 100) => {
 
     const canvas = document.createElement('canvas')
     canvas.setAttribute('style', `width:2048px; height:${n*8}px; image-rendering:pixelated`)
-    document.body.appendChild( canvas )
+    // document.body.appendChild( canvas )
 
     canvas.width = line_n*2
     canvas.height = n

@@ -1,7 +1,7 @@
 
 precision highp float;
 
-const float pointsByTiles = 128.0;
+const float pointsByTiles = 64.0;
 
 uniform float tau;
 uniform float n;
@@ -20,7 +20,7 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 float gauss(float x) {
-    return exp( -0.5 * (x*x) / (tau * tau) );
+    return exp( -0.5 * (x*x) / (tau*tau) );
 }
 float extractRGBfloat( vec3 v ) {
     return (
@@ -62,8 +62,8 @@ void main(void) {
 
     float sum = 0.0;
 
-    if ( stationIndex == 14.0 ) {
-        sum = 10.0;
+    if ( mod( stationIndex, 2.0 ) == 1.0 ) {
+        sum = 0.5;
     }
 
     for(float i = 0.0; i < pointsByTiles; i++) {
@@ -83,14 +83,15 @@ void main(void) {
 
         float u = gauss( distance( position, pos ) );
 
-        sum += v * u;
+        // sum += v * u;
 
-        // if ( u > 0.95 ) {
-        //     sum += v * ( u-0.6 ) / 0.4 ;
-        // }
+        if ( u*v > 0.1 ) {
+            // sum += u*v;
+            sum += 100.0;
+        }
     }
 
-    sum = min( sum / 100.0, 1.0 );
+    sum = min( sum / 10.0, 1.0 );
 
     vec3 color = hsv2rgb( vec3( sum*0.8, 1.0, 1.0 ) );
 

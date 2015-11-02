@@ -113,6 +113,8 @@ export class HeatMapRenderer {
 
         const gl = this._gl
 
+        if ( !this._gl || !this._faceIndex)
+            return this
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 

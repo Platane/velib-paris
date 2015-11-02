@@ -20,7 +20,7 @@ const points = [
     {x:100, y:100},
 ]
 
-gridSplit( 10, points, 0 )
+gridSplit( {max:{x:100, y:100}, min:{x:0, y:0}}, 10, points, 0 )
     .forEach( (list, i) => {
 
         const x = i % 10
