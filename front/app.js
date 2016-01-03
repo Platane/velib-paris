@@ -49,7 +49,7 @@ const loop = () => {
 
     br
         .setNodes( [{x,y}] )
-        .setValues( [200] )
+        .setValues( [10] )
 
     stats.begin()
     br.render()

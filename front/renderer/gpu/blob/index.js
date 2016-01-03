@@ -5,7 +5,7 @@ import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.02
+const tau = 0.01
 const pointsByTiles = 64
 
 
@@ -124,10 +124,14 @@ export class BlobRenderer {
         // points = [{x:0.32, y:0}]
         // values = [10]
 
+        // every contribution below this value can be neglected
         const minInfluence = 0.1
+
+        // which means a gauss is can not be neglected only if the point is inside this area of effect
         const influenceAreas = values
             .map( k => k == 0 ? 0 : tau * Math.sqrt( -2 * Math.log( minInfluence / k ) ) )
 
+        // build the grid
         const grid = gridSplit( {max:{x:1,y:1}, min:{x:-1,y:-1}}, this._n, points, influenceAreas )
 
             .map( x =>
@@ -135,6 +139,9 @@ export class BlobRenderer {
                     .map( i => ({ ...points[i], v:values[i] }) )
 
                     .sort( (a, b) => a.value > b.value ? 1 : -1 )
+
+                    .slice( 0, pointsByTiles )
+                    
             )
 
 
@@ -146,11 +153,23 @@ export class BlobRenderer {
         // bind texture
         const dataTexture = gl.createTexture()
         gl.bindTexture(gl.TEXTURE_2D, dataTexture)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+
+
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,                  // level , for mimapping i guess
+            gl.RGBA,            // internalformat ,
+            gl.RGBA,            // format
+            gl.UNSIGNED_BYTE,   // type
+            image
+        )
+
+        // declare properties to ensure that upscaling the texture does not apply a linear blur
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
         gl.bindTexture(gl.TEXTURE_2D, null)
 
         gl.activeTexture(gl.TEXTURE0)

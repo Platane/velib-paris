@@ -1,8 +1,29 @@
+
+/**
+ * given a set of gauss param ( x, y, value ),
+ * pack this set into something that can be passed to the shader
+ *   = a texture,
+ *   put information into an image
+ *
+ *  @param gausses  { {x,y,v}[][] }     for each tile, contains a list of gauss
+ *
+ *  @return {canvas}
+ *
+ */
 export const packGausses = (gausses, maxGaussesByTile = 100) => {
+
+    // the set is represented as such
+    //
+    //    -- -- -- -- -- --                 ( tile 0, 6 blocks of 2 pixels, one for each gauss )
+    //    -- -- -- -- -- -- -- --           ( tile 1 ...)
+    //    -- -- -- --                       ( tile 2 ...)
+    //    ...
 
     // pack each gauss in 2 pixel
     //    r     g     b     a          r     g     b     a
     //     -----x-----      _           -----y-----    --v
+
+
 
 
     const n = 1 << Math.ceil( Math.log( gausses.length ) / Math.log( 2 ) )
@@ -52,6 +73,7 @@ export const packGausses = (gausses, maxGaussesByTile = 100) => {
 
 
             data[ cell + 3 ] = data[ cell + 7 ] = gausses[i][j].v >> 0
+            data[ cell + 3 ] = 255
 
         }
     }
