@@ -162,8 +162,8 @@ export class BlobRenderer {
         gl.texImage2D(
             gl.TEXTURE_2D,
             0,                  // level , for mimapping i guess
-            gl.RGBA,            // internalformat ,
-            gl.RGBA,            // format
+            gl.RGB,             // internalformat ,
+            gl.RGB,             // format
             gl.UNSIGNED_BYTE,   // type
             image
         )
