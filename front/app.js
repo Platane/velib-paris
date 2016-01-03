@@ -24,7 +24,7 @@ import {BlobRenderer} from './renderer/gpu/blob'
 const canvas = document.createElement('canvas')
 document.body.appendChild( canvas )
 const canvas2 = document.createElement('canvas')
-document.body.appendChild( canvas2 )
+// document.body.appendChild( canvas2 )
 
 
 // const {scene} = initScene()
@@ -45,11 +45,12 @@ window.addEventListener( 'mousemove', event => {
 const br = new BlobRenderer( canvas, 800 )
 const hmr = new HeatMapRenderer( canvas2, 800 )
 
+let k = 1
 const loop = () => {
 
     br
         .setNodes( [{x,y}] )
-        .setValues( [10] )
+        .setValues( [ 125*(1+Math.sin( (k++) * 0.01 )) ] )
 
     stats.begin()
     br.render()

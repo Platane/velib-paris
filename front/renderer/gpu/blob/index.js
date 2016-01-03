@@ -5,7 +5,7 @@ import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.01
+const tau = 0.03
 const pointsByTiles = 64
 
 
@@ -19,8 +19,12 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 5
+        this._n = 7
 
+        // canvas use to push texture
+        this._canvas = document.createElement('canvas')
+        this._canvas.setAttribute('style', `height:128px;width:1024px;image-rendering:pixelated`)
+        document.body.appendChild( this._canvas )
     }
 
     initShader(){
@@ -141,11 +145,11 @@ export class BlobRenderer {
                     .sort( (a, b) => a.value > b.value ? 1 : -1 )
 
                     .slice( 0, pointsByTiles )
-                    
+
             )
 
 
-        const image = packGausses( grid, pointsByTiles )
+        const image = packGausses( this._canvas, grid, pointsByTiles )
 
         // bind buffer
         const gl = this._gl

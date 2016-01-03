@@ -24,11 +24,17 @@ float gauss(float x) {
 }
 float extractRGBfloat( vec3 v ) {
     return (
-          v.r * 256.0*256.0*256.0
-        + v.g * 256.0*256.0
-        + v.b * 256.0
-    ) / ( 256.0*256.0*256.0 ) * 2.0 - 1.0;
+          v.r * 256.0*256.0
+        + v.g * 256.0
+    ) / ( 256.0*256.0 ) * 2.0 - 1.0;
 }
+// float extractRGBfloat( vec3 v ) {
+//     return (
+//           v.r * 256.0*256.0*256.0
+//         + v.g * 256.0*256.0
+//         + v.b * 256.0
+//     ) / ( 256.0*256.0*256.0 ) * 2.0 - 1.0;
+// }
 
 void main(void) {
 
@@ -79,15 +85,15 @@ void main(void) {
             extractRGBfloat( color2.rgb )
         );
 
-        float v = color1.a * 256.0;
+        float v = color1.b * 256.0;
 
         float u = gauss( distance( position, pos ) );
 
         // sum += v * u;
 
         if ( u*v > 0.1 ) {
-            // sum += u*v;
-            sum += 100.0;
+            sum += u*v;
+            // sum += 100.0;
         }
     }
 
