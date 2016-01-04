@@ -31,37 +31,7 @@ float extractRGBfloat( vec3 v ) {
 
 void main(void) {
 
-
-    // if ( pos.y > 0.96 ){
-    //
-    //     float k = floor( (pos.x + 1.0) * 128.0 );
-    //
-    //     gl_FragColor = texture2D(uData, vec2( ( k )/ ( 128.0 * 2.0), 0.0));
-    //
-    //     return;
-    // }
-    //
-    // if ( pos.y > 0.90 ){
-    //
-    //     float k = floor( (pos.x + 1.0) * 128.0 );
-    //
-    //     vec4 color = texture2D(uData, vec2( ( k )/ ( 128.0 * 2.0), 0.0));
-    //
-    //     float u = color.a * 10.0;
-    //
-    //     gl_FragColor = vec4( u,u,u , 1.0 );
-    //
-    //     return;
-    // }
-
-    // gl_FragColor = vec4( stationIndex ,stationIndex ,stationIndex  , 1);
-    // gl_FragColor = vec4( texture2D(uData, vec2( ( 0.0     )/256.0, stationIndex/n )  ).xyz, 1.0 );
-    //
-    // return;
-
     float sum = 0.0;
-
-    sum =  mod( stationIndex, 3.0 ) * 0.2;
 
     for(float i = 0.0; i < pointsByTiles; i++) {
 
@@ -76,19 +46,16 @@ void main(void) {
             extractRGBfloat( color2.rgb )
         );
 
+        // point value
         float v = color1.b * 256.0;
 
+        // gauss value
         float u = gauss( distance( position, pos ) );
 
-        // sum += v * u;
-
-        if ( u*v > 0.05 ) {
-            sum += u*v;
-            // sum += 100.0;
-        }
+        sum += u*v;
     }
 
-    sum = min( sum / 100.0, 1.0 );
+    sum = min( sum / 120.0, 1.0 );
 
     sum = floor( sum * 10.0 ) / 10.0;
 

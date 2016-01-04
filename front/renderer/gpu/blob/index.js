@@ -1,11 +1,10 @@
 import {get} from '../../../service/request'
 import {initShader, initProgram} from '../utils/utils'
-import {boundingBox}  from '../../../math/primitive/bounding'
 import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.026
+const tau = 0.03
 const pointsByTiles = 256
 
 // every contribution below this value can be neglected
