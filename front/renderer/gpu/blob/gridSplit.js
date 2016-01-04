@@ -1,13 +1,5 @@
-import {squareDistance} from '../../../math/primitive/point'
-import {boundingBox}  from '../../../math/primitive/bounding'
 
 export const boxCircleIntersection = ( box, c, radius ) =>
-
-    // one of the corner is in the circle
-    // squareDistance( box.max , c ) < squareRadius ||
-    // squareDistance( box.min , c ) < squareRadius ||
-    // squareDistance( {x:box.min.x, y:box.max.y} , c ) < squareRadius ||
-    // squareDistance( {x:box.max.x, y:box.min.y} , c ) < squareRadius ||
 
     // the center is in the square
     ( box.min.x <= c.x + radius  && c.x - radius <= box.max.x && box.min.y <= c.y + radius && c.y - radius <= box.max.y )
@@ -26,13 +18,16 @@ export const boxCircleIntersection = ( box, c, radius ) =>
  */
 export const gridSplit = ( bigBox, n, points, radius ) => {
 
+    // if radius is a number, copy this number into an array
     radius = Array.isArray(radius) ? radius : Array.apply(null, Array( points.length )).map( _ => radius )
 
+    // size of one tile
     const gridSize = {
         x: (bigBox.max.x - bigBox.min.x) / n,
         y: (bigBox.max.y - bigBox.min.y) / n,
     }
 
+    // the grid object
     const grid = Array.apply(null, Array( n*n ))
         .map( _ => [] )
 

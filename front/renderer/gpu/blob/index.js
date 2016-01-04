@@ -8,6 +8,13 @@ import {packGausses}  from './texturePacking'
 const tau = 0.026
 const pointsByTiles = 256
 
+// every contribution below this value can be neglected
+const minInfluence = 0.1
+
+const maxValue = 60
+
+// considering the value as maximal, how far does the area affects
+const maxInfluenceArea = tau * Math.sqrt( -2 * Math.log( minInfluence / maxValue ) )
 
 export class BlobRenderer {
 
@@ -19,7 +26,7 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 8
+        this._n = 10
 
         // canvas use to push texture
         this._canvas = document.createElement('canvas')
@@ -115,40 +122,26 @@ export class BlobRenderer {
 
         this._points = points
 
+        this._grid = gridSplit( {max:{x:1,y:1}, min:{x:-1,y:-1}}, this._n, points, maxInfluenceArea )
+            .map( x => x
+                .map( i => ({ ...points[i], v:0, i }) )
+            )
+
         return this
     }
 
     setValues( values ){
 
-        let points = this._points
-
-        points = points
-
-        // points = [{x:0.32, y:0}]
-        // values = [10]
-
-        // every contribution below this value can be neglected
-        const minInfluence = 0.1
-
-        // which means a gauss is can not be neglected only if the point is inside this area of effect
-        const influenceAreas = values
-            .map( k => k == 0 ? 0 : tau * Math.sqrt( -2 * Math.log( minInfluence / k ) ) )
 
         // build the grid
-        const grid = gridSplit( {max:{x:1,y:1}, min:{x:-1,y:-1}}, this._n, points, influenceAreas )
-
-            .map( x =>
-                x
-                    .map( i => ({ ...points[i], v:values[i] }) )
-
-                    .sort( (a, b) => a.value > b.value ? 1 : -1 )
-
-                    .slice( 0, pointsByTiles )
-
+        this._grid
+            .forEach( x =>
+                x.forEach( x => x.v = values[ x.i ] )
             )
 
 
-        const image = packGausses( this._canvas, grid, pointsByTiles )
+
+        const image = packGausses( this._canvas, this._grid, pointsByTiles )
 
         // bind buffer
         const gl = this._gl

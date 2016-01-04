@@ -90,6 +90,8 @@ void main(void) {
 
     sum = min( sum / 100.0, 1.0 );
 
+    sum = floor( sum * 10.0 ) / 10.0;
+
     vec3 color = hsv2rgb( vec3( sum*0.9, 1.0, 1.0 ) );
 
     gl_FragColor = vec4( color , 1);

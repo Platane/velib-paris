@@ -49,9 +49,12 @@ let k = 1
 const o = {vertices:[], values:[]}
 const loop = () => {
 
+    k ++
+
     br
-        .setNodes( [ ...o.vertices, {x,y} ] )
-        .setValues( [ ...o.values, 125*(1+Math.sin( (k++) * 0.01 )) ] )
+        // .setNodes( [ ...o.vertices, {x,y} ] )
+        // .setValues( [ ...o.values.map( x => x*0.8* (1+Math.sin( k*x/1000 )) ), 125*(1+Math.sin( (k++) * 0.01 )) ] )
+        .setValues( o.values.map( x => x*0.8* (1+Math.sin( k*x/1000 )) ) )
 
     stats.begin()
     br.render()
@@ -59,7 +62,6 @@ const loop = () => {
 
     requestAnimationFrame( loop )
 }
-loop()
 
 
 
@@ -104,6 +106,7 @@ get( 'http://localhost:8080/availability' )
                     .setNodes( vertices )
                     .setValues( values )
             )
+            .then( loop )
 
         o.vertices  = vertices
         o.values    = values
