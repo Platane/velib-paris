@@ -5,8 +5,8 @@ import {gridSplit}  from './gridSplit'
 import {packGausses}  from './texturePacking'
 
 
-const tau = 0.03
-const pointsByTiles = 64
+const tau = 0.026
+const pointsByTiles = 256
 
 
 export class BlobRenderer {
@@ -19,7 +19,7 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 7
+        this._n = 8
 
         // canvas use to push texture
         this._canvas = document.createElement('canvas')
@@ -123,7 +123,6 @@ export class BlobRenderer {
         let points = this._points
 
         points = points
-            .slice( 0, pointsByTiles )
 
         // points = [{x:0.32, y:0}]
         // values = [10]

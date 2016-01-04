@@ -1,7 +1,7 @@
 
 precision highp float;
 
-const float pointsByTiles = 64.0;
+const float pointsByTiles = 256.0;
 
 uniform float tau;
 uniform float n;
@@ -28,13 +28,6 @@ float extractRGBfloat( vec3 v ) {
         + v.g * 256.0
     ) / ( 256.0*256.0 ) * 2.0 - 1.0;
 }
-// float extractRGBfloat( vec3 v ) {
-//     return (
-//           v.r * 256.0*256.0*256.0
-//         + v.g * 256.0*256.0
-//         + v.b * 256.0
-//     ) / ( 256.0*256.0*256.0 ) * 2.0 - 1.0;
-// }
 
 void main(void) {
 
@@ -68,9 +61,7 @@ void main(void) {
 
     float sum = 0.0;
 
-    if ( mod( stationIndex, 2.0 ) == 1.0 ) {
-        sum = 0.5;
-    }
+    sum =  mod( stationIndex, 3.0 ) * 0.2;
 
     for(float i = 0.0; i < pointsByTiles; i++) {
 
@@ -91,15 +82,15 @@ void main(void) {
 
         // sum += v * u;
 
-        if ( u*v > 0.1 ) {
+        if ( u*v > 0.05 ) {
             sum += u*v;
             // sum += 100.0;
         }
     }
 
-    sum = min( sum / 10.0, 1.0 );
+    sum = min( sum / 100.0, 1.0 );
 
-    vec3 color = hsv2rgb( vec3( sum*0.8, 1.0, 1.0 ) );
+    vec3 color = hsv2rgb( vec3( sum*0.9, 1.0, 1.0 ) );
 
     gl_FragColor = vec4( color , 1);
     // gl_FragColor = vec4( sum,sum,sum , 1);

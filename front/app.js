@@ -46,11 +46,12 @@ const br = new BlobRenderer( canvas, 800 )
 const hmr = new HeatMapRenderer( canvas2, 800 )
 
 let k = 1
+const o = {vertices:[], values:[]}
 const loop = () => {
 
     br
-        .setNodes( [{x,y}] )
-        .setValues( [ 125*(1+Math.sin( (k++) * 0.01 )) ] )
+        .setNodes( [ ...o.vertices, {x,y} ] )
+        .setValues( [ ...o.values, 125*(1+Math.sin( (k++) * 0.01 )) ] )
 
     stats.begin()
     br.render()
@@ -104,7 +105,8 @@ get( 'http://localhost:8080/availability' )
                     .setValues( values )
             )
 
-
+        o.vertices  = vertices
+        o.values    = values
     })
 
     // .then( points => {
