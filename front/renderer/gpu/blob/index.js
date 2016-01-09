@@ -5,7 +5,6 @@ import {packGausses}  from './texturePacking'
 
 
 const tau = 0.03
-const pointsByTiles = 256
 
 // every contribution below this value can be neglected
 const minInfluence = 0.1
@@ -14,6 +13,9 @@ const maxValue = 60
 
 // considering the value as maximal, how far does the area affects
 const maxInfluenceArea = tau * Math.sqrt( -2 * Math.log( minInfluence / maxValue ) )
+
+const beforeCompil = ( values, source ) =>
+    source.replace( /{{(\w+)}}/g , ( _, prop ) => values[ prop ] )
 
 export class BlobRenderer {
 
@@ -25,7 +27,8 @@ export class BlobRenderer {
         gl.clearColor(0.0, 0.0, 0.0, 0.5)
         gl.viewport(0, 0, size, size)
 
-        this._n = 10
+        this._n = 20
+        this._pointsByTiles = 128
 
         // canvas use to push texture
         this._canvas = document.createElement('canvas')
@@ -50,6 +53,7 @@ export class BlobRenderer {
             ,
 
             get('/front/renderer/gpu/blob/shaders/fragment.glsl')
+                .then( beforeCompil.bind(null, {pointsByTiles: this._pointsByTiles+'.0', textureWidth: this._pointsByTiles+'.0' }) )
                 .then( source => initShader(gl, source, 'fragment') )
                 .then( shader => fragmentShader = shader )
 
@@ -73,7 +77,7 @@ export class BlobRenderer {
                 this._attribute.position = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition')
                 gl.enableVertexAttribArray(this._attribute.position)
 
-                this._attribute.index = gl.getAttribLocation(this._shaderProgram, 'aStationIndex')
+                this._attribute.index = gl.getAttribLocation(this._shaderProgram, 'aTileIndex')
                 gl.enableVertexAttribArray(this._attribute.index)
 
                 // build maillage
@@ -140,7 +144,7 @@ export class BlobRenderer {
 
 
 
-        const image = packGausses( this._canvas, this._grid, pointsByTiles )
+        const image = packGausses( this._canvas, this._grid, this._pointsByTiles )
 
         // bind buffer
         const gl = this._gl
@@ -179,6 +183,8 @@ export class BlobRenderer {
 
         if ( !gl )
             return this
+
+        gl.uniform1f( gl.getUniformLocation(this._shaderProgram, 'rand'), ( 1 + Math.sin( Date.now() * 0.001 ))/2 )
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 

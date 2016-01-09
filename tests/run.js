@@ -1,5 +1,4 @@
 
-require('babel/register')
 
 require('./math/math')
 require('./blob/gridSplit')
