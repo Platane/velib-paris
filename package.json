@@ -10,6 +10,7 @@
         "gl-matrix": "2.x",
         "mongodb" : "*",
         "xml2js" : "*",
+        "googleapis" : "2.x",
         "express" : "*"
     },
 
