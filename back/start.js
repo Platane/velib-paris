@@ -4,9 +4,10 @@ const db = new DB()
 
 db.init()
 
-    // .then( db.pushStations( [{id:1, total:20, name:'zob', address:'zob', coordinates:[1,1]}] ) )
-    .then( db.readAllStations(  ) )
+    // .then( () => db.pushStations( [{id:1, total:20, name:'zob', address:'zob', coordinates:[1,1]}] ) )
 
-    .then( res => console.log( res ) )
+    .then( () => db.readAllStations(  ) )
 
-    .catch( err => console.log ( err ) )
+    .then( res => console.log( 'success',res ) )
+
+    .catch( err => console.log ( 'err', err, err.stack ) )

@@ -1,6 +1,6 @@
 import { DB as Parent } from '../abstract'
 import {auth, datastore} from 'googleapis'
-import {buildAvailability, buildStation} from './parse'
+import {buildAvailability, buildStation, parseStation, parseAvailability} from './parse'
 
 const key = require('../../../credentials/google.json')
 const SCOPES = [
@@ -81,11 +81,15 @@ export class DB extends Parent {
 
         return new Promise( (resolve, reject) =>
             ds.datasets
-                .commit({
-                    mode: 'NON_TRANSACTIONAL',
-                    mutation,
-                })
-                .execute( err => err ? reject( err ) : resolve() )
+                .commit(
+                    { resource:
+                        {
+                            mode: 'NON_TRANSACTIONAL',
+                            mutation,
+                        }
+                    },
+                    err => err ? reject( err ) : resolve()
+                )
         )
 
     }
@@ -95,18 +99,23 @@ export class DB extends Parent {
         // const timeWindow = options.timeWindow || { start: 0, end: Date.now() }
 
         const query = {
-            path: [ { kind: 'station' } ],
+            kinds: [{name: 'station'}]
         }
 
-        console.log( 'read' )
-
         return new Promise( (resolve, reject) =>
-
             this._ds.datasets
-                .runQuery( query )
-                .execute( (err, res) => err ? reject( err ) : resolve( res ) )
+                .runQuery(
+                    { datasetId: key.project_id, resource: {query} },
+                    (err, res) => err ? reject( err ) : resolve( res )
+                )
+            )
+            .then( ({batch}) => {
 
-        )
+                const {entityResults, endCursor, moreResults} = batch
+
+                return entityResults
+                    .map( x => parseStation( x.entity ) )
+            })
     }
 
 }

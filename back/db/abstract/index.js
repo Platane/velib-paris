@@ -1,5 +1,5 @@
 
-const station = {
+const availability = {
 
     stationId:0,
 
@@ -12,7 +12,7 @@ const station = {
 
 
 
-const availability = {
+const station = {
 
     id          : 0,
 

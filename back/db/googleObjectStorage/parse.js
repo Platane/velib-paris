@@ -27,3 +27,24 @@ export const buildStation = station => ({
             lng         : { doubleValue     : station.coordinates[1] },
         }
     })
+
+
+export const parseStation = ({key, properties}) =>
+    ({
+
+        id          : key.path[0].name.split('-')[1],
+
+        total       : +properties.total.integerValue,
+
+        coordinates : [ +properties.lat.doubleValue, +properties.lng.doubleValue ],
+
+        name        : properties.name.stringValue,
+
+        address     : properties.name.stringValue,
+    })
+
+export const parseAvailability = ({key, properties}) =>
+    ({
+
+
+    })
