@@ -1,5 +1,7 @@
 import {parseString} from 'xml2js'
 import {get} from './request'
+import {FromPromise} from '../utils/stream'
+
 
 // static info
 const staticStationsUri = ( ) =>
@@ -25,11 +27,7 @@ const parseStaticStations = res =>
                     address: x.$.fullAddress,
                     name: x.$.name,
                     bonus: !!(+x.$.bonus),
-
-                    loc: {
-                        type: 'Point',
-                        coordinates: [x.$.lat, x.$.lng],
-                    },
+                    coordinates: [x.$.lat, x.$.lng],
                 }) )
 
             resolve( stations )
@@ -37,10 +35,12 @@ const parseStaticStations = res =>
     )
 
 export const getStaticStations = () =>
-
-    get( staticStationsUri() )
-
-        .then( parseStaticStations )
+    new FromPromise (
+        new Promise( resolve => setTimeout( () => resolve(['a', 'b', 'c']) , 100 ))
+        // get( staticStationsUri() )
+        //
+        //     .then( parseStaticStations )
+    )
 
 
 

@@ -1,6 +1,7 @@
 import { DB as Parent } from '../abstract'
 import {auth, datastore} from 'googleapis'
 import {buildAvailability, buildStation, parseStation, parseAvailability} from './parse'
+import {pushStations} from './pushStations'
 
 const key = require('../../../credentials/google.json')
 const SCOPES = [
@@ -10,17 +11,6 @@ const SCOPES = [
 const version = 'v1beta2'
 
 
-const beginTransaction = ds =>
-    new Promise( (resolve, reject) =>
-
-        ds.datasets.beginTransaction(
-            {
-                // Execute the RPC asynchronously, and call back with either an
-                // error or the RPC result.
-            },
-            ( err, res ) => err ? reject( err ) : resolve( res.transaction )
-        )
-    )
 
 
 export class DB extends Parent {
@@ -57,30 +47,10 @@ export class DB extends Parent {
 
     pushAvailabilities( availabilities ) {
 
-        const ds = this._ds
-
-        return beginTransaction( ds )
-
-            .then( transaction => {
-
-                const mutation = { insert: availabilities.map( buildAvailability ) }
-
-                return new Promise( (resolve, reject) =>
-                    ds.datasets.commit( { resource: { transaction, mutation } }, err => err ? reject( err ) : resolve() )
-                )
-            })
-    }
-
-    pushStations( stations ) {
-
-        const ds = this._ds
-
-        const mutation = { insert: stations.map( buildStation ) }
-
-        console.log( 'push station', mutation )
+        const mutation = { insert: availabilities.map( buildAvailability ) }
 
         return new Promise( (resolve, reject) =>
-            ds.datasets
+            this._ds.datasets
                 .commit(
                     { resource:
                         {
@@ -91,15 +61,41 @@ export class DB extends Parent {
                     err => err ? reject( err ) : resolve()
                 )
         )
-
     }
 
+    pushStations( ) {
+        return pushStations( this.ds )
+    }
+
+
     readAllStations( opions ) {
+
+        const query = {
+            kinds: [{name: 'station'}]
+        }
+
+        return new Promise( (resolve, reject) =>
+            this._ds.datasets
+                .runQuery(
+                    { datasetId: key.project_id, resource: {query} },
+                    (err, res) => err ? reject( err ) : resolve( res )
+                )
+            )
+            .then( ({batch}) => {
+
+                const {entityResults, endCursor, moreResults} = batch
+
+                return entityResults
+                    .map( x => parseStation( x.entity ) )
+            })
+    }
+
+    readAvailabilties( opions ) {
 
         // const timeWindow = options.timeWindow || { start: 0, end: Date.now() }
 
         const query = {
-            kinds: [{name: 'station'}]
+            kinds: [{name: 'availability'}]
         }
 
         return new Promise( (resolve, reject) =>

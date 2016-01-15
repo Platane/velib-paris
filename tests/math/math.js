@@ -27,4 +27,4 @@ require('./advanced/quadTree')
 
 
 
-context.pop()
+context.pop().pop()

@@ -2,6 +2,13 @@
 
 require('./math/math')
 require('./blob/gridSplit')
+require('./utils/stream')
 
-if ( typeof process != 'undefined' && typeof process.exit == 'function' )
-    process.exit( +!require('./assert').success() )
+setTimeout(
+    () => {
+        if ( typeof process != 'undefined' && typeof process.exit == 'function' )
+            process.exit( +!require('./assert').success() )
+
+        }
+    , 1000
+)

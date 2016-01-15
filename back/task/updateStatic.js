@@ -1,3 +1,6 @@
+
+import {toPromise} from '../utils/stream'
+
 /**
  *
  * ask the static info of the stations
@@ -5,27 +8,22 @@
  *
  */
 
-
-import {getStaticStations} from '../sources/velibparisAPI'
-
 export class UpdateStatic {
 
-    constructor( db ){
+    constructor( db, src ){
         this.db = db
+        this.src = src
     }
 
     update(){
+        return toPromise(
+            this.src.getStaticStations()
 
-        return getStaticStations()
+                // .on('data', e => console.log(e.name) )
 
-            .then( stations => {
+                .pipe( this.db.pushStations() )
 
-                const promises = stations
-                    .map( station => this.db.setStation(station)  )
-
-
-                return Promise.all( promises )
-            })
+                .on('error', e => console.error( e ) )
+        )
     }
-
 }

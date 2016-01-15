@@ -38,4 +38,8 @@ export class DB {
     pushStationAvailability( entries ) { }
 
     pushStation( stations ){ }
+
+    readAvailabilties() {}
+
+    readAllStations() {}
 }
