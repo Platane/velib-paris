@@ -17,7 +17,17 @@
     "devDependencies": {
         "eslint" : "*",
         "babel-eslint" : "*",
-        "eslint-plugin-react" : "*"
+        "eslint-plugin-react" : "*",
+
+        "babel-loader" : "6.x",
+        "babel-core" : "6.x",
+        "babel-preset-es2015": "6.x",
+        "babel-preset-react": "6.x",
+        "babel-preset-stage-0": "6.x",
+        "babel-plugin-transform-runtime": "6.x",
+        "babel-plugin-transform-async-to-generator": "6.x",
+        "babel-plugin-transform-async-functions": "6.x",
+        "babel-plugin-transform-async-to-module-method": "6.x"
     },
 
     "main" : "run.js",

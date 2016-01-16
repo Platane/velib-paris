@@ -37,12 +37,8 @@ module.exports = {
                 loader: 'babel',
                 query: {
                     cacheDirectory: true,
-                    presets: ['es2015', 'stage-0'],
-                    plugins: [
-                        'transform-runtime',
-                        'babel-plugin-transform-async-to-generator',
-                        'babel-plugin-transform-async-functions',
-                    ],
+                    presets: ['es2015', 'stage-2'],
+                    plugins: ['transform-runtime'],
                 }
             },
 
@@ -52,8 +48,8 @@ module.exports = {
                 loader: 'babel',
                 query: {
                     cacheDirectory: true,
-                    presets: ['es2015', 'stage-0', 'react'],
-                    // plugins: ['transform-runtime'],
+                    presets: ['es2015', 'stage-2', 'react'],
+                    plugins: ['transform-runtime'],
                 }
             },
 
