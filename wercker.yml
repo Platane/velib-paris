@@ -6,4 +6,9 @@ build:
   steps:
 
     - npm-install
+
+    - script:
+        name: build
+        code: npm run build
+
     - npm-test
