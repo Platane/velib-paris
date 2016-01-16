@@ -7,6 +7,8 @@ export class Tube extends Parent {
         this._outBuffer.push( x )
 
         this._out && this._out._dataAvailable( )
+
+        return this
     }
 
     pushBatch( x ){
@@ -14,6 +16,8 @@ export class Tube extends Parent {
         this._outBuffer.push( ...x )
 
         this._out && this._out._dataAvailable( )
+
+        return this
     }
 
     pull( ){
@@ -21,7 +25,7 @@ export class Tube extends Parent {
     }
 
     pullN( n ){
-        return this._in._outBuffer.length < n
+        return this._in._outBuffer.length >= n
             ? this._in._outBuffer.splice( 0, n )
             : null
     }
@@ -32,10 +36,14 @@ export class Tube extends Parent {
 
     end(){
         this._out && this._out._dataEnded()
+
+        return this
     }
 
     error( err ){
         this._out && this._out.error( err )
+
+        return this
     }
 
     start(){

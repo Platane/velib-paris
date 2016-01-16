@@ -1,6 +1,4 @@
 
-import {toPromise} from '../utils/stream'
-
 /**
  *
  * ask the static info of the stations
@@ -16,14 +14,11 @@ export class UpdateStatic {
     }
 
     update(){
-        return toPromise(
-            this.src.getStaticStations()
 
-                // .on('data', e => console.log(e.name) )
+        return ( this.src.readStations() )
 
-                .pipe( this.db.pushStations() )
+            .pipe( this.db.pushStations() )
 
-                .on('error', e => console.error( e ) )
-        )
+            .start()
     }
 }

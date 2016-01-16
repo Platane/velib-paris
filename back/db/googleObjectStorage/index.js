@@ -64,7 +64,7 @@ export class DB extends Parent {
     }
 
     pushStations( ) {
-        return pushStations( this.ds )
+        return pushStations( this._ds )
     }
 
 

@@ -1,6 +1,6 @@
 import {parseString} from 'xml2js'
 import {get} from './request'
-import {FromPromise} from '../utils/stream'
+import {Tube} from '../utils/tube/abstract'
 
 
 // static info
@@ -34,16 +34,28 @@ const parseStaticStations = res =>
         })
     )
 
-export const getStaticStations = () =>
-    new FromPromise (
-        new Promise( resolve => setTimeout( () => resolve(['a', 'b', 'c']) , 100 ))
-        // get( staticStationsUri() )
-        //
-        //     .then( parseStaticStations )
-    )
+export class ReadStations extends Tube {
 
+    _start(){
 
+        console.log('start')
 
+        get( staticStationsUri() )
+
+            .then( parseStaticStations )
+
+            .catch( err => this.error( err ) )
+
+            .then( res =>
+                this
+                    .pushBatch( res )
+                    .end()
+            )
+
+    }
+}
+
+export const readStations = () => new ReadStations()
 
 
 

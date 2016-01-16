@@ -1,4 +1,4 @@
-import {Tube}  from '../../../back/utils/pipe/abstract/index'
+import {Tube}  from '../../../back/utils/tube/abstract/index'
 import {asyncAssert}  from '../../assert'
 
 
@@ -9,7 +9,7 @@ class Pub extends Tube {
         this.push( 'a' )
         this.push( 'b' )
         this.push( 'c' )
-        this.end( )
+        this.error( 'error' )
     }
 }
 
@@ -26,11 +26,11 @@ class Sub extends Tube {
     }
 }
 
-const assert = asyncAssert( 'resolve' )
+const assert = asyncAssert( 'reject' )
 ;( new Pub() )
 
         .pipe( new Sub() )
 
         .start()
 
-        .then( () => assert( res && res.length == 4 && res[0] == 'a' && res[1] == 'b' && res[3] == 'end' ) )
+        .catch( err => assert( err == 'error' ) )

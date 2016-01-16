@@ -10,7 +10,7 @@ db.init()
 
     .then( () => u.update() )
 
-    // .then( res => console.log( 'success', res ) )
+    .then( res => console.log( 'success', res ) )
 
     .catch( err => console.log( 'err', err, err.stack ) )
 
