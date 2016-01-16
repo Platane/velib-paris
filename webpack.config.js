@@ -33,19 +33,29 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
-                loaders: [
-                    'babel?stage=0&sourceMaps="both"'
-                ],
+                exclude: /(node_modules|\.tmp)/,
+                loader: 'babel',
+                query: {
+                    cacheDirectory: true,
+                    presets: ['es2015', 'stage-0'],
+                    plugins: [
+                        'transform-runtime',
+                        'babel-plugin-transform-async-to-generator',
+                        'babel-plugin-transform-async-functions',
+                    ],
+                }
             },
 
             {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loaders: [
-                    'babel?stage=0&sourceMaps="both"'
-                ],
-            }
+                test: /\.jsx$/,
+                exclude: /(node_modules|\.tmp)/,
+                loader: 'babel',
+                query: {
+                    cacheDirectory: true,
+                    presets: ['es2015', 'stage-0', 'react'],
+                    // plugins: ['transform-runtime'],
+                }
+            },
 
         ]
     },

@@ -31,4 +31,21 @@ export const assert = ( test, message = 'fail' ) => {
 
 }
 
+export const asyncAssert = ( message = 'fail', delay = 500 ) => {
+
+    const s = [ ...ctx, message ]
+
+    let ended = null
+    const f = () => {
+        if ( ended )
+            return
+        console.log( ' x '+s.join(' > ') )
+        fail = ended = true
+    }
+
+    setTimeout( f, delay  )
+
+    return ( test ) => test ? ended = true : f()
+}
+
 export const success = () => !fail
