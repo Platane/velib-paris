@@ -1,7 +1,8 @@
 import { DB as Parent } from '../abstract'
 import {auth, datastore} from 'googleapis'
 import {buildAvailability, buildStation, parseStation, parseAvailability} from './parse'
-import {pushStations} from './pushStations'
+import {PushStations} from './pushStations'
+import {PushAvailabilities} from './pushAvailabilities'
 
 const key = require('../../../credentials/google.json')
 const SCOPES = [
@@ -16,6 +17,9 @@ const version = 'v1beta2'
 export class DB extends Parent {
 
     init() {
+
+        if ( this._ds )
+            return Promise.resolve()
 
         return this.auth()
 
@@ -45,26 +49,12 @@ export class DB extends Parent {
         })
     }
 
-    pushAvailabilities( availabilities ) {
-
-        const mutation = { insert: availabilities.map( buildAvailability ) }
-
-        return new Promise( (resolve, reject) =>
-            this._ds.datasets
-                .commit(
-                    { resource:
-                        {
-                            mode: 'NON_TRANSACTIONAL',
-                            mutation,
-                        }
-                    },
-                    err => err ? reject( err ) : resolve()
-                )
-        )
+    pushAvailabilities( ) {
+        return new PushAvailabilities( this._ds )
     }
 
     pushStations( ) {
-        return pushStations( this._ds )
+        return new PushStations( this._ds )
     }
 
 

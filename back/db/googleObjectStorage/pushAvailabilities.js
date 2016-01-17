@@ -1,8 +1,8 @@
-import {buildStation} from './parse'
+import {buildAvailability} from './parse'
 
 import {BatchTransformer} from '../../utils/tube'
 
-export class PushStations extends BatchTransformer {
+export class PushAvailabilities extends BatchTransformer {
 
     constructor( ds ){
         super()
@@ -12,6 +12,8 @@ export class PushStations extends BatchTransformer {
     }
 
     _transform( batch ){
+        console.log( 'batch', batch.length )
+        console.log( 'batch', batch.map( buildAvailability )[0].key )
         return new Promise( (resolve, reject) =>
 
             this._ds.datasets
@@ -19,7 +21,7 @@ export class PushStations extends BatchTransformer {
                     { resource:
                         {
                             mode: 'NON_TRANSACTIONAL',
-                            mutation : { upsert: batch.map( buildStation ) },
+                            mutation : { upsert: batch.map( buildAvailability ) },
                         }
                     },
                     err => err ? reject( err ) : resolve()

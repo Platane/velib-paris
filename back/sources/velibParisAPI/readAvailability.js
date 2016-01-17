@@ -22,7 +22,7 @@ const parseLiveStation = (id, res) =>
             const station = object.station
 
             resolve({
-                updated     : +station.updated[0],
+                updated     : (+station.updated[0] * 1000),
                 free        : +station.free[0],
                 total       : +station.total[0],
                 stationId   : id,

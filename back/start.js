@@ -1,52 +1,17 @@
-import {DB} from './db/googleObjectStorage'
-// import {UpdateStatic} from './task/updateStatic'
-import {Source} from './sources/velibparisAPI'
-import {Transformer, Limiter} from './utils/tube'
+import {Updater} from './updater'
 
-const db = new DB()
-const src = new Source()
-
-
-
-class Logger extends Transformer {
-
-    _transform( x ){
-        console.log( x )
-        this.push( x )
-    }
-}
-
-class UpdateStatic {
-
-    constructor( db, src ){
-        this.db = db
-        this.src = src
-    }
-
-    update(){
-
-        return this.src.readStations()
-
-            .pipe( new Limiter( 35 ) )
-
-            .pipe( this.src.readAvailabilitiesForStations() )
-
-            .pipe( new Logger() )
-
-            .start()
-    }
-}
-
-const u = new UpdateStatic( db, src )
+const u = new Updater()
 
 try{
-db.init()
 
-    .then( () => u.update() )
+    u
+        .init()
 
-    .then( res => console.log( 'success', res ) )
+        .then( () => u.update() )
 
-    .catch( err => console.log( 'err', err, err.stack ) )
+        .then( () => console.log( 'success' ) )
+
+        .catch( err => console.error( err, err.stack ) )
 
 
-}catch( err ){ console.error( err ) }
+}catch( err ){ console.error( err, err.stack ) }

@@ -53,3 +53,10 @@ export class Transformer extends Tube {
         }
     }
 }
+
+
+Transformer.create = ( transform ) => {
+    class P extends Transformer {}
+    P.prototype._transform = transform
+    return P
+}

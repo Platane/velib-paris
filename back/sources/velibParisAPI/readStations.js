@@ -41,12 +41,11 @@ export class ReadStations extends Tube {
 
             .catch( err => this.error( err ) )
 
-            .then( res => {
-                console.log( res.length )
+            .then( res =>
                 this
                     .pushBatch( res )
                     .end()
-            })
+            )
 
     }
 }

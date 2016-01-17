@@ -2,13 +2,14 @@ export const buildAvailability = availability => ({
         key: {
             path: [
                 { kind: 'station', name: 'station-'+availability.stationId },
-                { kind: 'stationAvailability'}
+                { kind: 'stationAvailability', name: availability.stationId+':'+availability.updated },
             ],
         },
 
         properties: {
-            n       : { integerValue    : availability.n, indexed: false },
-            date    : { dateTimeValue   : new Date( availability.date ).toISOString() },
+            total       : { integerValue    : availability.total, indexed: false },
+            free        : { integerValue    : availability.free, indexed: false },
+            updated     : { dateTimeValue   : new Date( availability.updated ).toISOString() },
         }
     })
 
@@ -20,7 +21,6 @@ export const buildStation = station => ({
         },
 
         properties: {
-            total       : { integerValue    : station.total, indexed: false },
             name        : { stringValue     : station.name },
             address     : { stringValue     : station.address },
             lat         : { doubleValue     : station.coordinates[0] },
@@ -33,8 +33,6 @@ export const parseStation = ({key, properties}) =>
     ({
 
         id          : key.path[0].name.split('-')[1],
-
-        total       : +properties.total.integerValue,
 
         coordinates : [ +properties.lat.doubleValue, +properties.lng.doubleValue ],
 
