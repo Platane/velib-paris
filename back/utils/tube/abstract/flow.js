@@ -49,7 +49,11 @@ export class Tube extends Parent {
     start(){
         return new Promise( ( resolve, reject ) => {
 
-            this._out = { _dataEnded: resolve, error: reject }
+            this._out = {
+                _dataAvailable  : ()=>0,
+                _dataEnded      : resolve,
+                error           : reject,
+            }
 
             this._start()
 

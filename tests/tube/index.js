@@ -1,9 +1,12 @@
 import {context} from '../assert'
 
-context.stack('pipe')
 
-context.stack('abstract')
+context
+    .stack('tube')
 
 require('./abstract')
+require('./transformer')
+require('./batchTransformer')
 
-context.pop().pop()
+context
+    .pop()

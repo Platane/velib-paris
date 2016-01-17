@@ -1,4 +1,4 @@
-import {Tube}  from '../../../back/utils/tube/abstract/index'
+import {Tube}  from '../../../back/utils/tube'
 import {asyncAssert}  from '../../assert'
 
 

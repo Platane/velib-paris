@@ -1,6 +1,5 @@
 import {context} from '../../assert'
 
-context.stack('abstract')
+context.stack('batchTransformer')
 require('./resolve')
-require('./reject')
 context.pop()
