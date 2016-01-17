@@ -37,7 +37,7 @@
     },
 
     "scripts": {
-        "build": "node ./node_modules/webpack/bin/webpack.js --production",
+        "build": "env NODE_ENV=\"production\" node -e \"require('webpack')( require('./webpack.config.js'), function(err, stats){ if( err || stats.hasErrors() ){ console.log( stats.toJson().errors ); process.exit(1) } } )\"",
 
         "start": "node -e \"require('babel/register');require('./back/run')\"",
         "updateData": "node -e \"require('babel/register');require('./back/job/update')\"",

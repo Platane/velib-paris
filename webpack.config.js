@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 
-var production = process.argv.indexOf('--production') > -1
+var production = process.argv.indexOf('--production') > -1 || process.env.PRODUCTION ||  process.env.NODE_ENV == 'production'
 
 
 var plugins = []
