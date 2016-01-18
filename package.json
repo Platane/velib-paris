@@ -38,7 +38,7 @@
 
     "scripts": {
         "build-front": "env NODE_ENV=\"production\" node -e \"require('webpack')( require('./webpack.config.js'), function(err, stats){ if( err || stats.hasErrors() ){ console.log( stats.toJson().errors ); process.exit(1) } } )\"",
-        "build-back": "babel --presets es2015 stage-2 ./back --out-dir ./dist/back",
+        "build-back": "babel --presets es2015,stage-2 --out-dir ./dist/back ./back",
 
         "start-updater": "node ./dist/back/start.updater.js",
 
