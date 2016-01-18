@@ -7,9 +7,9 @@ build:
 
     - npm-install
 
-    - script:
-        name: build-front
-        code: npm run build
+    # - script:
+    #     name: build-front
+    #     code: npm run build
 
     - script:
         name: build-back
