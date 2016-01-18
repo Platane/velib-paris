@@ -18,9 +18,8 @@ if ( production )
 module.exports = {
 
     entry: {
-        // app     : [ './front/app.js' ],
         test    : [ './tests/run.js' ],
-        // back    : [ './back/start.js' ],
+        updater : [ './back/runUpdater.js' ],
     },
 
     output: {
@@ -33,23 +32,18 @@ module.exports = {
 
         loaders: [
             {
+                test: /\.json$/,
+                exclude: /(node_modules|\.tmp)/,
+                loader: 'json',
+            },
+
+            {
                 test: /\.js$/,
                 exclude: /(node_modules|\.tmp)/,
                 loader: 'babel',
                 query: {
                     cacheDirectory: true,
                     presets: ['es2015', 'stage-2'],
-                    plugins: ['transform-runtime'],
-                }
-            },
-
-            {
-                test: /\.jsx$/,
-                exclude: /(node_modules|\.tmp)/,
-                loader: 'babel',
-                query: {
-                    cacheDirectory: true,
-                    presets: ['es2015', 'stage-2', 'react'],
                     plugins: ['transform-runtime'],
                 }
             },

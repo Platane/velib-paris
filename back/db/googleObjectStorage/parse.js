@@ -2,7 +2,7 @@ export const buildAvailability = availability => ({
         key: {
             path: [
                 { kind: 'station', name: 'station-'+availability.stationId },
-                { kind: 'stationAvailability', name: availability.stationId+':'+availability.updated },
+                { kind: 'stationAvailability', name: availability.stationId+':'+(0|(availability.updated/1000)) },
             ],
         },
 

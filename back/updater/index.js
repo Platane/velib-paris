@@ -15,14 +15,6 @@ class Generator extends Tube {
     }
 }
 
-class Logger extends Transformer {
-
-    _transform( x ){
-        console.log( x )
-        this.push( x )
-    }
-}
-
 export class Updater {
 
     constructor(){
@@ -34,23 +26,30 @@ export class Updater {
 
     init(){
 
-        const CacheStation = Transformer.create( x =>
+
+        const CacheStation = Transformer.create( x => {
             this._cached.push({
                 id              : x.id,
                 lastUpdateDate  : 0
             })
-        )
-        return Promise.all([
-            this._db.init()
-            ,
-            this._src.readStations()
+            return x
+        })
 
-                .pipe( new Limiter( 3 ) )
+        return this._db.init()
 
-                .pipe( new CacheStation() )
+            .then( () =>
 
-                .start()
-        ])
+                this._src.readStations()
+
+                    .pipe( new Limiter( 10 ) )
+
+                    .pipe( new CacheStation() )
+
+                    .pipe( this._db.pushStations() )
+
+                    .start()
+            )
+
     }
 
     update(){

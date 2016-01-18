@@ -8,7 +8,11 @@ build:
     - npm-install
 
     - script:
-        name: build
+        name: build-front
+        code: npm run build
+
+    - script:
+        name: build-back
         code: npm run build
 
     - npm-test

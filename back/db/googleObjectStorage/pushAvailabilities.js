@@ -12,8 +12,6 @@ export class PushAvailabilities extends BatchTransformer {
     }
 
     _transform( batch ){
-        console.log( 'batch', batch.length )
-        console.log( 'batch', batch.map( buildAvailability )[0].key )
         return new Promise( (resolve, reject) =>
 
             this._ds.datasets
