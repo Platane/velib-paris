@@ -21,10 +21,10 @@ export const buildStation = station => ({
         },
 
         properties: {
-            name        : { stringValue     : station.name },
-            address     : { stringValue     : station.address },
-            lat         : { doubleValue     : station.coordinates[0] },
-            lng         : { doubleValue     : station.coordinates[1] },
+            name        : { stringValue     : station.name.split(' - ')[1], indexed: false },
+            address     : { stringValue     : station.address, indexed: false },
+            lat         : { doubleValue     : station.coordinates[0], indexed: false },
+            lng         : { doubleValue     : station.coordinates[1], indexed: false },
         }
     })
 
