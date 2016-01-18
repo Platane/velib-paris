@@ -1,5 +1,5 @@
 import {DB} from '../db/googleObjectStorage'
-import {Source} from '../sources/velibparisAPI'
+import {Source} from '../sources/velibParisAPI'
 import {Transformer, Tube, Limiter} from '../utils/tube'
 
 class Generator extends Tube {
