@@ -19,7 +19,6 @@ module.exports = {
 
     entry: {
         test    : [ './tests/run.js' ],
-        updater : [ './back/runUpdater.js' ],
     },
 
     output: {
