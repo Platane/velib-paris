@@ -55,20 +55,12 @@ export class DB extends Parent {
 
     auth() {
 
+        console.log( 'auth', this._key )
+
         return new Promise( (resolve, reject) => {
-
-            // will work only inside a compute engine
-            this._credentials = new auth.Compute()
-
-            // verify
-            this._credentials.getAccessToken( err => err ? reject() : resolve() )
+            this._credentials = new auth.JWT( this._key.client_email, null, this._key.private_key, SCOPES )
+            this._credentials.authorize( err => err ? reject( err ) : resolve() )
         })
-            .catch( () => new Promise( (resolve, reject) => {
-
-                    this._credentials = new auth.JWT( this._key.client_email, null, this._key.private_key, SCOPES )
-                    this._credentials.authorize( err => err ? reject( err ) : resolve() )
-                })
-            )
     }
 
     pushAvailabilities( ) {
