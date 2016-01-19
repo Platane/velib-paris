@@ -45,6 +45,8 @@
         "test": "node ./.tmp/test.js",
 
         "dev": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8082 --content-base ./ -d",
+
+        "start-updater-dev": "node ./back/start.updater.dev.js",
         "test-dev": "node ./tests/_run.js"
     }
 
