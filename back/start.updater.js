@@ -13,7 +13,10 @@ const loop = () => {
 
        .then( () => console.log( 'update successful' ) )
 
-       .catch( err => console.error( err, err.stack ) )
+       .catch( err => {
+           console.error( err )
+           console.error( err.stack )
+       })
 
        .then( () => setTimeout( loop, 1000 * 60 * 20 ) )
 }

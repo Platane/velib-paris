@@ -3,16 +3,16 @@ box: node
 
 build:
 
-  steps:
+    steps:
 
-    - npm-install
+        - npm-install
 
-    - script:
-        name: build front
-        code: npm run build-front
+        - script:
+            name: build front
+            code: npm run build-front
 
-    - script:
-        name: build back
-        code: npm run build-back
+        - script:
+            name: build back
+            code: npm run build-back
 
-    - npm-test
+        - npm-test

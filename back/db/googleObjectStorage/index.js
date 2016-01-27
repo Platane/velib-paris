@@ -14,7 +14,7 @@ try {
     key = {
         project_id      : process.env.project_id,
         client_email    : process.env.client_email,
-        private_key     : process.env.private_key,
+        private_key     : process.env.private_key.replace( /\\n/g , '\n'),
     }
 }
 }
@@ -55,7 +55,7 @@ export class DB extends Parent {
 
     auth() {
 
-        console.log( 'auth', this._key )
+        console.log( 'auth', this._key.client_email )
 
         return new Promise( (resolve, reject) => {
             this._credentials = new auth.JWT( this._key.client_email, null, this._key.private_key, SCOPES )
