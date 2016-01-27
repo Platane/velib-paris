@@ -1,0 +1,7 @@
+.tmp
+.git
+node_modules
+tests
+front
+npm-debug.log
+credentials
