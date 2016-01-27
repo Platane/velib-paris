@@ -15,6 +15,24 @@ class Generator extends Tube {
     }
 }
 
+class LogStation extends Transformer {
+    _transform( x ){
+
+        console.log( (this.i=0|this.i+1)+' '+x.name )
+
+        this.push( x )
+    }
+}
+class LogAvailability extends Transformer {
+
+    _transform( x ){
+
+        console.log( (this.i=0|this.i+1)+' '+x.stationId )
+
+        this.push( x )
+    }
+}
+
 export class Updater {
 
     constructor(){
@@ -41,7 +59,9 @@ export class Updater {
 
                 this._src.readStations()
 
-                    .pipe( new Limiter( 10 ) )
+                    // .pipe( new Limiter( 10 ) )
+
+                    .pipe( new LogStation() )
 
                     .pipe( new CacheStation() )
 
@@ -70,6 +90,8 @@ export class Updater {
         return ( new Generator( this._cached.slice() ) )
 
             .pipe( this._src.readAvailabilitiesForStations() )
+
+            .pipe( new LogAvailability() )
 
             .pipe( new Filter() )
 
