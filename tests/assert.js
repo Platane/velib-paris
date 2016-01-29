@@ -31,6 +31,7 @@ export const assert = ( test, message = 'fail' ) => {
 
 }
 
+let pending = 0
 export const asyncAssert = ( message = 'fail', delay = 500 ) => {
 
     const s = [ ...ctx, message ]
@@ -39,13 +40,35 @@ export const asyncAssert = ( message = 'fail', delay = 500 ) => {
     const f = () => {
         if ( ended )
             return
+
+        pending --
+        ended = true
         console.log( ' x '+s.join(' > ') )
-        fail = ended = true
+        fail = true
+
+        testEnd()
     }
+
+    pending ++
 
     setTimeout( f, delay  )
 
-    return ( test ) => test ? ended = true : f()
+    return ( test ) => {
+        if ( test ) {
+            pending --
+            ended = true
+            testEnd()
+        } else
+            f()
+    }
 }
 
-export const success = () => !fail
+const testEnd = () =>
+    !pending && resolve && resolve( !fail )
+
+let resolve
+export const end = () =>
+    new Promise( _resolve => {
+        resolve = _resolve
+        testEnd()
+    })

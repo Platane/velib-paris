@@ -32,7 +32,6 @@ export class BatchTransformer extends Transformer {
     }
 
     _dataEnded( ){
-
         const lastBatch = this.pullAll()
 
         lastBatch && exec.call( this, lastBatch )

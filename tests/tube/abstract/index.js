@@ -3,4 +3,6 @@ import {context} from '../../assert'
 context.stack('abstract')
 require('./resolve')
 require('./reject')
-context.pop()
+context.stack('fork')
+require('./fork')
+context.pop().pop()

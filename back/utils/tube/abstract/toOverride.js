@@ -2,14 +2,8 @@ import {Tube as Parent } from './flow'
 
 export class Tube extends Parent {
 
-    /**
-     * requireData
-     *
-     * @ to override
-     *
-     */
     _start(){
-        this._in && this._in._start()
+        this._in.forEach( inn => inn.__start() )
     }
 
     _dataEnded( ){
@@ -17,9 +11,9 @@ export class Tube extends Parent {
     }
 
     _dataAvailable( ){
-
-        // const x = this.pull()
-        //
-        // this.push( x )
+        console.log( 'union')
+        let x
+        while ( x = this.pull() )
+            this.push( x )
     }
 }
