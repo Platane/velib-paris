@@ -24,6 +24,7 @@ docker push platane/paris-velib-updater
 ```
 # install docker
 curl get.docker.io | bash
+# actually if it changed to: curl -sSL https://get.docker.com/ | sh
 
 # pull the image
 sudo docker pull platane/paris-velib-updater
