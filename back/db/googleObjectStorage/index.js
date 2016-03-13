@@ -14,7 +14,7 @@ try {
     key = {
         project_id      : process.env.project_id,
         client_email    : process.env.client_email,
-        private_key     : process.env.private_key.replace( /\\n/g , '\n'),
+        private_key     : (process.env.private_key || '').replace( /\\n/g , '\n'),
     }
 }
 }

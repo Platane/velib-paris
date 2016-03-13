@@ -11,7 +11,7 @@
         "mongodb" : "*",
         "xml2js" : "*",
         "googleapis" : "2.x",
-        "express" : "*"
+        "express" : "4"
     },
 
     "devDependencies": {
