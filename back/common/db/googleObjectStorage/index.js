@@ -1,8 +1,8 @@
-import { DB as Parent } from '../abstract'
-import {auth, datastore} from 'googleapis'
-import {PushStations} from './pushStations'
-import {PushAvailabilities} from './pushAvailabilities'
-import {ReadStations} from './readStations'
+import { DB as Parent }         from '../abstract'
+import {auth, datastore}        from 'googleapis'
+import {PushStations}           from './pushStations'
+import {PushAvailabilities}     from './pushAvailabilities'
+import {ReadStations}           from './readStations'
 
 let key
 try{
@@ -71,9 +71,8 @@ export class DB extends Parent {
         return new PushStations( this._ds )
     }
 
-
     readStations( ) {
-        return new ReadStations( this._ds )
+        return new ReadStations( this._ds, this._key.project_id )
     }
 
 }

@@ -31,8 +31,9 @@
 
         "start:updater": "node -e \"require('babel-register');require('./updater.start.js')\"",
         "build:updater": "docker build --file ./updater.Dockerfile --tag=platane/paris-velib-updater .",
-        "publish:updater": "docker push platane/paris-velib-updater"
+        "publish:updater": "docker push platane/paris-velib-updater",
 
+        "start:server": "node -e \"require('babel-register');require('./server.start.js')\""
     }
 
 }

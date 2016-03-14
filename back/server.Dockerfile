@@ -19,4 +19,4 @@ RUN npm install
 
 ADD ./dist/back /app/
 
-CMD node /app/updater.start.js
+CMD node /app/server.start.js

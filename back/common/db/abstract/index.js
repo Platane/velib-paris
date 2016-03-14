@@ -41,5 +41,5 @@ export class DB {
 
     readAvailabilties() {}
 
-    readAllStations() {}
+    readStations() {}
 }

@@ -29,17 +29,16 @@ export const buildStation = station => ({
     })
 
 
-export const parseStation = ({key, properties}) =>
-    ({
+export const parseStation = ({ key, properties }) => ({
 
-        id          : key.path[0].name.split('-')[1],
+    id          : key.path[0].name.split('-')[1],
 
-        coordinates : [ +properties.lat.doubleValue, +properties.lng.doubleValue ],
+    coordinates : [ +properties.lat.doubleValue, +properties.lng.doubleValue ],
 
-        name        : properties.name.stringValue,
+    // name        : properties.name.stringValue,
 
-        address     : properties.name.stringValue,
-    })
+    // address     : properties.address.stringValue,
+})
 
 export const parseAvailability = ({key, properties}) =>
     ({
