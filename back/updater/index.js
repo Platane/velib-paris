@@ -1,6 +1,6 @@
-import {DB} from '../db/googleObjectStorage'
-import {Source} from '../sources/velibParisAPI'
-import {Transformer, Tube, Limiter} from '../utils/tube'
+import {DB}                         from '../common/db/googleObjectStorage'
+import {Source}                     from '../common/sources/velibParisAPI'
+import {Transformer, Tube, Limiter} from '../common/utils/tube'
 
 class Generator extends Tube {
 
@@ -42,8 +42,15 @@ export class Updater {
         this._cached = []
     }
 
+    /**
+     * init
+     *   init the DB, then read all the stations from the sources
+     *   cache all the station so no need to make this request again
+     *   push them into the database ( it should'nt be a problem to push them twice )
+     *
+     *   @return {promise}
+     */
     init(){
-
 
         const CacheStation = Transformer.create( x => {
             this._cached.push({
@@ -61,7 +68,7 @@ export class Updater {
 
                     // .pipe( new Limiter( 10 ) )
 
-                    .pipe( new LogStation() )
+                    // .pipe( new LogStation() )
 
                     .pipe( new CacheStation() )
 
