@@ -15,7 +15,7 @@ ADD ./package.json /app/
 
 WORKDIR /app
 
-RUN npm install
+RUN npm install --production
 
 ADD ./dist/back /app/
 

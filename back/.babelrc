@@ -5,6 +5,7 @@
     ],
     "ignore": [
         "node_modules/**/*.js",
+        "tests/**/*.js",
         "dist/**/*.js"
     ]
 }

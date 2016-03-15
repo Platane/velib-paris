@@ -31,11 +31,33 @@ EOF
 ## containers
 
 Containers are stocked on the docker hub
+
 - __updater__ every x minutes, query the API and push station availabilities.
 - __server__ respond to REST API to get the last availabilities.
 
 ```
 docker run -d --env-file ~/env.list platane/paris-velib-updater
+```
+
+## registry
+
+gCloud registry
+```
+# updater
+## rename
+docker tag platane/paris-velib-updater eu.gcr.io/velib-1249/platane/paris-velib-updater
+
+## push
+gcloud docker push eu.gcr.io/velib-1249/platane/paris-velib-updater
+
+
+# server
+## rename
+docker tag platane/paris-velib-server eu.gcr.io/velib-1249/platane/paris-velib-server
+
+## push
+gcloud docker push eu.gcr.io/velib-1249/platane/paris-velib-server
+
 ```
 
 ## server API
