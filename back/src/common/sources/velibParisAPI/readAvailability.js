@@ -31,12 +31,27 @@ const parseLiveStation = (id, res) =>
     )
 
 
+const overLimit = ( err ) =>
+    typeof err == 'string' && err.match(/request fails with 403 status/)
+
+const wait = delay =>
+    new Promise( resolve => setTimeout( () => resolve(), delay ) )
+
 export class ReadAvailabilitiesForStations extends Transformer {
+
+    static maxConcurent = 1;
 
     _transform( station ){
 
         return get( liveStationUri( station.id ) )
 
             .then( res => parseLiveStation( station.id, res ) )
+
+            .catch( err =>
+                overLimit( err )
+                    ? wait( 60000 )
+                        .then( this.reject( station ) )
+                    : Promise.reject( err )
+            )
     }
 }

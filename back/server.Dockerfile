@@ -15,8 +15,12 @@ ADD ./package.json /app/
 
 WORKDIR /app
 
+# declare the env var NODE_ENV
+ENV NODE_ENV="production"
+
 RUN npm install --production
 
-ADD ./dist/back /app/
+ADD ./dist/ /app/
 
 CMD node /app/server.start.js
+EXPOSE 80

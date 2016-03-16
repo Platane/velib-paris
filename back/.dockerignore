@@ -2,5 +2,6 @@
 .git
 node_modules
 tests
+src
 npm-debug.log
 credentials

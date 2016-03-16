@@ -2,6 +2,8 @@ import {Tube} from '../abstract'
 
 export class Transformer extends Tube {
 
+    static maxConcurent = Infinity;
+
     constructor( ){
         super()
 
@@ -26,7 +28,7 @@ export class Transformer extends Tube {
     _dataAvailable( ){
 
         let x
-        while( x = this.pull() ) {
+        while( (x = this.pull()) && this._processing < this.constructor.maxConcurent ) {
 
             this._processing ++
 
@@ -39,6 +41,7 @@ export class Transformer extends Tube {
 
                         this._processing --
                         this.__testEnd()
+                        this._dataAvailable()
                     })
                     .catch( ( err ) => this.error( err ) )
 
@@ -48,6 +51,7 @@ export class Transformer extends Tube {
 
                 this._processing --
                 this.__testEnd()
+                this._dataAvailable()
             }
 
         }
@@ -55,8 +59,9 @@ export class Transformer extends Tube {
 }
 
 
-Transformer.create = ( transform ) => {
+Transformer.create = ( transform, maxConcurent=Infinity ) => {
     class P extends Transformer {}
+    P.maxConcurent = maxConcurent
     P.prototype._transform = transform
     return P
 }

@@ -37,6 +37,9 @@ Containers are stocked on the docker hub
 
 ```
 docker run -d --env-file ~/env.list platane/paris-velib-updater
+
+# from the repo
+docker run -d --env-file ../credentials/env.list platane/paris-velib-updater
 ```
 
 ## registry

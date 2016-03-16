@@ -1,5 +1,5 @@
 import {DB}                         from '../common/db/googleObjectStorage'
-import {Source}                     from '../common/sources/velibParisAPI'
+import {Source}                     from '../common/sources/unified'
 import {Transformer, Tube, Limiter} from '../common/utils/tube'
 
 class Generator extends Tube {
@@ -27,7 +27,9 @@ class LogAvailability extends Transformer {
 
     _transform( x ){
 
-        console.log( (this.i=0|this.i+1)+' '+x.stationId )
+        this.i=0|this.i+1
+
+        this.i % 100 == 0 && console.log( this.i )
 
         this.push( x )
     }
@@ -66,7 +68,7 @@ export class Updater {
 
                 this._src.readStations()
 
-                    // .pipe( new Limiter( 10 ) )
+                    .pipe( new Limiter( 400 ) )
 
                     // .pipe( new LogStation() )
 
