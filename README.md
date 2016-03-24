@@ -36,7 +36,7 @@ Containers are stocked on the docker hub
 - __server__ respond to REST API to get the last availabilities.
 
 ```
-docker run -d --env-file ~/env.list platane/paris-velib-updater
+docker run -d --env-file ~/env.list eu.gcr.io/velib-1249/platane/paris-velib-updater
 
 # from the repo
 docker run -d --env-file ../credentials/env.list platane/paris-velib-updater

@@ -5,14 +5,23 @@ build:
 
     steps:
 
-        - npm-install
+        - script:
+            name: install back
+            code: |
+                cd ./back
+                npm install
+                cd ..
 
         - script:
-            name: build front
-            code: npm run build-front
+            name: babel back
+            code: |
+                cd ./back
+                npm run build
+                cd ..
 
         - script:
-            name: build back
-            code: npm run build-back
-
-        - npm-test
+            name: test back
+            code: |
+                cd ./back
+                npm test
+                cd ..
