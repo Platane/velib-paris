@@ -39,7 +39,7 @@
         "start:dev:server": "env $( cat ../credentials/env.list ) node -e \"require('babel-register');require('./src/server.start.js')\"",
         "build:server": "docker build --file ./server.Dockerfile --tag=platane/paris-velib-server .",
 
-        "test": "env NODE_ENV=\"test\" mocha --compilers js:babel-register --recursive",
+        "test": "env NODE_ENV=\"test\" mocha --compilers js:babel-register --recursive --timeout 200 --bail",
         "test:watch": "npm test -- --watch"
     }
 

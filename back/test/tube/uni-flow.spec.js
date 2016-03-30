@@ -5,6 +5,15 @@ describe('uni flow', () => {
 
     describe('producer / consumer', () => {
 
+        it('mono tube', () => {
+
+            const mono = new Tube
+
+            mono.onReady = () => mono.end()
+
+            return mono.start()
+        })
+
         it('end on ready', () => {
 
             const consumer = new Tube

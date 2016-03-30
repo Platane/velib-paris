@@ -17,21 +17,35 @@ class Collector extends Tube {
 
 class Transformer extends Tube {
 
-    constructor( accept, delay=0 ){
+    constructor( accept, delay=0, concurency=1 ){
         super()
-        this.accept = typeof accept == 'function' ? accept : x => x == accept
-        this.delay = delay
+        this.accept     = typeof accept == 'function' ? accept : x => x == accept
+        this.delay      = delay
+        this.concurency = concurency
+        this.n          = 0
     }
 
     onDataReady(){
-        const {data, ack} = this.pull()
+
+        if ( this.n >= this.concurency )
+            return
+
+        const x = this.pull()
+
+        if ( !x )
+            return
+
+        this.n ++
 
         const resolve = () => {
-            if ( this.accept( data ) ) {
-                this.push( data )
-                ack()
+            this.n --
+            if ( this.accept( x.data ) ) {
+                this.push( x.data )
+                x.ack()
             } else
-                ack( true )
+                x.ack( true )
+
+            this.onDataReady()
         }
 
         if ( this.delay )
@@ -42,12 +56,11 @@ class Transformer extends Tube {
     }
 }
 
-describe('alternative consumer flow', () => {
+describe('concurency', () => {
 
-    it('flow fork, no reject', () => {
+    it('simple flow', () => {
 
         const c1 = new Transformer( () => true )
-        const c2 = new Transformer( () => true )
         const collector = new Collector
         const producer = new Tube
 
@@ -63,15 +76,15 @@ describe('alternative consumer flow', () => {
 
 
         producer.pipe( c1 )
-        producer.pipe( c2 )
         c1.pipe( collector )
-        c2.pipe( collector )
 
         return collector.start()
             .then( () => expect( collector.stack.length ).toBe(6) )
+
+
     })
 
-    it('flow fork, each branch accept one of the type', () => {
+    it('fork with filter', () => {
 
         const c1 = new Transformer( x => x[0] == 'A' )
         const c2 = new Transformer( x => x[0] == 'B' )
@@ -96,9 +109,10 @@ describe('alternative consumer flow', () => {
 
         return collector.start()
             .then( () => expect( collector.stack.length ).toBe(6) )
+
     })
 
-    // it('flow fork, each branch accept one of the type, with delay', () => {
+    // it('fork with filter and delay', () => {
     //
     //     const c1 = new Transformer( x => x[0] == 'A', 5 )
     //     const c2 = new Transformer( x => x[0] == 'B', 5 )
@@ -121,8 +135,12 @@ describe('alternative consumer flow', () => {
     //     c1.pipe( collector )
     //     c2.pipe( collector )
     //
+    //     c1.name = 1
+    //     c2.name = 2
+    //
     //     return collector.start()
     //         .then( () => expect( collector.stack.length ).toBe(6) )
+    //
     // })
 
 })
