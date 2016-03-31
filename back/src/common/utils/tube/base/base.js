@@ -1,6 +1,8 @@
 class Tube {
 
     constructor(){
+
+        // chain
         this._parents     = []
         this._children    = []
 
@@ -15,10 +17,20 @@ class Tube {
 
         // the tube is ended
         this._ended             = false
+
+        // for generator,
+        // if set to true, nothing will be pushed
+        // when true, wait for all data to be ack and declare the tube as ended
         this._flowOver          = false
+
 
         // in order to prevent onReady to be called twice, note when the tube start
         this._started           = false
+
+
+        // params for round robin
+        // to prevent deadlock
+        this._k                 = 0
     }
 
     /**
@@ -46,8 +58,6 @@ class Tube {
         // prepare the ack function
         const ack = ( reject ) => {
 
-            // console.log('ack parent', parent.name, data)
-
             // the data is no longuer waiting for ack
             this._toAck --
             parent._beingDelivered --
@@ -56,6 +66,10 @@ class Tube {
             // else it might have been the last data for the parent
             if( reject ) {
 
+                // round robin
+                this._k = (this._k +1) %10
+                if ( this._k )
+                    parent._children.push( parent._children.shift() )
 
                 parent.push( data )
 
@@ -74,9 +88,6 @@ class Tube {
      */
     push( o ){
         this._outBuffer.push( o )
-
-        // round robin
-        this._children.push( this._children.shift() )
 
         // notify all children that data is available
         for( let i=this._children.length; i-- && this._outBuffer.length; )
@@ -148,24 +159,5 @@ class Tube {
 
 
 }
-
-
-// const testEnd = p => {
-//
-//     if (
-//         ( p._parents.length || ( p._parents.length==0 && this._flowOver ) )
-//         && p._outBuffer.length == 0
-//         && p._toAck == 0
-//         && p._beingDelivered == 0
-//         && p._parents.every( p => p._ended )
-//     )
-//     {
-//         p._ended = true
-//
-//
-//     }
-//
-// }
-
 
 export default Tube

@@ -35,15 +35,15 @@ class Transformer extends Tube {
         if ( !x )
             return
 
-        this.n ++
+        if ( !this.accept( x.data ) )
+            return x.ack( true )
 
+        this.n ++
         const resolve = () => {
             this.n --
-            if ( this.accept( x.data ) ) {
-                this.push( x.data )
-                x.ack()
-            } else
-                x.ack( true )
+
+            this.push( x.data )
+            x.ack()
 
             this.onDataReady()
         }
@@ -112,35 +112,35 @@ describe('concurency', () => {
 
     })
 
-    // it('fork with filter and delay', () => {
-    //
-    //     const c1 = new Transformer( x => x[0] == 'A', 5 )
-    //     const c2 = new Transformer( x => x[0] == 'B', 5 )
-    //     const collector = new Collector
-    //     const producer = new Tube
-    //
-    //     producer.onReady = () =>
-    //         producer
-    //             .push('A1')
-    //             .push('B2')
-    //             .push('B3')
-    //             .push('A4')
-    //             .push('B5')
-    //             .push('A6')
-    //             .end()
-    //
-    //
-    //     producer.pipe( c1 )
-    //     producer.pipe( c2 )
-    //     c1.pipe( collector )
-    //     c2.pipe( collector )
-    //
-    //     c1.name = 1
-    //     c2.name = 2
-    //
-    //     return collector.start()
-    //         .then( () => expect( collector.stack.length ).toBe(6) )
-    //
-    // })
+    it('fork with filter and delay', () => {
+
+        const c1 = new Transformer( x => x[0] == 'A', 5 )
+        const c2 = new Transformer( x => x[0] == 'B', 5 )
+        const collector = new Collector
+        const producer = new Tube
+
+        producer.onReady = () =>
+            producer
+                .push('A1')
+                .push('B2')
+                .push('B3')
+                .push('A4')
+                .push('B5')
+                .push('A6')
+                .end()
+
+
+        producer.pipe( c1 )
+        producer.pipe( c2 )
+        c1.pipe( collector )
+        c2.pipe( collector )
+
+        c1.name = 1
+        c2.name = 2
+
+        return collector.start()
+            .then( () => expect( collector.stack.length ).toBe(6) )
+
+    })
 
 })
