@@ -1,16 +1,27 @@
 language: node_js
-sudo: false
+
+sudo: required
+
+services:
+  - docker
 
 node_js:
   - "5"
 
 install:
-    # build back files
   - cd ./back
+
    # Disable the spinner, it looks bad on Travis
   - npm config set spin false
+  # npm install for build
   - npm install
+
+  # build, babel
   - npm run build
+
+  # build docker image
+  - npm run build:updater
+
   - cd ..
 
 script:
