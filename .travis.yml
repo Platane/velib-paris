@@ -1,0 +1,22 @@
+language: node_js
+
+node_js:
+  - "5"
+
+install:
+    # build back files
+  - cd ./back
+   # Disable the spinner, it looks bad on Travis
+  - npm config set spin false
+  - npm install
+  - npm run build
+  - cd ..
+
+script:
+    # run unit test for back
+    - cd ./back
+    - npm test
+    - cd ..
+
+env:
+  - NODE_ENV=production
