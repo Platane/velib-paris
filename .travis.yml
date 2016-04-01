@@ -25,10 +25,18 @@ install:
   - cd ..
 
 script:
-    # run unit test for back
     - cd ./back
+    # run unit test for back
     - npm test
+
+    ## push the docker image to registry
+    # login to hub.docker
+    - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+    # push
+    - docker push platane/paris-velib-updater
     - cd ..
+
 
 # env:
 #   - NODE_ENV=production
