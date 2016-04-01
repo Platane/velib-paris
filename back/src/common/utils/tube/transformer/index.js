@@ -1,67 +1,49 @@
-import {Tube} from '../abstract'
+import Tube_        from '../base'
 
-export class Transformer extends Tube {
+class Tube extends Tube_ {
 
-    static maxConcurent = Infinity;
+    constructor( fn= x => x, options={} ){
 
-    constructor( ){
         super()
 
-        this._ended         = false
-        this._processing    = 0
+        this.concurency = options.concurency || Infinity
+        this._n         = 0
+        this.fn         = fn
     }
 
-    __testEnd() {
-        this._ended && !this._processing && this.end()
-    }
-
-    _transform( x ){
-        return Promise.resolve( x )
-    }
-
-    _dataEnded( ){
-
-        this._ended = true
-        this.__testEnd()
-    }
-
-    _dataAvailable( ){
+    onDataReady(){
 
         let x
-        while( (x = this.pull()) && this._processing < this.constructor.maxConcurent ) {
+        while( this._n < this.concurency && (x=this.pull()) ) {
 
-            this._processing ++
+            const {ack, data} = x
+            const res = this.fn( data )
 
-            const res = this._transform( x )
-
-            if ( res && res.then )
+            if ( res.then ) {
+                // asynch
+                this._n ++
                 res
-                    .then( x => {
-                        x && this.push( x )
-
-                        this._processing --
-                        this.__testEnd()
-                        this._dataAvailable()
+                    .then( res => {
+                        ack()
+                        this._n --
+                        res && this.push( res )
+                        this.onDataReady()
                     })
-                    .catch( ( err ) => this.error( err ) )
+                    .catch( err => {
+                        if ( err )
+                            return this.error( err )
+                        ack( true )
+                        this._n --
+                        this.onDataReady()
+                    })
 
-            else {
-
-                res && this.push( res )
-
-                this._processing --
-                this.__testEnd()
-                this._dataAvailable()
+            } else {
+                // synch
+                ack()
+                this.push( res )
             }
-
         }
     }
 }
 
-
-Transformer.create = ( transform, maxConcurent=Infinity ) => {
-    class P extends Transformer {}
-    P.maxConcurent = maxConcurent
-    P.prototype._transform = transform
-    return P
-}
+export default Tube
