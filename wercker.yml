@@ -28,3 +28,8 @@ build:
             name: print back outdated package
             cwd: back
             code: npm outdated --quiet
+            
+        - script:
+            name: test back
+            cwd: back
+            code: npm test
