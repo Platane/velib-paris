@@ -2,13 +2,13 @@
 ```
 const availability = {
 
-    stationId   :0,
+    stationId       :0,
 
-    updated     :0,
+    updated_date    :0,
 
-    free        :0,
+    free_slot       :0,
 
-    total       :0,
+    total_slot      :0,
 }
 ```
 
@@ -16,12 +16,12 @@ const availability = {
 ```
 const station = {
 
-    id          : 0,
+    id              : 0,
 
-    name        : '',
+    name            : '',
 
-    address     : '',
+    address         : '',
 
-    coordinates : [lat, lng],
+    coordinates     : [lat, lng],
 }
 ```

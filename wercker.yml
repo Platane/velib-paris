@@ -1,27 +1,30 @@
 
-box: node
+box: node:6
 
 build:
 
     steps:
 
-        - script:
-            name: install back
-            code: |
-                cd ./back
-                npm install
-                cd ..
+        # instal dependencies with yarn,
+        # using yarn cache http://blog.wercker.com/2016/10/13/Yarn.html
 
         - script:
-            name: babel back
+            name: install yarn
             code: |
-                cd ./back
-                npm run build
-                cd ..
+                npm install -g yarn
 
         - script:
-            name: test back
+            name: set yarn cache
             code: |
-                cd ./back
-                npm test
-                cd ..
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+
+        - script:
+            name: install back dependencies
+            cwd: back
+            code: |
+                HOME=$YARN_CACHE yarn
+
+        - script:
+            name: print back outdated package
+            cwd: back
+            code: npm outdated --quiet

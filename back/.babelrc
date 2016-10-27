@@ -1,11 +1,13 @@
 {
-    "presets": [
-        "es2015",
-        "stage-1"
+    "presets": ["es2015", "stage-1"],
+
+    "plugins": [
+        [ "./script/babel-plugin-require-absolute.js", { "moduleDirectory": ["src"] } ],
     ],
+
     "ignore": [
         "node_modules/**/*.js",
-        "tests/**/*.js",
-        "dist/**/*.js"
+        "dist/**/*.js",
+        "lib/**/*.js"
     ]
 }

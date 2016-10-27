@@ -1,6 +1,6 @@
 .tmp
 dist
+lib
 node_modules
 npm-debug.log
-run.sh
-credentials
+yarn-error.log
