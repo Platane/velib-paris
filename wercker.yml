@@ -34,20 +34,25 @@ build:
             cwd: back
             code: npm test
 
+        - script:
+            name: move back lib
+            cwd: back
+            code: mv lib app
+
 
 prepare-appengine-module:
 
     steps:
 
         - script:
-            name: prepare dist
+            name: prepare app directory
             cwd: back
             script:
                 |
                 node -e "var pkg=require('./package.json');pkg.devDependencies={};pkg.name='velib-paris-'+process.env.APP_ENGINE_MODULE;pkg.scripts.start='node ./module-'+process.env.APP_ENGINE_MODULE+'/index.js';console.log(JSON.stringify(pkg))" > ./lib/package.json
-                cp ./src/module-$APP_ENGINE_MODULE/app.yaml ./lib/app.yaml
-                node -e "console.log(require('./package.json').version))" > ./lib/version
-                node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./lib/account
+                cp ./src/module-$APP_ENGINE_MODULE/app.yaml ./app/app.yaml
+                node -e "console.log(require('./package.json').version))" > ./app/version
+                node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./app/account
 
         # - nomkhonwaan/appengine-deploy:
         #     name: prepare dist
@@ -63,13 +68,13 @@ deploy-appengine-module:
 
         - script:
             name: Activate service account
-            cwd: back/lib
+            cwd: back/app
             code: |
                 echo $GC_JSON_KEY_FILE >> secret.json
                 CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $( cat account ) --key-file secret.json
 
         - script:
             name: Upload to store
-            cwd: back/lib
+            cwd: back/app
             code: |
                 gcloud app deploy --version $( cat version )
