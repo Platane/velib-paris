@@ -1,5 +1,5 @@
 runtime: nodejs
 vm: true
-module: default
+service: default
 skip_files:
     - ^yarn\.lock$

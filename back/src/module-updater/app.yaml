@@ -1,6 +1,5 @@
 runtime: nodejs
 vm: true
-module: updater
-service: updater
+service: uploader
 skip_files:
     - ^yarn\.lock$
