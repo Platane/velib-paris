@@ -38,15 +38,21 @@ export const parseStation = ({ key, properties }) => ({
 
     id          : key.path[0].name.split('-')[1],
 
-    coordinates : [ +properties.lat.doubleValue, +properties.lng.doubleValue ],
+    coordinates : [ +properties.coordinates.geoPointValue.latitude, +properties.coordinates.geoPointValue.longitude ],
 
-    // name        : properties.name.stringValue,
+    name        : properties.name.stringValue,
 
-    // address     : properties.address.stringValue,
+    address     : properties.address.stringValue,
 })
 
 export const parseAvailability = ({key, properties}) =>
     ({
 
+        stationId       : key.path[0].name.split('-')[1],
 
+        total_slot      : properties.total_slot.integerValue,
+
+        free_slot       : properties.free_slot.integerValue,
+
+        updated_date    : properties.updated_date.timestampValue,
     })
