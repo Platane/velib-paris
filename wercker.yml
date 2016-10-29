@@ -77,4 +77,4 @@ deploy-appengine-module:
             name: Deploy
             cwd: back/lib
             code: |
-                gcloud app deploy --version $( cat version )
+                gcloud app deploy --version $( cat version ) --verbosity info
