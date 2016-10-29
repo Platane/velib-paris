@@ -51,7 +51,7 @@ prepare-appengine-module:
                 |
                 node -e "var pkg=require('./package.json');pkg.devDependencies={};pkg.name='velib-paris-'+process.env.APP_ENGINE_MODULE;pkg.scripts.start='node ./module-'+process.env.APP_ENGINE_MODULE+'/index.js';console.log(JSON.stringify(pkg))" > ./lib/package.json
                 cp ./src/module-$APP_ENGINE_MODULE/app.yaml ./lib/app.yaml
-                node -e "console.log(require('./package.json').version))" > ./lib/version
+                node -e "console.log(require('./package.json').version+'-'+process.env.WERCKER_GIT_COMMIT)" > ./lib/version
                 node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./lib/account
 
         # - nomkhonwaan/appengine-deploy:
