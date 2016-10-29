@@ -26,10 +26,11 @@
     },
 
     "scripts": {
-        "build"                     : "babel --out-dir ./lib ./src",
-        "test"                      : "jest"
+        "build"                     : "rm -rf lib && babel --out-dir ./lib ./src",
+        "test"                      : "jest",
+        "start"                     : "echo hello"
     },
-    
+
     "jest": {
         "verbose"                   : true,
         "modulePathIgnorePatterns"  : [ "lib", "./test" ]

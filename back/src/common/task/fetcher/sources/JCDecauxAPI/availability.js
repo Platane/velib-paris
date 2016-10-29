@@ -1,4 +1,4 @@
-import request          from 'service/http'
+import request          from 'service/request'
 
 const buildUrl = ( apiKey, stationId ) =>
     ({
@@ -20,11 +20,10 @@ const overLimit = ( err ) =>
     false
 
 module.exports = ( options, stationId ) =>
-    
+
     request.get( buildUrl( options.apiKey, stationId ) )
-        
+
         // format error
         .catch( err => Promise.reject( overLimit( err ) ? 'overLimit' : err ) )
-        
+
         .then( res => parse( stationId, res ) )
-        

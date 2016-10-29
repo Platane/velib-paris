@@ -2,7 +2,7 @@
     "presets": ["es2015", "stage-1"],
 
     "plugins": [
-        [ "./script/babel-plugin-require-absolute.js", { "moduleDirectory": ["src"] } ],
+        [ "./script/babel-plugin-require-absolute.js", { "moduleDirectory": ["src", "common"] } ],
     ],
 
     "ignore": [

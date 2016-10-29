@@ -1,5 +1,5 @@
 import {parseString}    from 'xml2js'
-import request          from 'service/http'
+import request          from 'service/request'
 
 
 const buildUrl = stationId =>
@@ -33,12 +33,11 @@ const overLimit = ( err ) =>
 
 
 module.exports = ( options, stationId ) =>
-    
+
     request( buildUrl( stationId ) )
-        
+
         // format error
         .catch( err => Promise.reject( overLimit( err ) ? 'overLimit' : err ) )
-        
+
         .then( res => parse( stationId, res ) )
-        
-        
+
