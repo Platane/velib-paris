@@ -33,7 +33,7 @@
 
     "jest": {
         "verbose"                   : true,
-        "modulePathIgnorePatterns"  : [ "lib", "./test" ]
+        "modulePathIgnorePatterns"  : [ ".*/lib/.*" ]
     }
 
 }
