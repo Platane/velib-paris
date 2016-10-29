@@ -1,15 +1,18 @@
+
 global.Promise = require('bluebird')
 
-import { createStationFetcher, createAvailabilityFetcher }   from 'fetcher'
-import { createStationPusher, createAvailabilityPusher }     from 'pusher'
+import fetchStations                    from 'task/fetcher/sources/googleObjectStorage/station'
+import { createAvailabilityFetcher }    from 'task/fetcher'
+import { createAvailabilityPusher }     from 'task/pusher'
 
-
-
-import createGos    from 'service/googleObjectStorage'
-import config       from 'config'
-import EventEmitter from 'events'
+import createReporter       from 'util/reporter'
+import {wait}               from 'util/timing'
+import createGos            from 'service/googleObjectStorage'
+import config               from 'config'
 
 let gos
+const stationIds    = []
+const report        = createReporter( config.reporter )
 
 Promise.all([
 
@@ -17,41 +20,24 @@ Promise.all([
         .then( x => gos = x )
 
 ])
+    .then( () => fetchStations( gos ).then( ({ items }) => stationIds.push( ...items.slice(0,500).map( x => x.id ) ) ) )
+
     .then( () => {
 
-        const stationFetch             = createStationFetcher()
         const availabilityFetch        = createAvailabilityFetcher({ max_concurency: 3 })
-        const stationPush              = createStationPusher( gos, { batch_size_max: 500 } )
-        const availabilityPush         = createAvailabilityPusher( gos, { batch_size_max: 500 } )
+        const availabilityPush         = createAvailabilityPusher( gos, { batch_size_max: 100 })
+
+        const loop = () =>
+
+            availabilityPush( availabilityFetch( stationIds ) )
+
+                .then( () => wait( 5*60*1000 ) )
+
+                .then( loop )
 
 
 
-        console.log('start')
-
-        const stream = new EventEmitter()
-
-        let stations
-
-        stationFetch([null])
-            .on('data',     res => ( stations = res ).forEach( x => stream.emit('data', x ) ))
-            .on('error',    res => console.log( 'error', res ))
-            .on('end',      ()  => stream.emit('end') )
-
-
-        const w = stationPush( stream )
-            .then( () => {
-
-                console.log('station pushed')
-
-                return availabilityPush( availabilityFetch( stations.slice(0,10).map( x => x.id ) ) )
-                    .then( () => console.log('availability pushed') )
-
-            })
-
-
-
-
-        return w
+        loop()
     })
 
-    .catch( err => console.log( 'err', err ))
+    .catch( report )

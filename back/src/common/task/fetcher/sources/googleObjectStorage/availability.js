@@ -1,22 +1,26 @@
-import {parseStation} from 'service/googleObjectStorage/parse'
+import {parseAvailability} from 'service/googleObjectStorage/parse'
 
 
 const read = ( gos ) =>
     gos.runQuery({
         query : {
-            kind    : [{name: 'station'}],
+            kind    : [{name: 'stationAvailability'}],
             // order   : {
             //     property    : {
             //         name        : 'name',
             //     },
             //     direction   : 'ASCENDING',
             // },
+            // startCursor     : string,
+            // endCursor       : string,
+            // offset          : number,
+            limit           : 10,
         },
     })
     .then( res =>
         ({
             items       : ( res.batch.entityResults || [] )
-                .map( x => parseStation( x.entity ) )
+                .map( x => parseAvailability( x.entity ) )
             ,
             haveMore    : res.moreResults == 'NO_MORE_RESULTS',
             nextCursor  : res.endCursor,
