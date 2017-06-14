@@ -38,6 +38,7 @@ build:
                 mkdir dist/fetchStationAvailability
                 cp -r lib/* dist/fetchStationAvailability/
                 cp -r node_modules dist/fetchStationAvailability/node_modules
+                echo "require('./module/fetchStationAvailability')" >> dist/fetchStationAvailability/index.js
 
         - script:
             name: prepare env
