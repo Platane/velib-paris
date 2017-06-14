@@ -11,17 +11,17 @@ build:
             code: |
                 npm install -g yarn
                 export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
-                HOME=$YARN_CACHE yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
 
         - script:
             cwd: back
             name: build back
-            code: npm run build
+            code: yarn run build
 
         - script:
             cwd: back
             name: test back
-            code: npm test
+            code: yarn run test-skip-io
 
         - script:
             cwd: back
