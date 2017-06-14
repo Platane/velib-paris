@@ -42,7 +42,6 @@ build:
         - script:
             name: prepare env
             code: |
-                node -e "console.log(require('./package.json').version.replace(/\./g,'-')+'-'+process.env.WERCKER_GIT_COMMIT)" > ./version
                 node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./account
                 node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).project_id)" > ./project
 
@@ -62,11 +61,11 @@ deploy-back:
 
         - script:
             name: create bucket
-            code: gsutil mb -p $( cat project ) gs://platane-velib-fetchStationAvailability
+            code: gsutil mb -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
 
         - script:
             name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --stage-bucket platane-velib-fetchStationAvailability
+            code: gcloud beta functions deploy fetchStationAvailability --stage-bucket platane-velib-fetchstationavailability --trigger-http
 
         - script:
             name: verify function
