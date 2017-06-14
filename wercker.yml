@@ -67,7 +67,7 @@ deploy-back:
 
         - script:
             name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --region EUROPE-WEST1 --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
+            code: gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
 
         - script:
             name: verify function
