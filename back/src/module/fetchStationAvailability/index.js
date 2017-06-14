@@ -16,7 +16,7 @@ const fetch = createFetcher([
     r2.bind(null, config.JCDecauxAPI),
 ]);
 
-const run = async () => {
+export const run = async () => {
     const gos = await createGOS(config.googleCloudPlatform);
 
     const stations = await readStations(gos);
@@ -52,5 +52,3 @@ const run = async () => {
         })
     );
 };
-
-run();

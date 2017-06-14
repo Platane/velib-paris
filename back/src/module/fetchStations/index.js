@@ -10,8 +10,7 @@ const push = (gos, batch) =>
         mutations: batch.map(item => ({ upsert: formatStation(item) })),
     });
 
-const MAX_BATCH = 500;
-const run = async () => {
+export const run = async () => {
     const gos = await createGOS(config.googleCloudPlatform);
 
     const stations = await readStations(config.JCDecauxAPI);
@@ -27,5 +26,3 @@ const run = async () => {
         })
     );
 };
-
-run();

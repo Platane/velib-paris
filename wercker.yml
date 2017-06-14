@@ -38,7 +38,7 @@ build:
                 mkdir dist/fetchStationAvailability
                 cp -r lib/* dist/fetchStationAvailability/
                 cp -r node_modules dist/fetchStationAvailability/node_modules
-                echo "require('./module/fetchStationAvailability')" >> dist/fetchStationAvailability/index.js
+                echo "exports.run = require('./module/fetchStationAvailability').run" >> dist/fetchStationAvailability/index.js
 
         - script:
             name: prepare env
@@ -65,8 +65,9 @@ deploy-back:
             code: gsutil mb -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
 
         - script:
+            cwd: back/dist/fetchStationAvailability
             name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --stage-bucket platane-velib-fetchstationavailability --trigger-http
+            code: gcloud beta functions deploy fetchStationAvailability --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
 
         - script:
             name: verify function
