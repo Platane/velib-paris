@@ -63,11 +63,11 @@ deploy-back:
 
         - script:
             name: create bucket
-            code: gsutil mb -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
+            code: gsutil mb -c STANDARD -l EUROPE-WEST1 -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
 
         - script:
             name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
+            code: gcloud beta functions deploy fetchStationAvailability --region EUROPE-WEST1 --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
 
         - script:
             name: verify function
