@@ -1,13 +1,9 @@
 {
-    "presets": ["es2015", "stage-1"],
+    "presets": ["flow"],
 
     "plugins": [
-        [ "./script/babel-plugin-require-absolute.js", { "moduleDirectory": ["src", "common"] } ],
+        "transform-class-properties",
+        "transform-es2015-modules-commonjs",
+        "transform-object-rest-spread"
     ],
-
-    "ignore": [
-        "node_modules/**/*.js",
-        "dist/**/*.js",
-        "lib/**/*.js"
-    ]
 }
