@@ -66,9 +66,8 @@ deploy-back:
             code: gsutil mb -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
 
         - script:
-            cwd: back/dist/fetchStationAvailability
             name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
+            code: gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
 
         - script:
             name: verify function
