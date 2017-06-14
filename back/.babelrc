@@ -6,4 +6,15 @@
         "transform-es2015-modules-commonjs",
         "transform-object-rest-spread"
     ],
+
+    "env" : {
+        "ASYNC_POLYFILL" : {
+            "plugins" : [
+                "transform-async-to-generator",
+                "transform-class-properties",
+                "transform-es2015-modules-commonjs",
+                "transform-object-rest-spread"
+            ]
+        }
+    }
 }

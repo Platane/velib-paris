@@ -1,5 +1,5 @@
 
-box: node:8
+box: node:6.9
 
 build:
 
@@ -16,19 +16,19 @@ build:
         - script:
             cwd: back
             name: build back
-            code: yarn run build
+            code: env NODE_ENV=ASYNC_POLYFILL yarn run build
 
         - script:
             cwd: back
             name: test back
-            code: yarn run test-skip-io
+            code: env NODE_ENV=ASYNC_POLYFILL yarn run test-skip-io
 
         - script:
             cwd: back
             name: install production node_modules
             code: |
                 rm -r node_modules
-                yarn --production
+                HOME=$YARN_CACHE yarn --pure-lockfile --production=true
 
         - script:
             cwd: back
@@ -38,6 +38,7 @@ build:
                 mkdir dist/fetchStationAvailability
                 cp -r lib/* dist/fetchStationAvailability/
                 cp -r node_modules dist/fetchStationAvailability/node_modules
+                cp package.json dist/fetchStationAvailability/package.json
                 echo "exports.run = require('./module/fetchStationAvailability').run" >> dist/fetchStationAvailability/index.js
 
         - script:
