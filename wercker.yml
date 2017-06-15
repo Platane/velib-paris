@@ -39,7 +39,7 @@ build:
                 cp -r lib/* dist/fetchStationAvailability/
                 cp -r node_modules dist/fetchStationAvailability/node_modules
                 cp package.json dist/fetchStationAvailability/package.json
-                echo "exports.run = require('./module/fetchStationAvailability').run" >> dist/fetchStationAvailability/index.js
+                echo "exports.run = function(_,res){var err;require('./module/fetchStationAvailability').run().catch(function(x){err=x}).then(function(){res.send(err?err.toString():'ok')})}" >> dist/fetchStationAvailability/index.js
 
         - script:
             name: prepare env
