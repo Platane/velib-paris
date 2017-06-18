@@ -151,7 +151,7 @@ aws4@^1.2.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
 
-"babel-cli@ 6.24.1":
+babel-cli@6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-cli/-/babel-cli-6.24.1.tgz#207cd705bba61489b2ea41b5312341cf6aca2283"
   dependencies:
@@ -180,7 +180,7 @@ babel-code-frame@^6.22.0:
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
-"babel-core@ 6.25.0", babel-core@^6.0.0, babel-core@^6.24.1:
+babel-core@6.25.0, babel-core@^6.0.0, babel-core@^6.24.1:
   version "6.25.0"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.25.0.tgz#7dd42b0463c742e9d5296deb3ec67a9322dad729"
   dependencies:
@@ -251,7 +251,7 @@ babel-helpers@^6.24.1:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-"babel-jest@ 20.0.3", babel-jest@^20.0.3:
+babel-jest@20.0.3, babel-jest@^20.0.3:
   version "20.0.3"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-20.0.3.tgz#e4a03b13dc10389e140fc645d09ffc4ced301671"
   dependencies:
@@ -293,7 +293,7 @@ babel-plugin-syntax-object-rest-spread@^6.8.0:
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-object-rest-spread/-/babel-plugin-syntax-object-rest-spread-6.13.0.tgz#fd6536f2bce13836ffa3a5458c4903a597bb3bf5"
 
-"babel-plugin-transform-async-to-generator@ 6.24.1":
+babel-plugin-transform-async-to-generator@6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-async-to-generator/-/babel-plugin-transform-async-to-generator-6.24.1.tgz#6536e378aff6cb1d5517ac0e40eb3e9fc8d08761"
   dependencies:
@@ -301,7 +301,7 @@ babel-plugin-syntax-object-rest-spread@^6.8.0:
     babel-plugin-syntax-async-functions "^6.8.0"
     babel-runtime "^6.22.0"
 
-"babel-plugin-transform-class-properties@ 6.24.1":
+babel-plugin-transform-class-properties@6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-class-properties/-/babel-plugin-transform-class-properties-6.24.1.tgz#6a79763ea61d33d36f37b611aa9def81a81b46ac"
   dependencies:
@@ -310,7 +310,7 @@ babel-plugin-syntax-object-rest-spread@^6.8.0:
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-"babel-plugin-transform-es2015-modules-commonjs@ 6.24.1":
+babel-plugin-transform-es2015-modules-commonjs@6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.24.1.tgz#d3e310b40ef664a36622200097c6d440298f2bfe"
   dependencies:
@@ -326,11 +326,11 @@ babel-plugin-transform-flow-strip-types@^6.22.0:
     babel-plugin-syntax-flow "^6.18.0"
     babel-runtime "^6.22.0"
 
-"babel-plugin-transform-inline-environment-variables@ 0.1.1":
+babel-plugin-transform-inline-environment-variables@0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-inline-environment-variables/-/babel-plugin-transform-inline-environment-variables-0.1.1.tgz#257ccd8ff6941c55384fa60607c97105bb125664"
 
-"babel-plugin-transform-object-rest-spread@ 6.23.0":
+babel-plugin-transform-object-rest-spread@6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-object-rest-spread/-/babel-plugin-transform-object-rest-spread-6.23.0.tgz#875d6bc9be761c58a2ae3feee5dc4895d8c7f921"
   dependencies:
@@ -352,7 +352,7 @@ babel-polyfill@^6.23.0, babel-polyfill@^6.6.1:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
 
-"babel-preset-flow@ 6.23.0":
+babel-preset-flow@6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-preset-flow/-/babel-preset-flow-6.23.0.tgz#e71218887085ae9a24b5be4169affb599816c49d"
   dependencies:
@@ -364,7 +364,7 @@ babel-preset-jest@^20.0.3:
   dependencies:
     babel-plugin-jest-hoist "^20.0.3"
 
-"babel-register@ 6.24.1", babel-register@^6.24.1:
+babel-register@6.24.1, babel-register@^6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-register/-/babel-register-6.24.1.tgz#7e10e13a2f71065bdfad5a1787ba45bca6ded75f"
   dependencies:
@@ -1020,7 +1020,7 @@ google-p12-pem@^0.1.0:
   dependencies:
     node-forge "^0.7.1"
 
-"googleapis@ 19.0.0":
+googleapis@19.0.0:
   version "19.0.0"
   resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-19.0.0.tgz#8700eb14294777e0c196152051fd6367061dde85"
   dependencies:
@@ -1549,7 +1549,7 @@ jest-validate@^20.0.3:
     leven "^2.1.0"
     pretty-format "^20.0.3"
 
-"jest@ 20.0.4":
+jest@20.0.4:
   version "20.0.4"
   resolved "https://registry.yarnpkg.com/jest/-/jest-20.0.4.tgz#3dd260c2989d6dad678b1e9cc4d91944f6d602ac"
   dependencies:
@@ -1817,7 +1817,7 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-"node-fetch@ 1.7.1":
+node-fetch@1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.1.tgz#899cb3d0a3c92f952c47f1b876f4c8aeabd400d5"
   dependencies:
@@ -2671,7 +2671,7 @@ xml-name-validator@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-2.0.1.tgz#4d8b8f1eccd3419aa362061becef515e1e559635"
 
-"xml2js@ 0.4.17":
+xml2js@0.4.17:
   version "0.4.17"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.17.tgz#17be93eaae3f3b779359c795b419705a8817e868"
   dependencies:
