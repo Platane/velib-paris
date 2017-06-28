@@ -1020,9 +1020,9 @@ google-p12-pem@^0.1.0:
   dependencies:
     node-forge "^0.7.1"
 
-googleapis@19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-19.0.0.tgz#8700eb14294777e0c196152051fd6367061dde85"
+googleapis@20.0.0:
+  version "20.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-20.0.0.tgz#017a23d05b99a53b0b38018dd8f699e3b86466c3"
   dependencies:
     async "~2.3.0"
     google-auth-library "~0.10.0"
