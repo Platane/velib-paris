@@ -4,7 +4,7 @@
   "author": "Platane <me@platane.me>",
   "license": "MIT",
   "dependencies": {
-    "googleapis": "19.0.0",
+    "googleapis": "20.0.0",
     "node-fetch": "1.7.1",
     "xml2js": "0.4.17"
   },
