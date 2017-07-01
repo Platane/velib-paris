@@ -4,15 +4,13 @@
     "plugins": [
         "transform-class-properties",
         "transform-es2015-modules-commonjs",
-        "transform-object-rest-spread"
+        "transform-object-rest-spread",
+        "transform-inline-environment-variables",
     ],
 
-    "env" : {
-        "ASYNC_POLYFILL" : {
-            "plugins" : [
-                "transform-inline-environment-variables",
-                "transform-async-to-generator",
-            ]
-        }
-    }
+    "env": {
+        "ASYNC_POLYFILL": {
+            "plugins": ["transform-async-to-generator"],
+        },
+    },
 }

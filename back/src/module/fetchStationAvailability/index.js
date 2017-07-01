@@ -1,54 +1,93 @@
 import { config } from '../../config';
-import { create as createGOS } from '../../service/googleObjectStorage';
-import { readStationAvailability as r1 } from '../../read/JCDecauxAPI/availability';
-import { readStationAvailability as r2 } from '../../read/velibParisAPI/availability';
-// import { readStations } from '../../read/velibParisAPI/stations';
-import { readStations } from '../../read/googleObjectStorage/stations';
-import { splitAndExec } from '../../util/batch/split';
+import { readStationAvailability as fetch_JCDecauxAPI } from '../../read/JCDecauxAPI/availability';
+import { readStationAvailability as fetch_velibParisAPI } from '../../read/velibParisAPI/availability';
 import { createFetcher } from '../../util/batch/chainFetcher';
-import {
-    formatAvailability,
-    formatStation,
-} from '../../service/googleObjectStorage/parse';
+import { promisify } from '../../util/promisify';
+import connectDataStore from '@google-cloud/datastore';
 
+// merge all the availability fetcher
 const fetch = createFetcher([
-    r1.bind(null, config.JCDecauxAPI),
-    r2.bind(null, config.JCDecauxAPI),
+    // one for the velib paris page
+    (stationId: string) => fetch_velibParisAPI({}, stationId),
+
+    // one for each api key
+    ...config.JCDecauxAPI.apiKeys.map(apiKey => (stationId: string) =>
+        fetch_JCDecauxAPI({ apiKey }, stationId)
+    ),
 ]);
 
+const getBatchInterval = (date: number) => {
+    const day = 1000 * 60 * 60 * 24;
+
+    const start_date = Math.floor(date / day) * day;
+    const end_date = start_date + day - 1;
+
+    return { start_date, end_date };
+};
+
+// sort the station from the last recently updated to the most recently ones
+const getStationsId = (stations, previousAvailabilities): string[] => {
+    const ids = [];
+
+    const list = previousAvailabilities.slice(-2000);
+
+    for (let i = previousAvailabilities.length; i--; ) {
+        const id = previousAvailabilities[i].stationId;
+
+        if (!ids.includes(id)) ids.push(id);
+    }
+
+    for (let i = stations.length; i--; ) {
+        const id = stations[i].id;
+
+        if (!ids.includes(id)) ids.push(id);
+    }
+
+    return ids;
+};
+
 export const run = async () => {
-    const gos = await createGOS(config.googleCloudPlatform);
+    const datastore = connectDataStore({
+        projectId: config.googleCloudPlatform.project_id,
+        credentials: config.googleCloudPlatform,
+    });
 
-    const stations = await readStations(gos);
+    const save = promisify(datastore.save.bind(datastore));
+    const get = promisify(datastore.get.bind(datastore));
 
-    const availabilities = await fetch(stations.map(({ id }) => id));
+    // read stations from datastore
+    const { stations } = (await get(datastore.key(['stationBatch', '_']))) || {
+        stations: [],
+    };
+
+    // retrive batch
+    const { start_date, end_date } = getBatchInterval(Date.now());
+    const batchKey = datastore.key([
+        'availabilityBatch',
+        new Date(start_date).toISOString().slice(0, 13),
+    ]);
+    const batch = await get(batchKey);
+
+    // previous availability
+    const previousAvailabilities = batch ? batch.availabilities : [];
+
+    // sort station, in order too fetch the most out of date ones
+    // and fetch the availabilities
+    const availabilities = await fetch(
+        getStationsId(stations, previousAvailabilities)
+    );
 
     console.log(
         `found ${availabilities.length} availabilities ( from the ${stations.length} stations )`
     );
 
-    await splitAndExec(500, availabilities, availabilities =>
-        gos.commit({
-            mode: 'NON_TRANSACTIONAL',
-            mutations: availabilities.map(availability => ({
-                upsert: formatAvailability(availability),
-            })),
-        })
-    );
-
-    const now = Date.now();
-
-    const newStations = availabilities.map(({ stationId }) => {
-        const station = stations.find(({ id }) => id === stationId);
-        return { ...station, updated_date: now };
+    await save({
+        key: batchKey,
+        method: 'upsert',
+        data: {
+            start_date,
+            end_date,
+            availabilities: [...previousAvailabilities, ...availabilities],
+        },
     });
-
-    await splitAndExec(500, newStations, stations =>
-        gos.commit({
-            mode: 'NON_TRANSACTIONAL',
-            mutations: stations.map(station => ({
-                upsert: formatStation(station),
-            })),
-        })
-    );
 };

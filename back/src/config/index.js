@@ -1,9 +1,7 @@
 import { config as googleCloudPlatform } from './googleCloudPlatform';
+import { config as JCDecauxAPI } from './JCDecauxAPI';
 
 export const config = {
-    JCDecauxAPI: {
-        apiKey: process.env.JCDECAUX_API_KEY || '',
-    },
-
+    JCDecauxAPI,
     googleCloudPlatform,
 };

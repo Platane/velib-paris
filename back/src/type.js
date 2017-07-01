@@ -19,3 +19,12 @@ export type Availability = {
     free_slot: number,
     total_slot: number,
 };
+
+export type GoogleStorageObject = {
+    key: {
+        path: Array<{ kind: string, name: string }>,
+    },
+    properties: {
+        [string]: Object,
+    },
+};

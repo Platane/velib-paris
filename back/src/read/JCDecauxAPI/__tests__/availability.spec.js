@@ -1,8 +1,12 @@
 import { readStationAvailability } from '../availability';
 import { config } from '../../../config';
 
+const options = {
+    apiKey: process.env.JCDECAUX_API_KEY_TEST || config.JCDecauxAPI.apiKeys,
+};
+
 it('should read availability for station', async () => {
-    const res = await readStationAvailability(config.JCDecauxAPI, '4021');
+    const res = await readStationAvailability(options, '4021');
 
     expect(typeof res.stationId).toBe('string');
     expect(typeof res.updated_date).toBe('number');
