@@ -26,24 +26,28 @@ const getBatchInterval = (date: number) => {
 };
 
 // sort the station from the last recently updated to the most recently ones
-const getStationsId = (stations, previousAvailabilities): string[] => {
-    const ids = [];
+// assuming the previousAvailabilities is sorted by updated_date ascending
+const getStationsToFetch = (
+    stations,
+    previousAvailabilities
+): { id: string, updated_date: number }[] => {
+    const toFetch = [];
 
     const list = previousAvailabilities.slice(-2000);
 
     for (let i = previousAvailabilities.length; i--; ) {
-        const id = previousAvailabilities[i].stationId;
+        const { updated_date, stationId: id } = previousAvailabilities[i];
 
-        if (!ids.includes(id)) ids.push(id);
+        if (!toFetch.includes(id)) toFetch.push({ id, updated_date });
     }
 
     for (let i = stations.length; i--; ) {
         const id = stations[i].id;
 
-        if (!ids.includes(id)) ids.push(id);
+        if (!toFetch.includes(id)) toFetch.push({ id, updated_date: 0 });
     }
 
-    return ids;
+    return toFetch;
 };
 
 export const run = async () => {
@@ -72,13 +76,24 @@ export const run = async () => {
     const previousAvailabilities = batch ? batch.availabilities : [];
 
     // sort station, in order too fetch the most out of date ones
-    // and fetch the availabilities
-    const availabilities = await fetch(
-        getStationsId(stations, previousAvailabilities)
+    const stationsToFetch = getStationsToFetch(
+        stations,
+        previousAvailabilities
     );
 
+    // fetch the new availabilities
+    const availabilities = await fetch(stationsToFetch.map(({ id }) => id));
+
+    // only keeps the new ones
+    const newAvailabilities = availabilities.filter(x => {
+        const { updated_date } =
+            stationsToFetch.find(({ id }) => id === x.id) || {};
+
+        return x.updated_date > updated_date;
+    });
+
     console.log(
-        `found ${availabilities.length} availabilities ( from the ${stations.length} stations )`
+        `found ${availabilities.length} availabilities ( ${newAvailabilities.length} fresh ) ( from the ${stations.length} stations )`
     );
 
     await save({
@@ -87,7 +102,7 @@ export const run = async () => {
         data: {
             start_date,
             end_date,
-            availabilities: [...previousAvailabilities, ...availabilities],
+            availabilities: [...previousAvailabilities, ...newAvailabilities],
         },
     });
 };
