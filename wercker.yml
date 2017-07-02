@@ -44,7 +44,7 @@ build:
                 cp -r lib/* dist/publishBatch/
                 cp -r node_modules dist/publishBatch/node_modules
                 cp package.json dist/publishBatch/package.json
-                echo "exports.run = function(_,res){var err;require('./module/publishBatch').run().catch(function(x){err=x}).then(function(){res.send(err?err.toString():'ok')})}" >> dist/publishBatch/index.js
+                echo "exports.run = function(_,res){var err;require('./module/publishBatch').run({date:Date.now()-1000*60*60}).catch(function(x){err=x}).then(function(){res.send(err?err.toString():'ok')})}" >> dist/publishBatch/index.js
                 mkdir dist/fetchStations
                 cp -r lib/* dist/fetchStations/
                 cp -r node_modules dist/fetchStations/node_modules
