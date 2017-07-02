@@ -40,6 +40,11 @@ build:
                 cp -r node_modules dist/fetchStationAvailability/node_modules
                 cp package.json dist/fetchStationAvailability/package.json
                 echo "exports.run = function(_,res){var err;require('./module/fetchStationAvailability').run().catch(function(x){err=x}).then(function(){res.send(err?err.toString():'ok')})}" >> dist/fetchStationAvailability/index.js
+                mkdir dist/publishBatch
+                cp -r lib/* dist/publishBatch/
+                cp -r node_modules dist/publishBatch/node_modules
+                cp package.json dist/publishBatch/package.json
+                echo "exports.run = function(_,res){var err;require('./module/publishBatch').run().catch(function(x){err=x}).then(function(){res.send(err?err.toString():'ok')})}" >> dist/publishBatch/index.js
 
         - script:
             name: prepare env
@@ -63,12 +68,16 @@ deploy-back:
 
         - script:
             name: create bucket
-            code: gsutil mb -c STANDARD -l EUROPE-WEST1 -p $( cat project ) gs://platane-velib-fetchstationavailability || echo 1
+            code: gsutil mb -c STANDARD -l EUROPE-WEST1 -p $( cat project ) gs://platane-velib-lambda-function || echo 1
 
         - script:
-            name: deploy function
-            code: gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=256MB --timeout 120s --entry-point run --stage-bucket platane-velib-fetchstationavailability --trigger-http
+            name: deploy function fetchStationAvailability
+            code: |
+                gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=256MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions describe fetchStationAvailability
 
         - script:
-            name: verify function
-            code: gcloud beta functions describe fetchStationAvailability
+            name: deploy function publishBatch
+            code: |
+                gcloud beta functions deploy publishBatch --local-path back/dist/publishBatch --memory=256MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions describe publishBatch
