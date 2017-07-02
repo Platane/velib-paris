@@ -38,13 +38,14 @@ const getStationsToFetch = (
     for (let i = previousAvailabilities.length; i--; ) {
         const { updated_date, stationId: id } = previousAvailabilities[i];
 
-        if (!toFetch.includes(id)) toFetch.push({ id, updated_date });
+        if (!toFetch.some(x => x.id === id)) toFetch.push({ id, updated_date });
     }
 
     for (let i = stations.length; i--; ) {
         const id = stations[i].id;
 
-        if (!toFetch.includes(id)) toFetch.push({ id, updated_date: 0 });
+        if (!toFetch.some(x => x.id === id))
+            toFetch.push({ id, updated_date: 0 });
     }
 
     return toFetch;
@@ -100,7 +101,7 @@ export const run = async (options?: Options = {}) => {
     });
 
     console.log(
-        `found ${availabilities.length} availabilities ( ${newAvailabilities.length} fresh ) ( from the ${stations.length} stations )`
+        `found ${availabilities.length} availabilities ( ${newAvailabilities.length} fresh ) from the ${stations.length} stations ( ${stationsToFetch.length} to fetch )`
     );
 
     await save({
