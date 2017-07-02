@@ -50,7 +50,11 @@ const getStationsToFetch = (
     return toFetch;
 };
 
-export const run = async () => {
+type Options = {
+    max_stations?: number,
+};
+
+export const run = async (options?: Options = {}) => {
     const datastore = connectDataStore({
         projectId: config.googleCloudPlatform.project_id,
         credentials: config.googleCloudPlatform,
@@ -70,16 +74,19 @@ export const run = async () => {
         'availabilityBatch',
         new Date(start_date).toISOString().slice(0, 13),
     ]);
-    const batch = await get(batchKey);
 
     // previous availability
-    const previousAvailabilities = batch ? batch.availabilities : [];
+    // prettier-ignore
+    const previousAvailabilities = (
+        (await get(batchKey)) || { availabilities: [] }
+    ).availabilities;
 
     // sort station, in order too fetch the most out of date ones
+    // only keep the firsts ones if the options 'max_stations' is set
     const stationsToFetch = getStationsToFetch(
         stations,
         previousAvailabilities
-    );
+    ).slice(0, options.max_stations || Infinity);
 
     // fetch the new availabilities
     const availabilities = await fetch(stationsToFetch.map(({ id }) => id));
