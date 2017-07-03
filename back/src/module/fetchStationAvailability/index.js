@@ -94,10 +94,9 @@ export const run = async (options?: Options = {}) => {
 
     // only keeps the new ones
     const newAvailabilities = availabilities.filter(x => {
-        const { updated_date } =
-            stationsToFetch.find(({ id }) => id === x.id) || {};
+        const previous = stationsToFetch.find(({ id }) => id === x.stationId);
 
-        return x.updated_date > updated_date;
+        return !previous || x.updated_date > previous.updated_date;
     });
 
     console.log(
