@@ -122,13 +122,23 @@ export const run = async (options?: Options = {}) => {
     const { start_date, end_date } = getLimit(newAvailabilities);
     const batchKey = datastore.key('availabilityBatch');
 
-    await save({
+    const d = await save({
         key: batchKey,
         method: 'upsert',
-        data: {
-            start_date,
-            end_date,
-            availabilities: newAvailabilities,
-        },
+        data: [
+            {
+                name: 'start_date',
+                value: start_date,
+            },
+            {
+                name: 'end_date',
+                value: end_date,
+            },
+            {
+                name: 'availabilities',
+                value: newAvailabilities,
+                excludeFromIndexes: true,
+            },
+        ],
     });
 };
