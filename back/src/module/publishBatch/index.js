@@ -18,7 +18,7 @@ type Options = {
     date?: number,
 };
 
-const formatFileContent = (availabilities: Availability[]) => {
+const formatFileContent_json = (availabilities: Availability[]) => {
     const stationIds = {};
     availabilities.forEach(av =>
         (stationIds[av.stationId] = stationIds[av.stationId] || []).push([
@@ -28,11 +28,31 @@ const formatFileContent = (availabilities: Availability[]) => {
         ])
     );
 
-    return Object.keys(stationIds).map(stationId => ({
+    const array = Object.keys(stationIds).map(stationId => ({
         stationId,
         availabilities: stationIds[stationId],
     }));
+
+    return JSON.stringify(array);
 };
+
+const formatFileContent_csv = (availabilities: Availability[]) =>
+    availabilities
+        .sort((a, b) => {
+            if (a.stationId !== b.stationId)
+                return a.stationId < b.stationId ? 1 : -1;
+
+            return a.updated_date > b.updated_date ? 1 : -1;
+        })
+        .map(x =>
+            [
+                x.stationId,
+                x.updated_date / 1000,
+                x.free_slot,
+                x.total_slot,
+            ].join(',')
+        )
+        .join('\n');
 
 const getAvailabilities = async (
     datastore,
@@ -81,10 +101,10 @@ export const run = async (options?: Options = {}) => {
 
     // create the file
     const file = bucket.file(
-        `${new Date(start_date).toISOString().slice(0, 13)}.json`
+        `${new Date(start_date).toISOString().slice(0, 13)}.csv`
     );
 
-    const fileContent = JSON.stringify(formatFileContent(availabilities));
+    const fileContent = formatFileContent_csv(availabilities);
 
     await file.save(fileContent, {
         gzip: true,
