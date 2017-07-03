@@ -5,6 +5,8 @@ import { createFetcher } from '../../util/batch/chainFetcher';
 import { promisify } from '../../util/promisify';
 import connectDataStore from '@google-cloud/datastore';
 
+import type { Availability } from '../../type';
+
 // merge all the availability fetcher
 const fetch = createFetcher([
     // one for the velib paris page
@@ -15,15 +17,6 @@ const fetch = createFetcher([
         fetch_JCDecauxAPI({ apiKey }, stationId)
     ),
 ]);
-
-const getBatchInterval = (date: number) => {
-    const day = 1000 * 60 * 60 * 24;
-
-    const start_date = Math.floor(date / day) * day;
-    const end_date = start_date + day - 1;
-
-    return { start_date, end_date };
-};
 
 // sort the station from the last recently updated to the most recently ones
 // assuming the previousAvailabilities is sorted by updated_date ascending
@@ -51,6 +44,35 @@ const getStationsToFetch = (
     return toFetch;
 };
 
+const getLastFetchedAvialabilities = async (
+    datastore
+): Promise<Availability[]> => {
+    const query = datastore
+        .createQuery('availabilityBatch')
+        .order('start_date', { descending: true })
+        .limit(3);
+
+    const [batches, _] = await datastore.runQuery(query);
+
+    return []
+        .concat(
+            ...batches.reverse().map(({ availabilities }) => availabilities)
+        )
+        .sort((a, b) => (a.updated_date < b.updated_date ? 1 : -1));
+};
+
+const getLimit = (availabilities: Availability[]) => {
+    let start_date = Infinity;
+    let end_date = -Infinity;
+
+    availabilities.forEach(({ updated_date }) => {
+        start_date = Math.min(updated_date, start_date);
+        end_date = Math.max(updated_date, end_date);
+    });
+
+    return { start_date, end_date };
+};
+
 type Options = {
     max_stations?: number,
 };
@@ -69,18 +91,10 @@ export const run = async (options?: Options = {}) => {
         stations: [],
     };
 
-    // retrive batch
-    const { start_date, end_date } = getBatchInterval(Date.now());
-    const batchKey = datastore.key([
-        'availabilityBatch',
-        new Date(start_date).toISOString().slice(0, 13),
-    ]);
-
     // previous availability
-    // prettier-ignore
-    const previousAvailabilities = (
-        (await get(batchKey)) || { availabilities: [] }
-    ).availabilities;
+    const previousAvailabilities = await getLastFetchedAvialabilities(
+        datastore
+    );
 
     // sort station, in order too fetch the most out of date ones
     // only keep the firsts ones if the options 'max_stations' is set
@@ -103,13 +117,18 @@ export const run = async (options?: Options = {}) => {
         `found ${availabilities.length} availabilities ( ${newAvailabilities.length} fresh ) from the ${stations.length} stations ( ${stationsToFetch.length} to fetch )`
     );
 
+    if (newAvailabilities.length === 0) return;
+
+    const { start_date, end_date } = getLimit(newAvailabilities);
+    const batchKey = datastore.key('availabilityBatch');
+
     await save({
         key: batchKey,
         method: 'upsert',
         data: {
             start_date,
             end_date,
-            availabilities: [...previousAvailabilities, ...newAvailabilities],
+            availabilities: newAvailabilities,
         },
     });
 };

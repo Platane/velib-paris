@@ -5,7 +5,7 @@ import connectDataStore from '@google-cloud/datastore';
 import connectStorage from '@google-cloud/storage';
 import type { Availability } from '../../type';
 
-const getBatchInterval = (date: number) => {
+const getInterval = (date: number) => {
     const day = 1000 * 60 * 60 * 24;
 
     const start_date = Math.floor(date / day) * day;
@@ -34,6 +34,24 @@ const formatFileContent = (availabilities: Availability[]) => {
     }));
 };
 
+const getAvailabilities = async (
+    datastore,
+    start_date: number,
+    end_date: number
+): Promise<Availability[]> => {
+    const query = datastore
+        .createQuery('availabilityBatch')
+        .filter('start_date', '>=', start_date)
+        .filter('start_date', '<', end_date)
+        .order('start_date');
+
+    const [batches, _] = await datastore.runQuery(query);
+
+    return []
+        .concat(...batches.map(({ availabilities }) => availabilities))
+        .filter(x => start_date <= x.updated_date && x.updated_date < end_date);
+};
+
 export const run = async (options?: Options = {}) => {
     // set up google api
     const gConfig = {
@@ -44,24 +62,7 @@ export const run = async (options?: Options = {}) => {
     const datastore = connectDataStore(gConfig);
     const storage = connectStorage(gConfig);
 
-    const get = promisify(datastore.get.bind(datastore));
-
-    // get the batch key
-    const { start_date, end_date } = getBatchInterval(
-        options.date || Date.now()
-    );
-    const batchKey = datastore.key([
-        'availabilityBatch',
-        new Date(start_date).toISOString().slice(0, 13),
-    ]);
-
-    // get all the availabilities for the batch
-    // prettier-ignore
-    const availabilities = (
-        (await get(batchKey)) || { availabilities: [] }
-    ).availabilities;
-
-    // get or create
+    // get or create the bucket
     const [bucket, _] = await storage.bucket('velib-forecast-data').get({
         autoCreate: true,
         regional: true,
@@ -69,12 +70,23 @@ export const run = async (options?: Options = {}) => {
         nearline: true,
     });
 
+    const { start_date, end_date } = getInterval(options.date || Date.now());
+
+    // get the batch key
+    const availabilities = await getAvailabilities(
+        datastore,
+        start_date,
+        end_date
+    );
+
     // create the file
     const file = bucket.file(
         `${new Date(start_date).toISOString().slice(0, 13)}.json`
     );
 
-    await file.save(JSON.stringify(formatFileContent(availabilities)), {
+    const fileContent = JSON.stringify(formatFileContent(availabilities));
+
+    await file.save(fileContent, {
         gzip: true,
         public: true,
     });
