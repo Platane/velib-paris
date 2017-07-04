@@ -78,13 +78,13 @@ deploy-back:
         - script:
             name: deploy function fetchStationAvailability
             code: |
-                gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=256MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
                 gcloud beta functions describe fetchStationAvailability
 
         - script:
             name: deploy function publishBatch
             code: |
-                gcloud beta functions deploy publishBatch --local-path back/dist/publishBatch --memory=256MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions deploy publishBatch --local-path back/dist/publishBatch --memory=1GB --timeout 540s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
                 gcloud beta functions describe publishBatch
 
         - script:
