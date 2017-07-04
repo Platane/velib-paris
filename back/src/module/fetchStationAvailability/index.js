@@ -38,12 +38,14 @@ const getStationsToFetch = (
         const id = stations[i].id;
 
         if (!toFetch.some(x => x.id === id))
-            toFetch.push({ id, updated_date: 0 });
+            toFetch.unshift({ id, updated_date: 0 });
     }
 
     return toFetch;
 };
 
+// return the X last availabilities fetched ( from the db )
+// ordered by most recent first
 const getLastFetchedAvialabilities = async (
     datastore
 ): Promise<Availability[]> => {
@@ -94,6 +96,29 @@ const getBatchStat = (availabilities: Availability[]) => {
     ].join('\n');
 };
 
+// remove availabilities that are too old to be fresh
+// or already in the previous batches
+const cleanAvailabilities = (
+    availabilities: Availability[],
+    stationsToFetch: Array<{ id: string, updated_date: number }>
+) => {
+    // 20 min
+    const MAX_WINDOW = 20 * 60 * 1000;
+
+    const { start_date, end_date } = getLimit(availabilities);
+    const window = Math.min(MAX_WINDOW, end_date - start_date);
+
+    return availabilities.filter(x => {
+        // older than 20 min ( relatively to the most recent one )
+        if (x.updated_date < end_date - window) return false;
+
+        // check if it's older ( or equals ) than the last one
+        const previous = stationsToFetch.find(({ id }) => id === x.stationId);
+
+        return !previous || x.updated_date > previous.updated_date;
+    });
+};
+
 type Options = {
     max_stations?: number,
 };
@@ -128,11 +153,10 @@ export const run = async (options?: Options = {}) => {
     const availabilities = await fetch(stationsToFetch.map(({ id }) => id));
 
     // only keeps the new ones
-    const newAvailabilities = availabilities.filter(x => {
-        const previous = stationsToFetch.find(({ id }) => id === x.stationId);
-
-        return !previous || x.updated_date > previous.updated_date;
-    });
+    const newAvailabilities = cleanAvailabilities(
+        availabilities,
+        stationsToFetch
+    );
 
     console.log(
         `found ${availabilities.length} availabilities ( ${newAvailabilities.length} fresh ) from the ${stations.length} stations ( ${stationsToFetch.length} to fetch )`
