@@ -50,7 +50,7 @@ const getLastFetchedAvialabilities = async (
     const query = datastore
         .createQuery('availabilityBatch')
         .order('start_date', { descending: true })
-        .limit(3);
+        .limit(5);
 
     const [batches, _] = await datastore.runQuery(query);
 
@@ -141,4 +141,6 @@ export const run = async (options?: Options = {}) => {
             },
         ],
     });
+
+    console.log(`key: ${batchKey.id}  [${start_date}, ${end_date}]`);
 };

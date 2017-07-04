@@ -67,6 +67,13 @@ const getAvailabilities = async (
 
     const [batches, _] = await datastore.runQuery(query);
 
+    console.log(
+        start_date,
+        batches.length,
+        batches.map(x => x.availabilities.length),
+        _
+    );
+
     return []
         .concat(...batches.map(({ availabilities }) => availabilities))
         .filter(x => start_date <= x.updated_date && x.updated_date < end_date);
