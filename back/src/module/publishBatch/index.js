@@ -96,9 +96,9 @@ export const run = async (options?: Options = {}) => {
     await bucket.setMetadata({
         cors: [
             {
-                origin: ['http://example.appspot.com'],
+                origin: ['*'],
                 responseHeader: ['Content-Type'],
-                method: ['GET', 'HEAD', 'DELETE'],
+                method: ['GET', 'HEAD'],
                 maxAgeSeconds: 3600,
             },
         ],
