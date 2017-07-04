@@ -90,6 +90,18 @@ export const run = async (options?: Options = {}) => {
         nearline: true,
     });
 
+    // set bucket cors
+    await bucket.setMetadata({
+        cors: [
+            {
+                origin: ['http://example.appspot.com'],
+                responseHeader: ['Content-Type'],
+                method: ['GET', 'HEAD', 'DELETE'],
+                maxAgeSeconds: 3600,
+            },
+        ],
+    });
+
     const { start_date, end_date } = getInterval(options.date || Date.now());
 
     // get the batch key
