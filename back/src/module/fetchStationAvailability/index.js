@@ -73,6 +73,27 @@ const getLimit = (availabilities: Availability[]) => {
     return { start_date, end_date };
 };
 
+const getBatchStat = (availabilities: Availability[]) => {
+    const { start_date, end_date } = getLimit(availabilities);
+    const l = end_date - start_date + 1;
+
+    const partitions = Array.from({ length: 10 }).map((_, i, arr) => {
+        const a = start_date + i / arr.length * l;
+        const b = start_date + (i + 1) / arr.length * l;
+
+        return availabilities.filter(
+            x => a <= x.updated_date && x.updated_date < b
+        ).length;
+    });
+
+    return [
+        `end date : ${new Date(end_date)
+            .toISOString()
+            .slice(0, 19)} ( ${Math.round(l / (1000 * 60) * 10) / 10} min )`,
+        `repartition: ${availabilities.length} [${partitions.join(',')}]`,
+    ].join('\n');
+};
+
 type Options = {
     max_stations?: number,
 };
@@ -142,5 +163,5 @@ export const run = async (options?: Options = {}) => {
         ],
     });
 
-    console.log(`key: ${batchKey.id}  [${start_date}, ${end_date}]`);
+    console.log(`key: ${batchKey.id}  \n${getBatchStat(newAvailabilities)}`);
 };

@@ -61,18 +61,13 @@ const getAvailabilities = async (
 ): Promise<Availability[]> => {
     const query = datastore
         .createQuery('availabilityBatch')
-        .filter('start_date', '>=', start_date)
-        .filter('start_date', '<', end_date)
-        .order('start_date');
+        .filter('end_date', '>=', start_date)
+        .filter('end_date', '<', end_date + 1000 * 60 * 60 * 1)
+        .order('end_date');
 
     const [batches, _] = await datastore.runQuery(query);
 
-    console.log(
-        start_date,
-        batches.length,
-        batches.map(x => x.availabilities.length),
-        _
-    );
+    console.log(_);
 
     return []
         .concat(...batches.map(({ availabilities }) => availabilities))
