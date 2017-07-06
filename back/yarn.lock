@@ -40,9 +40,9 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.3"
 
-"@google-cloud/datastore@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.0.2.tgz#b713f3f03a713b38fcb9631aca3f8e96cda816a9"
+"@google-cloud/datastore@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.0.3.tgz#1708d80e18b877810bb9841b78ae0382c3b13d06"
   dependencies:
     "@google-cloud/common" "^0.13.0"
     "@google-cloud/common-grpc" "^0.3.4"
@@ -852,8 +852,8 @@ detect-indent@^4.0.0:
     repeating "^2.0.0"
 
 diff@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.0.tgz#056695150d7aa93237ca7e378ac3b1682b7963b9"
 
 dot-prop@^2.4.0:
   version "2.4.0"
