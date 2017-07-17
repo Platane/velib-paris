@@ -4,7 +4,7 @@
     "author": "Platane <me@platane.me>",
     "license": "MIT",
     "dependencies": {
-        "@google-cloud/datastore": "1.0.5",
+        "@google-cloud/datastore": "1.0.6",
         "@google-cloud/storage": "1.2.0",
         "node-fetch": "1.7.1",
         "xml2js": "0.4.17"

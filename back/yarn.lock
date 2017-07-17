@@ -40,9 +40,9 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.3"
 
-"@google-cloud/datastore@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.0.5.tgz#2e2d99adf5a38b03b212327aec57fdab0fced421"
+"@google-cloud/datastore@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.0.6.tgz#aa8f683f0f971b2a4bf3d20e5c6ba4686536fb6b"
   dependencies:
     "@google-cloud/common" "^0.13.0"
     "@google-cloud/common-grpc" "^0.3.4"
