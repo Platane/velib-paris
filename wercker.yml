@@ -1,5 +1,5 @@
 
-box: node:6.9
+box: node:6.11
 
 build:
 

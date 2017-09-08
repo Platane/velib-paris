@@ -25,7 +25,7 @@
         "jest": "20.0.4"
     },
     "engines": {
-        "node": "6.9.x"
+        "node": "6.11.x"
     },
     "scripts": {
         "flow-typed": "flow-typed install",
