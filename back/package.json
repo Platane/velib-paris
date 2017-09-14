@@ -22,7 +22,7 @@
         "babel-register": "6.26.0",
         "flow-bin": "0.54.1",
         "flow-typed": "2.1.5",
-        "jest": "21.0.2"
+        "jest": "21.1.0"
     },
     "engines": {
         "node": "6.11.x"
