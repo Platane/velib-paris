@@ -1,16 +1,26 @@
 {
-    "presets": ["flow"],
+    "presets": [
+        "flow",
+        [
+            "env",
+            {
+                "targets": {
+                    "node": "6.11"
+                }
+            }
+        ]
+    ],
 
     "plugins": [
         "transform-class-properties",
         "transform-es2015-modules-commonjs",
         "transform-object-rest-spread",
-        "transform-inline-environment-variables",
+        "transform-inline-environment-variables"
     ],
 
     "env": {
         "ASYNC_POLYFILL": {
-            "plugins": ["transform-async-to-generator"],
-        },
-    },
+            "plugins": ["transform-async-to-generator"]
+        }
+    }
 }
