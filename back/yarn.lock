@@ -58,9 +58,9 @@
     propprop "^0.3.0"
     split-array-stream "^1.0.0"
 
-"@google-cloud/storage@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.3.0.tgz#19352632bc2b4c4d302ccb763a3e4c79fe39772e"
+"@google-cloud/storage@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.3.1.tgz#731767a23226d981a52345bcda0f2212235db7fc"
   dependencies:
     "@google-cloud/common" "^0.13.0"
     arrify "^1.0.0"
@@ -69,7 +69,7 @@
     create-error-class "^3.0.2"
     duplexify "^3.5.0"
     extend "^3.0.0"
-    gcs-resumable-upload "^0.8.0"
+    gcs-resumable-upload "^0.8.2"
     hash-stream-validation "^0.2.1"
     is "^3.0.1"
     mime-types "^2.0.8"
@@ -136,8 +136,8 @@ abab@^1.0.3:
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
 
 abbrev@1:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.0.tgz#d0554c2256636e2f56e7c2e5ad183f859428d81f"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
 
 acorn-globals@^3.1.0:
   version "3.1.0"
@@ -1013,8 +1013,8 @@ camelcase@^4.1.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
 caniuse-lite@^1.0.30000718:
-  version "1.0.30000738"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000738.tgz#1820c3c9adb9a117e311a5bdca1d25bc34288eba"
+  version "1.0.30000739"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000739.tgz#9ee8c7016f5c522dbb0c0863d55c61efb453ae95"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -1310,8 +1310,8 @@ ecdsa-sig-formatter@1.0.9:
     safe-buffer "^5.0.1"
 
 electron-to-chromium@^1.3.18:
-  version "1.3.22"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.22.tgz#4322d52c151406e3eaef74ad02676883e8416418"
+  version "1.3.23"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.23.tgz#e6668ab18cb69afb8f577c8a9fc23d002788be74"
 
 encoding@^0.1.11:
   version "0.1.12"
@@ -1606,7 +1606,7 @@ gcp-metadata@^0.3.0:
     extend "^3.0.0"
     retry-request "^3.0.0"
 
-gcs-resumable-upload@^0.8.0:
+gcs-resumable-upload@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/gcs-resumable-upload/-/gcs-resumable-upload-0.8.2.tgz#37df02470430395a789a637e72cabc80677ae964"
   dependencies:
