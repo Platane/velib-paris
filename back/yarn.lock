@@ -129,8 +129,8 @@
   resolved "https://registry.yarnpkg.com/@types/long/-/long-3.0.32.tgz#f4e5af31e9e9b196d8e5fca8a5e2e20aa3d60b69"
 
 "@types/node@^7.0.29":
-  version "7.0.43"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.43.tgz#a187e08495a075f200ca946079c914e1a5fe962c"
+  version "7.0.44"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.44.tgz#20422b3dada536f35bf318ac3e24b8c48200803d"
 
 abab@^1.0.3:
   version "1.0.4"
