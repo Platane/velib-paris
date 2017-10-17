@@ -18,7 +18,7 @@
         "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
         "babel-plugin-transform-inline-environment-variables": "0.2.0",
         "babel-plugin-transform-object-rest-spread": "6.26.0",
-        "babel-preset-env": "1.6.0",
+        "babel-preset-env": "1.6.1",
         "babel-preset-flow": "6.23.0",
         "babel-register": "6.26.0",
         "flow-bin": "0.55.0",
