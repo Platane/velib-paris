@@ -21,7 +21,7 @@
         "babel-preset-env": "1.6.1",
         "babel-preset-flow": "6.23.0",
         "babel-register": "6.26.0",
-        "flow-bin": "0.55.0",
+        "flow-bin": "0.60.1",
         "flow-typed": "2.1.5",
         "jest": "21.2.1"
     },
