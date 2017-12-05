@@ -14,9 +14,6 @@ const getInterval = (date: number) => {
     return { start_date, end_date }
 }
 
-type Options = {
-    date?: number
-}
 
 const formatFileContent_json = (availabilities: Availability[]) => {
     const stationIds = {}
@@ -24,13 +21,13 @@ const formatFileContent_json = (availabilities: Availability[]) => {
         (stationIds[av.stationId] = stationIds[av.stationId] || []).push([
             av.updated_date,
             av.free_slot,
-            av.total_slot
+            av.total_slot,
         ])
     )
 
     const array = Object.keys(stationIds).map(stationId => ({
         stationId,
-        availabilities: stationIds[stationId]
+        availabilities: stationIds[stationId],
     }))
 
     return JSON.stringify(array)
@@ -49,7 +46,7 @@ const formatFileContent_csv = (availabilities: Availability[]) =>
                 x.stationId,
                 x.updated_date / 1000,
                 x.free_slot,
-                x.total_slot
+                x.total_slot,
             ].join(',')
         )
         .join('\n')
@@ -67,18 +64,20 @@ const getAvailabilities = async (
 
     const [batches, _] = await datastore.runQuery(query)
 
-    console.log(_)
-
     return []
         .concat(...batches.map(({ availabilities }) => availabilities))
         .filter(x => start_date <= x.updated_date && x.updated_date < end_date)
+}
+
+type Options = {
+    date?: number,
 }
 
 export const run = async (options?: Options = {}) => {
     // set up google api
     const gConfig = {
         projectId: config.googleCloudPlatform.project_id,
-        credentials: config.googleCloudPlatform
+        credentials: config.googleCloudPlatform,
     }
 
     const datastore = connectDataStore(gConfig)
@@ -89,7 +88,7 @@ export const run = async (options?: Options = {}) => {
         autoCreate: true,
         regional: true,
         location: 'europe-west1',
-        nearline: true
+        nearline: true,
     })
 
     // set bucket cors
@@ -99,12 +98,14 @@ export const run = async (options?: Options = {}) => {
                 origin: ['*'],
                 responseHeader: ['Content-Type'],
                 method: ['GET', 'HEAD'],
-                maxAgeSeconds: 3600
-            }
-        ]
+                maxAgeSeconds: 3600,
+            },
+        ],
     })
 
     const { start_date, end_date } = getInterval(options.date || Date.now())
+
+    console.log( `for the period ${new Date(start_date).toISOString()} - ${new Date(end_date).toISOString()}` )
 
     // get the batch key
     const availabilities = await getAvailabilities(
@@ -113,15 +114,20 @@ export const run = async (options?: Options = {}) => {
         end_date
     )
 
+    console.log( `found ${availabilities.length} items` )
+
     // create the file
     const file = bucket.file(
         `${new Date(start_date).toISOString().slice(0, 13)}.csv`
     )
 
+
     const fileContent = formatFileContent_csv(availabilities)
+
+    console.log(`sample: \n${fileContent.slice(0,200)}...`)
 
     await file.save(fileContent, {
         gzip: true,
-        public: true
+        public: true,
     })
 }
