@@ -21,7 +21,7 @@ build:
         - script:
             cwd: back
             name: test back
-            code: env NODE_ENV=ASYNC_POLYFILL yarn run test-skip-io
+            code: env NODE_ENV=ASYNC_POLYFILL yarn run test
 
         - script:
             cwd: back
