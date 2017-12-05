@@ -59,6 +59,36 @@ build:
                 node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./account
                 node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).project_id)" > ./project
 
+build-cron:
+
+    steps:
+
+        - script:
+            cwd: back-cron
+            name: install dependencies
+            code: |
+                npm install -g yarn
+                export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+                HOME=$YARN_CACHE yarn --pure-lockfile
+
+        - script:
+            cwd: back-cron
+            name: build
+            code: env NODE_ENV=ASYNC_POLYFILL yarn run build
+
+        - script:
+            cwd: back-cron
+            name: install production node_modules
+            code: |
+                rm -r node_modules
+                HOME=$YARN_CACHE yarn --pure-lockfile --production=true
+
+        - script:
+            name: prepare env
+            code: |
+                node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).client_email)" > ./account
+                node -e "console.log(JSON.parse(process.env.GC_JSON_KEY_FILE).project_id)" > ./project
+
 
 deploy-back:
 
@@ -94,3 +124,22 @@ deploy-back:
             code: |
                 gcloud beta functions deploy fetchStations --local-path back/dist/fetchStations --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
                 gcloud beta functions describe fetchStations
+
+deploy-back-cron:
+
+    box:
+        id: google/cloud-sdk
+
+    steps:
+
+        - script:
+            name: Activate service account
+            code: |
+                echo $GC_JSON_KEY_FILE >> secret.json
+                CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud auth activate-service-account $( cat account ) --key-file secret.json --project $( cat project )
+
+        - script:
+            name: deploy app
+            code: |
+                gcloud app deploy ./back-cron/app.yml
+                gcloud app deploy ./back-cron/cron.yml

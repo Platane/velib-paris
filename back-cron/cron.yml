@@ -1,0 +1,4 @@
+cron:
+- description: "every day at midnight"
+  url: /cron/every-day-midnight
+  schedule: every day 00:01
