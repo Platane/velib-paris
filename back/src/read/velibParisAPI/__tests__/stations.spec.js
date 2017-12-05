@@ -3,7 +3,7 @@ import { readStations } from '../stations'
 it('should read stations', async () => {
     const res = await readStations({})
 
-    expect(res.length).toBeGreaterThan(1000)
+    expect(res.length).toBeGreaterThan(400)
     res.forEach(x => {
         expect(typeof x.id).toBe('string')
         expect(typeof x.address).toBe('string')
