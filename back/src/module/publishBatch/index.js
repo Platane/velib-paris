@@ -14,7 +14,6 @@ const getInterval = (date: number) => {
     return { start_date, end_date }
 }
 
-
 const formatFileContent_json = (availabilities: Availability[]) => {
     const stationIds = {}
     availabilities.forEach(av =>
@@ -105,7 +104,11 @@ export const run = async (options?: Options = {}) => {
 
     const { start_date, end_date } = getInterval(options.date || Date.now())
 
-    console.log( `for the period ${new Date(start_date).toISOString()} - ${new Date(end_date).toISOString()}` )
+    console.log(
+        `for the period ${new Date(start_date).toISOString()} - ${new Date(
+            end_date
+        ).toISOString()}`
+    )
 
     // get the batch key
     const availabilities = await getAvailabilities(
@@ -114,17 +117,16 @@ export const run = async (options?: Options = {}) => {
         end_date
     )
 
-    console.log( `found ${availabilities.length} items` )
+    console.log(`found ${availabilities.length} items`)
 
     // create the file
     const file = bucket.file(
-        `${new Date(start_date).toISOString().slice(0, 13)}.csv`
+        `${new Date(start_date).toISOString().slice(0, 10)}.csv`
     )
-
 
     const fileContent = formatFileContent_csv(availabilities)
 
-    console.log(`sample: \n${fileContent.slice(0,200)}...`)
+    console.log(`sample: \n${fileContent.slice(0, 200)}...`)
 
     await file.save(fileContent, {
         gzip: true,

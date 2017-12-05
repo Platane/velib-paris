@@ -30,6 +30,7 @@
     },
     "scripts": {
         "flow-typed": "flow-typed install",
+        "publishAll": "node -e \"require('babel-register');require('./src/module/publishAllBatch/cmd.js')\"",
         "build":
             "rm -rf lib && babel --out-dir ./lib --ignore '**/__tests__/' ./src",
         "test-skip-io": "jest '^((?!read\\/).)*.__tests__\\/.*$'",
