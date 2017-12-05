@@ -81,9 +81,9 @@
     propprop "^0.3.0"
     split-array-stream "^1.0.0"
 
-"@google-cloud/storage@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.5.0.tgz#41f0cf8a7301ee73bc670b14b5cc430aca611768"
+"@google-cloud/storage@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.5.1.tgz#6c790260b87e7a1bcc637ec3747151db75bcf34f"
   dependencies:
     "@google-cloud/common" "^0.15.1"
     arrify "^1.0.0"
