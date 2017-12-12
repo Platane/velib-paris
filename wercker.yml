@@ -105,24 +105,24 @@ deploy-back:
 
         - script:
             name: create bucket
-            code: gsutil mb -c STANDARD -l EUROPE-WEST1 -p $( cat project ) gs://platane-velib-lambda-function || echo 1
+            code: gsutil mb -c STANDARD -l EUROPE-WEST1 -p $( cat project ) gs://platane-velib-lambda-function-x || echo 1
 
         - script:
             name: deploy function fetchStationAvailability
             code: |
-                gcloud beta functions deploy fetchStationAvailability --local-path back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions deploy fetchStationAvailability --source back/dist/fetchStationAvailability --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function-x --trigger-http
                 gcloud beta functions describe fetchStationAvailability
 
         - script:
             name: deploy function publishBatch
             code: |
-                gcloud beta functions deploy publishBatch --local-path back/dist/publishBatch --memory=2GB --timeout 540s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-topic cron-every-day-midnight
+                gcloud beta functions deploy publishBatch --source back/dist/publishBatch --memory=2GB --timeout 540s --entry-point run --stage-bucket platane-velib-lambda-function-x --trigger-topic cron-every-day-midnight
                 gcloud beta functions describe publishBatch
 
         - script:
             name: deploy function fetchStations
             code: |
-                gcloud beta functions deploy fetchStations --local-path back/dist/fetchStations --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function --trigger-http
+                gcloud beta functions deploy fetchStations --source back/dist/fetchStations --memory=128MB --timeout 120s --entry-point run --stage-bucket platane-velib-lambda-function-x --trigger-http
                 gcloud beta functions describe fetchStations
 
 deploy-back-cron:
