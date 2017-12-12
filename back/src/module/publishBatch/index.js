@@ -83,7 +83,7 @@ export const run = async (options?: Options = {}) => {
     const storage = connectStorage(gConfig)
 
     // get or create the bucket
-    const [bucket, _] = await storage.bucket('velib-forecast-data').get({
+    const [bucket, _] = await storage.bucket('velib-forecast-data-x').get({
         autoCreate: true,
         regional: true,
         location: 'europe-west1',
