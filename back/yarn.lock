@@ -56,9 +56,9 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.3"
 
-"@google-cloud/datastore@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.2.1.tgz#e86e836d8a06af6d704674684b89dcb8b6048718"
+"@google-cloud/datastore@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.3.0.tgz#9dc1df9cdb41832203ef71552951e236f2f22ecc"
   dependencies:
     "@google-cloud/common" "^0.14.0"
     arrify "^1.0.0"
