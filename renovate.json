@@ -4,7 +4,6 @@
   "depTypes": ["dependencies", "devDependencies", "optionalDependencies"],
   "separateMajorReleases": true,
   "ignoreDeps": [],
-  "ignoreFuture": true,
   "ignoreUnstable": true,
   "respectLatest": true,
   "recreateClosed": false,
