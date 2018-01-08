@@ -78,9 +78,9 @@
     stream-events "^1.0.2"
     through2 "^2.0.3"
 
-"@google-cloud/storage@1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.5.1.tgz#6c790260b87e7a1bcc637ec3747151db75bcf34f"
+"@google-cloud/storage@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@google-cloud/storage/-/storage-1.5.2.tgz#5e206603570f5d1cee4681b23919d8f3655e4e60"
   dependencies:
     "@google-cloud/common" "^0.15.1"
     arrify "^1.0.0"
